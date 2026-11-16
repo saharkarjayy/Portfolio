@@ -1,0 +1,1857 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jay Saharkar® — AWS DevOps &amp; Android Engineer | Hybrid CV</title>
+
+  <!-- Google Fonts: Syne, Manrope, JetBrains Mono & Caveat -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- GSAP 3 via CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+
+  <!-- Lucide Icons via CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Manrope', 'system-ui', 'sans-serif'],
+            display: ['Syne', 'Manrope', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+            hand: ['Caveat', 'cursive'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* ==========================================================================
+       1. EDITORIAL + PLAYGROUND THEME TOKENS (Default: Editorial Obsidian)
+       ========================================================================== */
+    :root, [data-theme="obsidian"] {
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --dur-quick: 300ms;
+      --bg-canvas: #050505;
+      --bg-dot: rgba(255, 255, 255, 0.08);
+      --bg-card: #0E1015;
+      --bg-card-sub: #161922;
+      --border-card: rgba(255, 255, 255, 0.12);
+      --text-main: #FFFFFF;
+      --text-muted: #A1A1AA;
+      --accent-primary: #38BDF8;
+      --accent-primary-soft: rgba(56, 189, 248, 0.14);
+      --accent-secondary: #F97316;
+      --nav-bg: rgba(5, 5, 5, 0.78);
+    }
+
+    [data-theme="indigo"] {
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --dur-quick: 300ms;
+      --bg-canvas: #F8FAFC;
+      --bg-dot: rgba(79, 70, 229, 0.14);
+      --bg-card: #FFFFFF;
+      --bg-card-sub: #EEF2FF;
+      --border-card: #E0E7FF;
+      --text-main: #0F172A;
+      --text-muted: #475569;
+      --accent-primary: #4F46E5;
+      --accent-primary-soft: rgba(79, 70, 229, 0.1);
+      --accent-secondary: #F97316;
+      --nav-bg: rgba(248, 250, 252, 0.85);
+    }
+
+    [data-theme="sunset"] {
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --dur-quick: 300ms;
+      --bg-canvas: #FFFBF7;
+      --bg-dot: rgba(234, 88, 12, 0.15);
+      --bg-card: #FFFFFF;
+      --bg-card-sub: #FFF7ED;
+      --border-card: #FFEDD5;
+      --text-main: #1C1917;
+      --text-muted: #57534E;
+      --accent-primary: #EA580C;
+      --accent-primary-soft: rgba(234, 88, 12, 0.1);
+      --accent-secondary: #4F46E5;
+      --nav-bg: rgba(255, 251, 247, 0.86);
+    }
+
+    html, body {
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      font-family: 'Manrope', system-ui, sans-serif;
+      background-image: radial-gradient(var(--bg-dot) 1.5px, transparent 1.5px);
+      background-size: 26px 26px;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.35s ease, color 0.35s ease;
+    }
+
+    .themed-card {
+      background-color: var(--bg-card);
+      border-color: var(--border-card);
+      transition: background-color 0.35s ease, border-color 0.35s ease, transform 0.25s var(--ease-out-expo);
+    }
+    .themed-subcard {
+      background-color: var(--bg-card-sub);
+      border-color: var(--border-card);
+    }
+    .themed-muted { color: var(--text-muted); }
+    .themed-primary-text { color: var(--accent-primary); }
+    .themed-primary-soft {
+      background-color: var(--accent-primary-soft);
+      color: var(--accent-primary);
+    }
+
+    /* ==========================================================================
+       2. AZAKA EDITORIAL KINETIC TYPOGRAPHY & UNDERLINE SWIPE
+       ========================================================================== */
+    .azaka-headline {
+      font-family: 'Syne', 'Manrope', sans-serif;
+      font-size: clamp(38px, 8.2vw, 118px);
+      line-height: 0.88;
+      letter-spacing: -0.04em;
+      font-weight: 700;
+    }
+
+    .link-underline { position: relative; }
+    .link-underline::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -3px;
+      width: 100%;
+      height: 1.5px;
+      background: currentColor;
+      transform-origin: right;
+      transform: scaleX(1);
+      transition: transform var(--dur-quick) var(--ease-out-expo);
+    }
+    .link-underline:hover::after {
+      transform-origin: left;
+      animation: underline-swipe 0.5s var(--ease-out-expo);
+    }
+    @keyframes underline-swipe {
+      0%   { transform: scaleX(1); transform-origin: right; }
+      50%  { transform: scaleX(0); transform-origin: right; }
+      51%  { transform-origin: left; }
+      100% { transform: scaleX(1); transform-origin: left; }
+    }
+
+    /* ==========================================================================
+       3. TWO-LAYER DIFFERENCE CUSTOM CURSOR (FINE POINTERS ONLY)
+       ========================================================================== */
+    @media (pointer: fine) {
+      body:not(.strict-cv-preview) a,
+      body:not(.strict-cv-preview) button,
+      body:not(.strict-cv-preview) label,
+      body:not(.strict-cv-preview) [role="button"] {
+        cursor: none;
+      }
+    }
+    .cursor-dot, .cursor-ring {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 95;
+      will-change: transform;
+    }
+    .cursor-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 9999px;
+      background: #fff;
+      mix-blend-mode: difference;
+    }
+    .cursor-ring {
+      width: 44px;
+      height: 44px;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      mix-blend-mode: difference;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 7px;
+    }
+    .cursor-ring .chev {
+      font-size: 10px;
+      line-height: 1;
+      color: #fff;
+      font-weight: 700;
+      font-family: 'Manrope', sans-serif;
+      transition: opacity var(--dur-quick) var(--ease-out-expo);
+    }
+    @media (pointer: coarse) {
+      .cursor-dot, .cursor-ring { display: none !important; }
+    }
+
+    /* ==========================================================================
+       4. 3D POLAROID PORTRAIT & DRAGGABLE STICKY NOTES
+       ========================================================================== */
+    .polaroid-card {
+      transform: rotate(-2.5deg);
+      transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+    }
+    .polaroid-card:hover {
+      transform: rotate(0deg) scale(1.025) translateY(-4px);
+    }
+    .washi-tape {
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.88), rgba(245, 158, 11, 0.78));
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+    }
+
+    .sticky-note {
+      position: fixed;
+      width: 204px;
+      min-height: 152px;
+      padding: 14px 14px 12px;
+      border-radius: 4px 4px 18px 4px;
+      box-shadow: 0 14px 30px -6px rgba(0, 0, 0, 0.28), 0 4px 10px -2px rgba(0, 0, 0, 0.12);
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+      z-index: 42;
+      transition: box-shadow 0.2s ease, transform 0.15s ease;
+      color: #0F172A;
+    }
+    .sticky-note:hover {
+      box-shadow: 0 22px 38px -8px rgba(0, 0, 0, 0.36);
+    }
+    .sticky-note.dragging {
+      cursor: grabbing;
+      transform: scale(1.05) rotate(0deg) !important;
+      z-index: 75 !important;
+    }
+    .sticky-pin {
+      width: 12px;
+      height: 12px;
+      border-radius: 9999px;
+      background: radial-gradient(circle at 35% 35%, #F87171, #B91C1C);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.35);
+      margin: 0 auto 6px;
+    }
+
+    /* ==========================================================================
+       5. STICKER FLOAT, VEHICLE ENGINE VIBE & REDUCED MOTION
+       ========================================================================== */
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px) rotate(3deg); }
+      50% { transform: translateY(-7px) rotate(5deg); }
+    }
+    @keyframes floatSlowAlt {
+      0%, 100% { transform: translateY(0px) rotate(-4deg); }
+      50% { transform: translateY(-6px) rotate(-2deg); }
+    }
+    @keyframes engineVibe {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-2.5px); }
+    }
+    .animate-sticker-1 { animation: floatSlow 4.5s ease-in-out infinite; }
+    .animate-sticker-2 { animation: floatSlowAlt 5.2s ease-in-out infinite; }
+    .vehicle-vibe { animation: engineVibe 0.28s infinite; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* ==========================================================================
+       6. STRICT CV PREVIEW & @MEDIA PRINT (100% EXACT OFFICIAL CV)
+       ========================================================================== */
+    body.strict-cv-preview #azaka-hero,
+    body.strict-cv-preview #playground-world,
+    body.strict-cv-preview #sticky-notes-layer,
+    body.strict-cv-preview #sticky-dock,
+    body.strict-cv-preview .cursor-dot,
+    body.strict-cv-preview .cursor-ring {
+      display: none !important;
+    }
+    body.strict-cv-preview #formal-cv-sheet {
+      display: block !important;
+    }
+
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 10mm 12mm;
+      }
+      body {
+        background: #FFFFFF !important;
+        background-image: none !important;
+        color: #000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      #playground-header,
+      #azaka-hero,
+      #playground-world,
+      #sticky-notes-layer,
+      #sticky-dock,
+      #note-modal,
+      #confetti-canvas,
+      #toast,
+      .cursor-dot,
+      .cursor-ring,
+      .no-print {
+        display: none !important;
+      }
+      #formal-cv-sheet {
+        display: block !important;
+        box-shadow: none !important;
+        border: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+      }
+    }
+  </style>
+</head>
+<body class="font-sans antialiased overflow-x-hidden selection:bg-sky-500 selection:text-slate-950">
+
+  <!-- Custom Two-Layer Difference Cursor -->
+  <div id="cursor-dot" class="cursor-dot"></div>
+  <div id="cursor-ring" class="cursor-ring">
+    <span class="chev">◀</span>
+    <span class="chev">▶</span>
+  </div>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
+
+  <!-- Free-Floating Draggable Sticky Notes Layer -->
+  <div id="sticky-notes-layer" aria-label="Draggable Sticky Notes Wall"></div>
+
+  <!-- ==========================================================================
+       TOP EDITORIAL HEADER (AZAKA WORDMARK + SWIPE LINKS + CONTROLS)
+       ========================================================================== -->
+  <header id="playground-header" style="background-color: var(--nav-bg); border-color: var(--border-card);" class="sticky top-0 z-40 border-b backdrop-blur-xl transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-8 h-16 flex items-center justify-between gap-3">
+      
+      <!-- Editorial Wordmark -->
+      <a href="#azaka-hero" class="font-display text-lg sm:text-2xl font-extrabold tracking-[-0.03em] flex items-center gap-1 shrink-0">
+        <span>JAY SAHARKAR</span><span class="align-super text-[0.45em] font-semibold">®</span>
+      </a>
+
+      <!-- Swipe-Underline Navigation Links -->
+      <nav class="hidden lg:flex items-center gap-6 text-[13px] font-semibold">
+        <a href="#roadtrip" class="link-underline">Journey</a>
+        <a href="#aws-lab" class="link-underline">AWS &amp; DevOps</a>
+        <a href="#android-lab" class="link-underline">Android</a>
+        <button onclick="focusStickyNotes()" class="link-underline">Sticky Wall</button>
+      </nav>
+
+      <!-- Right Controls: 3 Theme Swatches, Strict CV Toggle & Print CV -->
+      <div class="flex items-center gap-2 sm:gap-2.5">
+        <div class="themed-card flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border shadow-sm" title="Switch Theme">
+          <button onclick="setColorTheme('obsidian')" id="swatch-obsidian" aria-label="Editorial Obsidian Theme" class="w-4 h-4 rounded-full bg-neutral-950 border border-sky-400 ring-2 ring-offset-1 ring-sky-400 transition-transform hover:scale-110"></button>
+          <button onclick="setColorTheme('indigo')" id="swatch-indigo" aria-label="Electric Indigo Light Theme" class="w-4 h-4 rounded-full bg-indigo-600 transition-transform hover:scale-110"></button>
+          <button onclick="setColorTheme('sunset')" id="swatch-sunset" aria-label="AWS Sunset Theme" class="w-4 h-4 rounded-full bg-orange-500 transition-transform hover:scale-110"></button>
+        </div>
+
+        <button id="toggle-strict-cv-btn" onclick="toggleStrictCV()" class="themed-card inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold shadow-sm hover:border-sky-400 transition-all">
+          <i data-lucide="file-text" class="w-3.5 h-3.5 themed-primary-text"></i>
+          <span id="strict-cv-label">Strict CV</span>
+        </button>
+
+        <button onclick="printExactCV()" style="background-color: var(--accent-primary);" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-slate-950 font-extrabold text-xs shadow-md hover:opacity-95 active:scale-95 transition-all">
+          <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+          <span>Print CV</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       PART 1: AZAKA EDITORIAL KINETIC HERO + 3D POLAROID PORTRAIT
+       ========================================================================== -->
+  <section id="azaka-hero" class="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-[#050505] text-white flex flex-col justify-between">
+    
+    <!-- Layer 0A: Procedural Dark Cloud-Grid Canvas Fallback (Guaranteed Offline/CORS-Safe) -->
+    <canvas id="cloud-grid-canvas" class="absolute inset-0 z-0 h-full w-full opacity-80"></canvas>
+
+    <!-- Layer 0B: AZAKA Poster & Pointer-Scrubbed MP4 Backdrop -->
+    <img
+      id="azaka-poster"
+      src="https://media.prettysites.io/products/azaka/v2/poster.jpg"
+      alt=""
+      onerror="this.style.display='none'"
+      class="absolute inset-0 z-0 h-full w-full object-cover transition-opacity duration-700 mix-blend-lighten opacity-45"
+    />
+    <video
+      id="azaka-video"
+      muted
+      playsInline
+      preload="auto"
+      class="absolute inset-0 z-0 h-full w-full object-cover transition-opacity duration-700 mix-blend-lighten opacity-0"
+    ></video>
+
+    <!-- Atmospheric Vignette -->
+    <div class="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(120%_90%_at_50%_50%,rgba(5,5,5,0.28)_35%,rgba(5,5,5,0.88)_100%)]"></div>
+
+    <!-- Parallax Split Display Headlines (AZAKA Composition) -->
+    <div id="azaka-parallax" class="pointer-events-none absolute inset-0 z-10">
+      <h1 class="azaka-headline absolute top-[5%] left-[4vw] md:top-[7%] md:left-[3vw] text-white/95 select-none">
+        <span data-headline class="block">Cloud &amp; AWS</span>
+      </h1>
+      <h2 class="azaka-headline absolute bottom-[13%] right-[4vw] md:bottom-[10%] md:right-[3vw] text-white/95 text-right select-none">
+        <span data-headline class="block">Engineering</span>
+      </h2>
+    </div>
+
+    <!-- Foreground Split Content Grid (Left Bio + Right 3D Polaroid Portrait) -->
+    <div class="relative z-20 max-w-7xl mx-auto w-full px-5 sm:px-8 my-auto py-16 md:py-20 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+      
+      <!-- Left 7 Cols: Editorial Bio, CTA & Quick Contact Pills -->
+      <div class="lg:col-span-7 space-y-6 pt-12 md:pt-20">
+        <div data-fade class="inline-flex flex-wrap items-center gap-2">
+          <span class="px-3 py-1 rounded-full bg-sky-400/15 border border-sky-400/30 text-sky-300 font-mono text-xs font-bold">
+            AWS DEVOPS | ANDROID DEVELOPER
+          </span>
+          <span class="px-3 py-1 rounded-full bg-orange-500/15 border border-orange-400/30 text-orange-300 font-mono text-xs font-bold">
+            THANE, MH, INDIA
+          </span>
+        </div>
+
+        <p data-fade class="text-lg sm:text-xl font-semibold leading-[1.5] text-white/90 max-w-xl">
+          MSc IT graduate &amp; Software Engineer building secure, scalable AWS cloud infrastructure, DevOps pipelines, and native Kotlin Android apps.
+        </p>
+
+        <div data-fade class="flex flex-wrap items-center gap-5 pt-1">
+          <a href="#roadtrip" class="link-underline text-base sm:text-lg font-bold text-white inline-flex items-center gap-2">
+            <span>Explore Journey</span>
+            <span class="text-sky-400">&rarr;</span>
+          </a>
+
+          <button onclick="triggerConfetti()" class="px-4 py-2 rounded-full bg-orange-500 hover:bg-orange-400 text-white text-xs font-extrabold shadow-lg transition-transform hover:scale-105 active:scale-95">
+            🙌 High-Five Jay!
+          </button>
+        </div>
+
+        <!-- Quick-Copy Email & Phone Pills -->
+        <div data-fade class="flex flex-wrap items-center gap-2.5 pt-2">
+          <button onclick="copyText('jaysaharkar@gmail.com', 'Email Copied!')" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 backdrop-blur-md text-xs font-mono font-semibold text-white transition-all">
+            <i data-lucide="mail" class="w-3.5 h-3.5 text-sky-400"></i>
+            <span>jaysaharkar@gmail.com</span>
+          </button>
+
+          <button onclick="copyText('8850517641', 'Phone Copied!')" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 backdrop-blur-md text-xs font-mono font-semibold text-white transition-all">
+            <i data-lucide="phone" class="w-3.5 h-3.5 text-emerald-400"></i>
+            <span>8850517641</span>
+          </button>
+
+          <a href="https://linkedin.com/in/jay-saharkar" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 backdrop-blur-md text-xs font-mono font-semibold text-white transition-all">
+            <i data-lucide="linkedin" class="w-3.5 h-3.5 text-sky-300"></i>
+            <span>linkedin.com/in/jay-saharkar</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Right 5 Cols: Tilted 3D Polaroid Portrait Frame -->
+      <div data-fade class="lg:col-span-5 flex justify-center lg:justify-end">
+        <div class="relative w-full max-w-[310px]">
+          
+          <!-- Floating Sticker Top-Left -->
+          <div class="animate-sticker-1 absolute -top-5 -left-4 z-20 px-3 py-1.5 rounded-2xl bg-amber-300 text-slate-950 font-hand text-lg font-bold shadow-xl border-2 border-white">
+            ☁️ AWS Certified x2
+          </div>
+
+          <!-- Floating Sticker Bottom-Right -->
+          <div class="animate-sticker-2 absolute -bottom-4 -right-3 z-20 px-3.5 py-1.5 rounded-2xl bg-emerald-400 text-slate-950 font-mono text-xs font-extrabold shadow-xl border-2 border-white">
+            📍 Thane, MH
+          </div>
+
+          <!-- Polaroid Frame -->
+          <div class="polaroid-card relative bg-white p-3.5 pb-5 rounded-2xl shadow-2xl border border-slate-200 text-slate-900">
+            <!-- Washi Tape -->
+            <div class="washi-tape absolute -top-3.5 left-1/2 -translate-x-1/2 w-28 h-7 rounded-sm opacity-95 z-10"></div>
+
+            <!-- Portrait Container -->
+            <div class="relative aspect-square w-full rounded-xl overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-sky-900 border border-slate-200 group">
+              <img
+                id="jay-portrait-img"
+                src="WhatsApp Image 2026-11-13 at 17.18.50.jpeg"
+                alt="Jay Saharkar — AWS DevOps & Android Developer"
+                class="w-full h-full object-cover object-top"
+                onerror="handlePhotoFallback(this)"
+              />
+
+              <!-- Instant Swap Photo File Picker -->
+              <label for="photo-upload-input" class="cursor-pointer absolute bottom-2.5 right-2.5 px-2.5 py-1.5 rounded-lg bg-slate-950/85 hover:bg-slate-950 text-white font-mono text-[11px] font-bold backdrop-blur-md flex items-center gap-1.5 shadow-lg transition-transform hover:scale-105">
+                <i data-lucide="camera" class="w-3.5 h-3.5 text-amber-400"></i>
+                <span>Swap Photo</span>
+              </label>
+              <input id="photo-upload-input" type="file" accept="image/*" class="hidden" onchange="previewCustomPhoto(event)" />
+            </div>
+
+            <!-- Polaroid Handwritten Caption -->
+            <div class="mt-3.5 flex items-center justify-between px-1">
+              <div>
+                <div class="font-hand text-2xl font-bold text-slate-900 leading-none">Jay Saharkar 🚀</div>
+                <div class="font-mono text-[10px] text-slate-500 mt-1">BSc IT &rarr; MSc IT &rarr; Bartech SWE</div>
+              </div>
+              <span class="px-2 py-1 rounded-lg bg-indigo-50 text-indigo-700 font-mono text-[10px] font-bold">
+                Aug '26–Now
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Editorial Role Bar (AZAKA Footer Strip) -->
+    <div class="relative z-20 w-full border-t border-white/10 px-5 sm:px-10 py-4 flex flex-wrap items-center justify-between gap-3 text-xs sm:text-[15px] font-bold text-white/90">
+      <span data-fade>AWS Cloud Architecture</span>
+      <span data-fade class="hidden sm:inline">DevOps &amp; Terraform</span>
+      <span data-fade class="hidden md:inline">Native Kotlin Android</span>
+      <span data-fade>Node.js &amp; MSSQL</span>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       PART 2: PLAYFUL CREATIVE DEV PLAYGROUND SECTIONS
+       ========================================================================== -->
+  <main id="playground-world" class="max-w-7xl mx-auto px-4 sm:px-8 pt-16 pb-28 space-y-20">
+
+    <!-- ========================================================================
+         SECTION A: FORWARD-FACING SUPERBIKE & TURBO CAR CAREER ROADTRIP
+         ======================================================================== -->
+    <section id="roadtrip" class="themed-card rounded-3xl border p-6 sm:p-8 shadow-xl relative overflow-hidden">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <div>
+          <span class="themed-primary-soft px-3 py-1 rounded-full font-mono text-xs font-bold">🛣️ INTERACTIVE CAREER ROADTRIP</span>
+          <h2 class="font-display text-2xl sm:text-4xl font-extrabold mt-2 tracking-tight">
+            Mumbai Lecture Halls &rarr; Thane Cloud Engineering
+          </h2>
+          <p class="text-xs sm:text-sm themed-muted mt-1">
+            Choose your ride (<strong>Superbike</strong> or <strong>Turbo Car</strong>), honk the horn, scrub the throttle, or launch <strong>Auto-Drive Tour</strong>!
+          </p>
+        </div>
+
+        <!-- Vehicle Switcher, Horn & Auto-Drive (No Flip Button — Permanently Forward-Facing) -->
+        <div class="flex flex-wrap items-center gap-2">
+          <div class="themed-subcard p-1 rounded-xl border inline-flex items-center gap-1">
+            <button id="btn-vehicle-bike" onclick="setVehicle('bike')" style="background-color: var(--accent-primary);" class="px-3 py-1.5 rounded-lg text-slate-950 text-xs font-extrabold shadow-sm transition-all">
+              🏍️ Superbike
+            </button>
+            <button id="btn-vehicle-car" onclick="setVehicle('car')" class="px-3 py-1.5 rounded-lg text-xs font-bold themed-muted hover:opacity-80 transition-all">
+              🏎️ Turbo Car
+            </button>
+          </div>
+
+          <button onclick="honkHorn()" class="themed-card px-3.5 py-2 rounded-xl border text-xs font-bold hover:scale-105 active:scale-95 transition-transform">
+            📣 Beep!
+          </button>
+
+          <button id="auto-drive-btn" onclick="toggleAutoDrive()" style="background-color: var(--accent-secondary);" class="px-4 py-2 rounded-xl text-white text-xs font-extrabold shadow-md hover:opacity-95 transition-all">
+            ▶️ Auto-Drive Tour
+          </button>
+        </div>
+      </div>
+
+      <!-- Scenic Highway Box -->
+      <div class="relative rounded-2xl overflow-hidden border border-sky-400/30 bg-gradient-to-b from-sky-200 via-indigo-100 to-emerald-100 p-4 sm:p-6">
+        <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-mono font-bold text-slate-800 mb-2">
+          <span>📍 START: S.M. Shetty Mumbai (2019)</span>
+          <span id="road-milestone-banner" class="px-3 py-1 rounded-full bg-white/95 text-indigo-700 shadow-sm">
+            Stop 1/4: BSc IT @ S.M. Shetty (CGPI: 7.52)
+          </span>
+          <span>🏁 DEST: Bartech Thane (Present)</span>
+        </div>
+
+        <!-- Winding Highway SVG + Forward-Facing Vehicle -->
+        <div class="relative w-full h-36 sm:h-44 select-none">
+          <svg id="highway-svg" viewBox="0 0 1000 180" preserveAspectRatio="none" class="w-full h-full overflow-visible">
+            <path d="M0,150 Q220,70 480,140 T1000,120 L1000,180 L0,180 Z" fill="#86EFAC" opacity="0.7" />
+            <path d="M0,160 Q350,95 680,145 T1000,135 L1000,180 L0,180 Z" fill="#4ADE80" opacity="0.55" />
+
+            <!-- Highway Shoulder & Asphalt -->
+            <path d="M 35 125 C 240 45, 360 155, 520 95 C 680 35, 810 140, 965 80" fill="none" stroke="#4F46E5" stroke-width="34" stroke-linecap="round" />
+            <path id="road-asphalt-path" d="M 35 125 C 240 45, 360 155, 520 95 C 680 35, 810 140, 965 80" fill="none" stroke="#0F172A" stroke-width="26" stroke-linecap="round" />
+            <path d="M 35 125 C 240 45, 360 155, 520 95 C 680 35, 810 140, 965 80" fill="none" stroke="#FBBF24" stroke-width="2.5" stroke-dasharray="12 12" stroke-linecap="round" />
+
+            <!-- 4 Milestone Nodes -->
+            <g class="cursor-pointer" onclick="driveToStop(0)">
+              <circle cx="35" cy="125" r="11" fill="#F97316" stroke="#FFFFFF" stroke-width="3" />
+              <text x="35" y="160" font-family="monospace" font-size="11" font-weight="bold" fill="#0F172A" text-anchor="middle">2019 BSc</text>
+            </g>
+            <g class="cursor-pointer" onclick="driveToStop(1)">
+              <circle cx="350" cy="112" r="11" fill="#4F46E5" stroke="#FFFFFF" stroke-width="3" />
+              <text x="350" y="152" font-family="monospace" font-size="11" font-weight="bold" fill="#0F172A" text-anchor="middle">2022 MSc</text>
+            </g>
+            <g class="cursor-pointer" onclick="driveToStop(2)">
+              <circle cx="665" cy="76" r="11" fill="#0EA5E9" stroke="#FFFFFF" stroke-width="3" />
+              <text x="665" y="118" font-family="monospace" font-size="11" font-weight="bold" fill="#0F172A" text-anchor="middle">2025 AWS</text>
+            </g>
+            <g class="cursor-pointer" onclick="driveToStop(3)">
+              <circle cx="965" cy="80" r="13" fill="#10B981" stroke="#FFFFFF" stroke-width="3" />
+              <text x="965" y="118" font-family="monospace" font-size="11" font-weight="bold" fill="#065F46" text-anchor="middle">🏁 JOB!</text>
+            </g>
+          </svg>
+
+          <!-- Moving Vehicle Sprite Overlay (Permanently Facing Forward via scaleX(-1)) -->
+          <div id="vehicle-actor" style="left: 3.5%; top: 69%;" class="absolute -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-all duration-150">
+            <div id="honk-bubble" class="hidden -top-8 left-1/2 -translate-x-1/2 absolute px-2 py-0.5 rounded-lg bg-amber-400 text-slate-950 font-mono text-[10px] font-extrabold whitespace-nowrap shadow">
+              MEEP MEEP! 🏍️💨
+            </div>
+            <div class="vehicle-vibe text-3xl sm:text-4xl drop-shadow-md">
+              <span id="vehicle-sprite" style="display: inline-block; transform: scaleX(-1);">🏍️</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Throttle Slider -->
+        <div class="mt-2 flex items-center gap-3">
+          <span class="font-mono text-[11px] font-bold text-slate-800">THROTTLE</span>
+          <input id="road-slider" type="range" min="0" max="100" value="0" oninput="onSliderDrive(this.value)" class="w-full accent-indigo-600 cursor-pointer h-2 bg-white/90 rounded-lg" />
+          <span id="road-percent" class="font-mono text-xs font-extrabold text-indigo-900 w-10 text-right">0%</span>
+        </div>
+      </div>
+
+      <!-- 4 Milestone Story Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+        <div onclick="driveToStop(0)" id="stop-card-0" class="milestone-card cursor-pointer rounded-2xl p-4 border-2 border-sky-400 bg-sky-400/10 transition-all">
+          <div class="flex items-center justify-between text-xs font-mono font-bold themed-primary-text">
+            <span>STOP 01 • JUN '19–JUN '22</span>
+            <span>🎓</span>
+          </div>
+          <h3 class="font-bold text-sm mt-1.5">Bachelors in Information Technology</h3>
+          <p class="text-xs themed-muted mt-1">Bunts Sangha's S.M. Shetty, Mumbai • <strong>CGPI: 7.52</strong></p>
+        </div>
+
+        <div onclick="driveToStop(1)" id="stop-card-1" class="milestone-card cursor-pointer themed-subcard rounded-2xl p-4 border transition-all">
+          <div class="flex items-center justify-between text-xs font-mono font-bold text-orange-500">
+            <span>STOP 02 • JUN '22–JUL '24</span>
+            <span>📚</span>
+          </div>
+          <h3 class="font-bold text-sm mt-1.5">Masters in Information Technology</h3>
+          <p class="text-xs themed-muted mt-1">Bunts Sangha's S.M. Shetty, Mumbai • <strong>CGPI: 6.54</strong></p>
+        </div>
+
+        <div onclick="driveToStop(2)" id="stop-card-2" class="milestone-card cursor-pointer themed-subcard rounded-2xl p-4 border transition-all">
+          <div class="flex items-center justify-between text-xs font-mono font-bold text-sky-400">
+            <span>STOP 03 • JAN–MAR '25</span>
+            <span>☁️</span>
+          </div>
+          <h3 class="font-bold text-sm mt-1.5">AWS &amp; DevOps Certifications</h3>
+          <p class="text-xs themed-muted mt-1">AWS Academy Cloud Foundations &amp; Architecting + Grade A AWS &amp; DevOps (Insys)</p>
+        </div>
+
+        <div onclick="driveToStop(3)" id="stop-card-3" class="milestone-card cursor-pointer themed-subcard rounded-2xl p-4 border transition-all">
+          <div class="flex items-center justify-between text-xs font-mono font-bold text-emerald-400">
+            <span>STOP 04 • AUG '26–PRESENT</span>
+            <span>🏁</span>
+          </div>
+          <h3 class="font-bold text-sm mt-1.5">Software Engineer @ Bartech</h3>
+          <p class="text-xs themed-muted mt-1">Bartech Data Systems Pvt Ltd, Thane • AWS Cloud, Android &amp; Backend</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SECTION B: INTERACTIVE AWS-FIRST & ANDROID ENGINEERING BENTO GRID
+         ======================================================================== -->
+    <section id="aws-lab" class="space-y-6">
+      <div>
+        <span class="themed-primary-soft px-3 py-1 rounded-full font-mono text-xs font-bold">01 // PRIMARY FOCUS — AWS CLOUD &amp; DEVOPS</span>
+        <h2 class="font-display text-3xl sm:text-4xl font-extrabold mt-2 tracking-tight">AWS Infrastructure &amp; CI/CD Lab</h2>
+        <p class="text-sm themed-muted mt-1">Inspect production AWS services at Bartech Data Systems or trigger the live Jenkins + Terraform + Kubernetes pipeline simulator.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Left 7 Cols: AWS Service Explorer -->
+        <div class="lg:col-span-7 themed-card rounded-3xl border p-6 sm:p-7 shadow-lg space-y-5">
+          <div class="flex items-center justify-between">
+            <h3 class="font-display font-bold text-lg flex items-center gap-2">
+              <span class="text-xl">☁️</span> Production AWS Cloud Stack
+            </h3>
+            <span class="font-mono text-[11px] px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-400 font-bold">ap-south-1</span>
+          </div>
+
+          <div class="flex flex-wrap gap-2">
+            <button onclick="selectAwsService('ec2', this)" class="aws-pill px-3 py-1.5 rounded-xl font-mono text-xs font-extrabold bg-sky-400 text-slate-950 shadow-sm">EC2 &amp; Win Server 2022</button>
+            <button onclick="selectAwsService('vpc', this)" class="aws-pill themed-subcard px-3 py-1.5 rounded-xl font-mono text-xs font-semibold border hover:border-sky-400">VPC, Subnets &amp; IGW</button>
+            <button onclick="selectAwsService('iis', this)" class="aws-pill themed-subcard px-3 py-1.5 rounded-xl font-mono text-xs font-semibold border hover:border-sky-400">IIS Multi-Port &amp; DNS</button>
+            <button onclick="selectAwsService('terraform', this)" class="aws-pill themed-subcard px-3 py-1.5 rounded-xl font-mono text-xs font-semibold border hover:border-sky-400">Terraform IaC</button>
+            <button onclick="selectAwsService('k8s', this)" class="aws-pill themed-subcard px-3 py-1.5 rounded-xl font-mono text-xs font-semibold border hover:border-sky-400">Docker, K8s &amp; Helm</button>
+            <button onclick="selectAwsService('aws-core', this)" class="aws-pill themed-subcard px-3 py-1.5 rounded-xl font-mono text-xs font-semibold border hover:border-sky-400">IAM, S3, ELB/ASG, RDS, Lambda</button>
+          </div>
+
+          <div class="themed-subcard rounded-2xl border p-5 space-y-2">
+            <div class="flex items-center justify-between">
+              <span id="aws-insp-title" class="font-bold text-sm themed-primary-text">Windows Server 2022 on AWS EC2</span>
+              <span id="aws-insp-tag" class="font-mono text-[10px] px-2 py-0.5 rounded bg-sky-400/15 themed-primary-text font-bold">Bartech Prod</span>
+            </div>
+            <p id="aws-insp-desc" class="text-xs sm:text-sm themed-muted leading-relaxed">
+              Provision and configure Windows Server 2022 instances on AWS EC2 for enterprise applications, managing EC2 instance configurations, EBS storage, and Elastic IP addresses.
+            </p>
+          </div>
+
+          <!-- Full AWS & DevOps Skill Matrix -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1 font-mono text-[11px]">
+            <div class="themed-subcard p-2.5 rounded-xl border text-center">
+              <div class="font-bold">IAM, EC2, EBS, VPC</div>
+              <div class="themed-muted text-[10px]">Core Compute &amp; Net</div>
+            </div>
+            <div class="themed-subcard p-2.5 rounded-xl border text-center">
+              <div class="font-bold">S3, ELB, ASG, RDS</div>
+              <div class="themed-muted text-[10px]">Storage &amp; Scaling</div>
+            </div>
+            <div class="themed-subcard p-2.5 rounded-xl border text-center">
+              <div class="font-bold">ECR, Lambda, SNS</div>
+              <div class="themed-muted text-[10px]">Containers &amp; Events</div>
+            </div>
+            <div class="themed-subcard p-2.5 rounded-xl border text-center">
+              <div class="font-bold">CloudWatch &amp; Git</div>
+              <div class="themed-muted text-[10px]">Telemetry &amp; SCM</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right 5 Cols: Jenkins + Terraform CI/CD Runner -->
+        <div class="lg:col-span-5 rounded-3xl bg-neutral-950 text-slate-100 border border-white/15 p-6 shadow-xl flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-3 mb-4 border-b border-white/10">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                <span class="font-mono text-xs text-slate-400 ml-1">jenkins-ec2-pipeline</span>
+              </div>
+              <button onclick="runCicdPipeline()" class="px-3 py-1 rounded-lg bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-mono text-xs font-extrabold transition-colors">
+                ▶ Run Jenkins + Terraform CI/CD
+              </button>
+            </div>
+
+            <div class="text-xs font-semibold text-amber-400 mb-2">
+              Cloud &amp; DevOps Infrastructure Automation
+            </div>
+
+            <div class="space-y-2 font-mono text-xs">
+              <div id="stage-1" class="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
+                <span>1. GitHub Webhook &rarr; Jenkins</span>
+                <span class="stage-status text-slate-400">READY</span>
+              </div>
+              <div id="stage-2" class="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
+                <span>2. Terraform IaC (EC2, S3, DynamoDB)</span>
+                <span class="stage-status text-slate-400">READY</span>
+              </div>
+              <div id="stage-3" class="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
+                <span>3. Docker Build (Flask &amp; Node.js)</span>
+                <span class="stage-status text-slate-400">READY</span>
+              </div>
+              <div id="stage-4" class="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
+                <span>4. Helm Scale &rarr; K8s Cluster</span>
+                <span class="stage-status text-slate-400">READY</span>
+              </div>
+            </div>
+          </div>
+
+          <div id="pipeline-console" class="mt-4 p-3 rounded-xl bg-black font-mono text-[11px] text-emerald-400 border border-white/10">
+            $ Ready to provision AWS &amp; deploy containers...
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================
+         SECTION C: NATIVE ANDROID (KOTLIN), NODE.JS & MS SQL SERVER
+         ======================================================================== -->
+    <section id="android-lab" class="space-y-6">
+      <div>
+        <span class="px-3 py-1 rounded-full bg-orange-500/15 text-orange-400 font-mono text-xs font-bold">02 // PRIORITY #2 — NATIVE ANDROID &amp; BACKEND</span>
+        <h2 class="font-display text-3xl sm:text-4xl font-extrabold mt-2 tracking-tight">Kotlin Android + Node.js REST + MS SQL Server</h2>
+        <p class="text-sm themed-muted mt-1">Enterprise field-operations mobile app &amp; backend architecture engineered at Bartech Data Systems Pvt Ltd.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+        <div class="lg:col-span-7 themed-card rounded-3xl border p-6 sm:p-7 shadow-lg grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="themed-subcard p-4 rounded-2xl border">
+            <div class="text-lg mb-1">📱</div>
+            <h3 class="font-bold text-sm">Android (Kotlin, ViewBinding, Material)</h3>
+            <p class="text-xs themed-muted mt-1 leading-relaxed">
+              Develop and maintain native Android applications with responsive interfaces for field visit scheduling, geotagged check-ins, daily logs, and expense tracking.
+            </p>
+          </div>
+
+          <div class="themed-subcard p-4 rounded-2xl border">
+            <div class="text-lg mb-1">⚡</div>
+            <h3 class="font-bold text-sm">Node.js RESTful APIs &amp; RBAC</h3>
+            <p class="text-xs themed-muted mt-1 leading-relaxed">
+              Develop and maintain RESTful backend APIs with authentication, session management, role-based access controls, and asynchronous network communication.
+            </p>
+          </div>
+
+          <div class="themed-subcard p-4 rounded-2xl border sm:col-span-2">
+            <div class="text-lg mb-1">🗄️</div>
+            <h3 class="font-bold text-sm">Microsoft SQL Server Database Engineering</h3>
+            <p class="text-xs themed-muted mt-1 leading-relaxed">
+              Design and manage Microsoft SQL Server databases, including stored procedures, triggers, and parameterized queries for reliable enterprise data management.
+            </p>
+          </div>
+        </div>
+
+        <!-- Pocket Phone Geotagged Check-In Simulator -->
+        <div class="lg:col-span-5 flex justify-center">
+          <div class="w-full max-w-[300px] rounded-[2.2rem] bg-neutral-900 p-3 shadow-2xl border-2 border-white/15 text-white">
+            <div class="bg-neutral-950 rounded-[1.7rem] p-4 space-y-3.5">
+              <div class="flex items-center justify-between text-[10px] font-mono text-slate-400">
+                <span>Kotlin • ViewBinding</span>
+                <span class="text-emerald-400">● REST 200 OK</span>
+              </div>
+
+              <div class="p-3 rounded-2xl bg-sky-500/15 border border-sky-400/30">
+                <div class="text-[10px] font-mono text-sky-300">FIELD VISIT &amp; EXPENSE SUITE</div>
+                <div class="font-bold text-sm mt-0.5">Bartech Client Site — Thane</div>
+                <div id="gps-readout" class="text-[11px] font-mono text-slate-300 mt-1">
+                  📍 19.2183° N, 72.9781° E
+                </div>
+              </div>
+
+              <button onclick="simulateAndroidCheckin()" class="w-full py-2.5 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-extrabold text-xs shadow-md active:scale-95 transition-all">
+                📍 Geotagged Check-In
+              </button>
+
+              <div class="grid grid-cols-2 gap-2 text-center font-mono">
+                <div class="p-2.5 rounded-xl bg-white/5 border border-white/10">
+                  <div id="checkin-count" class="text-base font-extrabold text-amber-400">12</div>
+                  <div class="text-[10px] text-slate-400">Daily Logs</div>
+                </div>
+                <div class="p-2.5 rounded-xl bg-white/5 border border-white/10">
+                  <div class="text-base font-extrabold text-sky-400">MSSQL</div>
+                  <div class="text-[10px] text-slate-400">Stored Proc Sync</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================================================
+       PART 3: EXACT OFFICIAL 1-PAGE PRINTABLE CV ('JayCV(AWS& ANDROID)(13-11-26).pdf')
+       (Hidden in Portfolio Mode; Shown in Strict CV Mode & @media print)
+       ========================================================================== -->
+  <section id="formal-cv-sheet" class="hidden max-w-[820px] mx-auto my-8 bg-white text-black p-8 sm:p-10 rounded-2xl shadow-2xl border border-slate-200">
+    <!-- Top Banner in Strict CV Screen Mode Only -->
+    <div class="no-print mb-5 pb-3 border-b border-slate-200 flex items-center justify-between gap-2">
+      <span class="font-mono text-xs font-bold text-indigo-600">📄 Official 1-Page CV Preview (Print-Ready A4)</span>
+      <div class="flex items-center gap-2">
+        <button onclick="toggleStrictCV()" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold">
+          &larr; Back to Interactive Portfolio
+        </button>
+        <button onclick="window.print()" class="px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold">
+          🖨️ Print Now
+        </button>
+      </div>
+    </div>
+
+    <!-- EXACT OFFICIAL CV CONTENT WORD-FOR-WORD -->
+    <div class="space-y-3.5 text-[12.5px] leading-[1.42] text-slate-950 font-sans">
+      <!-- Header -->
+      <header class="border-b-2 border-slate-950 pb-2.5">
+        <h1 class="text-2xl font-extrabold tracking-tight text-black">Jay Saharkar</h1>
+        <p class="text-sm font-bold text-slate-800 mt-0.5">AWS DevOps | Android Developer</p>
+        <div class="flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-800 mt-1.5 font-medium">
+          <span>8850517641</span>
+          <span>|</span>
+          <span>jaysaharkar@gmail.com</span>
+          <span>|</span>
+          <span>Thane, MH, India</span>
+          <span>|</span>
+          <span>linkedin.com/in/jay-saharkar</span>
+        </div>
+      </header>
+
+      <!-- Professional Summary -->
+      <div>
+        <h2 class="text-xs font-extrabold uppercase tracking-wider text-black border-b border-slate-400 pb-0.5 mb-1.5">
+          PROFESSIONAL SUMMARY
+        </h2>
+        <p class="text-slate-900">
+          MSc Information Technology graduate and Software Engineer with hands-on experience in AWS cloud infrastructure, application development and backend integration. Skilled in AWS services, Terraform, Docker, Kubernetes and Jenkins, with practical exposure to infrastructure provisioning, cloud networking and application deployment. Interested in building secure, scalable and highly available cloud solutions and pursuing a career in AWS Cloud Engineering and DevOps
+        </p>
+      </div>
+
+      <!-- Experience -->
+      <div>
+        <h2 class="text-xs font-extrabold uppercase tracking-wider text-black border-b border-slate-400 pb-0.5 mb-1.5">
+          EXPERIENCE
+        </h2>
+        <div class="flex flex-wrap items-baseline justify-between gap-2">
+          <div>
+            <span class="font-bold text-black">Software Engineer</span> | <span class="font-semibold text-slate-900">Bartech Data Systems Pvt Ltd</span>
+          </div>
+          <div class="text-xs font-semibold text-slate-800">
+            Aug '26- Present | Thane, Maharashtra, India
+          </div>
+        </div>
+        <p class="text-slate-900 mt-1">
+          Develop and maintain enterprise mobile and cloud-based applications, with responsibilities spanning AWS infrastructure management, Android development, backend API integration, and database management. Work on configuring cloud environments, deploying business applications, and maintaining reliable application infrastructure.
+        </p>
+
+        <div class="mt-2">
+          <div class="font-bold text-black">AWS Cloud Infrastructure</div>
+          <ul class="list-disc pl-5 space-y-0.5 text-slate-900 mt-0.5">
+            <li>Provision and configure Windows Server 2022 instances on AWS EC2 for enterprise applications.</li>
+            <li>Configure VPC, subnets, Internet Gateway, route tables, and Security Groups.</li>
+            <li>Manage EC2 instance configurations, EBS storage, and Elastic IP addresses.</li>
+            <li>Configure IIS to host multiple business applications on separate ports.</li>
+            <li>Perform domain mapping and troubleshoot application connectivity issues.</li>
+          </ul>
+        </div>
+
+        <div class="mt-2">
+          <div class="font-bold text-black">Application Development (Android, Node.js &amp; MSSQL)</div>
+          <ul class="list-disc pl-5 space-y-0.5 text-slate-900 mt-0.5">
+            <li>Develop and maintain native Android applications using Kotlin, ViewBinding, and Material Design.</li>
+            <li>Build responsive interfaces for field visit scheduling, geotagged check-ins, daily logs, and expense tracking.</li>
+            <li>Develop and maintain RESTful backend APIs using Node.js.</li>
+            <li>Implement authentication, session management, and role-based access controls.</li>
+            <li>Design and manage Microsoft SQL Server databases, including stored procedures, triggers, and parameterized queries.</li>
+            <li>Handle API integration, asynchronous network communication, and application data management.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Cloud Project -->
+      <div>
+        <h2 class="text-xs font-extrabold uppercase tracking-wider text-black border-b border-slate-400 pb-0.5 mb-1.5">
+          CLOUD PROJECT
+        </h2>
+        <div class="font-bold text-black">Cloud &amp; DevOps Infrastructure Automation</div>
+        <ul class="list-disc pl-5 space-y-0.5 text-slate-900 mt-0.5">
+          <li><strong>Automated Cloud Provisioning &amp; IaC:</strong> Architected reusable, modular Infrastructure as Code (IaC) using Terraform to dynamically provision AWS resources, including EC2 compute instances, S3 object storage, and DynamoDB tables.</li>
+          <li>Containerized multi-tier Flask and Node.js applications with Docker, using Helm charts to deploy and scale them on a load-balanced Kubernetes cluster.</li>
+          <li><strong>CI/CD Automation:</strong> Set up a Jenkins pipeline on AWS EC2 to automatically pull code from GitHub, build Docker images, and deploy updates smoothly.</li>
+        </ul>
+      </div>
+
+      <!-- Certifications -->
+      <div>
+        <h2 class="text-xs font-extrabold uppercase tracking-wider text-black border-b border-slate-400 pb-0.5 mb-1.5">
+          CERTIFICATIONS
+        </h2>
+        <ul class="list-disc pl-5 space-y-0.5 text-slate-900">
+          <li>AWS Academy Cloud Foundations, AWS Academy Graduate (Mar '25)</li>
+          <li>AWS Academy Cloud Architecting, AWS Academy Graduate (Mar '25)</li>
+          <li>AWS Training Program Certification (Grade A), Insys Technologies (Jan '25)</li>
+          <li>DevOps Training Program Certification (Grade A), Insys Technologies (Jan '25)</li>
+          <li>.NET Development Course, (In Progress) (Jan '26)</li>
+        </ul>
+      </div>
+
+      <!-- Skills -->
+      <div>
+        <h2 class="text-xs font-extrabold uppercase tracking-wider text-black border-b border-slate-400 pb-0.5 mb-1.5">
+          SKILLS
+        </h2>
+        <ul class="list-disc pl-5 space-y-0.5 text-slate-900">
+          <li><strong>Cloud:</strong> AWS (IAM, EC2, EBS, VPC, S3, ELB &amp; ASG, ECR, Lambda, RDS, SNS and CloudWatch)</li>
+          <li><strong>Mobile Development:</strong> Android (Kotlin, XML Layouts, Material Design, ViewBinding)</li>
+          <li><strong>Containerization &amp; Orchestration:</strong> Docker, Kubernetes</li>
+          <li><strong>Automation:</strong> Jenkins, Ansible</li>
+          <li><strong>Infrastructure Management:</strong> Terraform</li>
+          <li><strong>Source Code Management:</strong> Git (Version Control System), GitHub</li>
+        </ul>
+      </div>
+
+      <!-- Education -->
+      <div>
+        <h2 class="text-xs font-extrabold uppercase tracking-wider text-black border-b border-slate-400 pb-0.5 mb-1.5">
+          EDUCATION
+        </h2>
+        <div class="space-y-1 text-slate-900">
+          <div class="flex flex-wrap justify-between gap-2">
+            <span><strong>Masters in Information Technology</strong>, Bunts Sangha's S.M. Shetty, Mumbai (CGPI: 6.54)</span>
+            <span class="font-semibold">Jun '22-Jul '24 | Mumbai, India</span>
+          </div>
+          <div class="flex flex-wrap justify-between gap-2">
+            <span><strong>Bachelors in Information Technology</strong>, Bunts Sangha's S.M. Shetty, Mumbai (CGPI: 7.52)</span>
+            <span class="font-semibold">Jun '19-Jun '22 | Mumbai, India</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       FLOATING STICKY NOTE CREATOR DOCK (BOTTOM-LEFT)
+       ========================================================================== -->
+  <div id="sticky-dock" class="fixed bottom-5 left-5 z-40 flex items-center gap-2">
+    <button onclick="openNoteModal()" style="background-color: var(--accent-primary);" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-slate-950 text-xs font-extrabold shadow-xl hover:scale-105 active:scale-95 transition-transform">
+      <span>📝 + Stick a Note</span>
+    </button>
+    <button onclick="resetStickyNotes()" class="themed-card px-3 py-2.5 rounded-2xl border text-xs font-bold shadow-md hover:opacity-90" title="Reset Sticky Notes">
+      ↺ Reset
+    </button>
+  </div>
+
+  <!-- ADD STICKY NOTE MODAL -->
+  <div id="note-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+    <div class="themed-card w-full max-w-sm rounded-3xl border p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="font-display font-bold text-lg">📌 Stick a Note on Jay's Wall</h3>
+        <button onclick="closeNoteModal()" class="p-1.5 rounded-lg hover:bg-white/10">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <textarea id="new-note-text" rows="3" maxlength="140" placeholder="Write a note, feedback, or recruiter shoutout..." class="themed-subcard w-full rounded-2xl border p-3 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400"></textarea>
+
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-semibold themed-muted">Note Color:</span>
+        <div class="flex items-center gap-2">
+          <button onclick="selectNoteColor('#FEF08A', this)" class="note-color-btn w-6 h-6 rounded-full bg-yellow-200 ring-2 ring-sky-400"></button>
+          <button onclick="selectNoteColor('#BAE6FD', this)" class="note-color-btn w-6 h-6 rounded-full bg-sky-200"></button>
+          <button onclick="selectNoteColor('#FBCFE8', this)" class="note-color-btn w-6 h-6 rounded-full bg-pink-200"></button>
+          <button onclick="selectNoteColor('#BBF7D0', this)" class="note-color-btn w-6 h-6 rounded-full bg-green-200"></button>
+        </div>
+      </div>
+
+      <button onclick="createNewStickyNote()" style="background-color: var(--accent-primary);" class="w-full py-2.5 rounded-xl text-slate-950 text-xs font-extrabold shadow-md hover:opacity-95">
+        Pin Note to Screen 📌
+      </button>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 translate-y-20 opacity-0 pointer-events-none transition-all duration-300">
+    <div class="px-4 py-2.5 rounded-2xl bg-neutral-900 text-white text-xs font-semibold shadow-xl border border-white/15 flex items-center gap-2">
+      <span class="text-emerald-400">✓</span>
+      <span id="toast-msg">Copied!</span>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       UNIFIED JAVASCRIPT ENGINE (AZAKA MOTION + PLAYGROUND + EXACT CV)
+       ========================================================================== -->
+  <script>
+    // Hoisted Global State Variables
+    var isStrictCV = false;
+    var selectedNoteColor = '#FEF08A';
+    var topZIndex = 45;
+    var autoDriveInterval = null;
+    var celebratedFinish = false;
+    var currentVehicle = 'bike';
+    var pipelineRunning = false;
+    var logsCount = 12;
+    var toastTimer = null;
+
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+
+    /* --------------------------------------------------------------------------
+       1. AZAKA GAZE-FRAMES LOOKUP TABLE & POINTER-SCRUBBED VIDEO ENGINE
+       -------------------------------------------------------------------------- */
+    const gazeFrames = [
+      [-1, 6.625], [-0.989573, 6.58333], [-0.987016, 6.54167], [-0.973037, 6.5],
+      [-0.95878, 6.45833], [-0.95072, 6.41667], [-0.934967, 6.375], [-0.905884, 6.33333],
+      [-0.885304, 6.29167], [-0.847395, 6.25], [-0.809184, 6.20833], [-0.780175, 6.16667],
+      [-0.739262, 6.125], [-0.691055, 6.08333], [-0.647524, 6.04167], [-0.601202, 6],
+      [-0.53784, 5.95833], [-0.487224, 5.91667], [-0.432633, 5.875], [-0.365313, 5.83333],
+      [-0.300768, 5.79167], [-0.250106, 5.75], [-0.195359, 5.70833], [-0.146696, 5.66667],
+      [-0.109318, 5.625], [-0.064347, 5.58333], [-0.0246, 5.54167], [0.000244, 5.5],
+      [0.02262, 5.45833], [0.038401, 5.41667], [0.051857, 5.375], [0.075289, 5.33333],
+      [0.098576, 5.29167], [0.113463, 5.25], [0.127848, 5.20833], [0.135921, 5.16667],
+      [0.143755, 5.125], [0.151374, 5.08333], [0.168584, 5.04167], [0.194113, 5],
+      [0.218156, 4.95833], [0.23622, 4.91667], [0.26717, 4.875], [0.30034, 4.83333],
+      [0.331439, 4.79167], [0.365152, 4.75], [0.409352, 4.70833], [0.445363, 4.66667],
+      [0.480052, 4.625], [0.521814, 4.58333], [0.56279, 4.54167], [0.591908, 4.5],
+      [0.632717, 4.45833], [0.6651, 4.41667], [0.691963, 4.375], [0.723907, 4.33333],
+      [0.762351, 4.29167], [0.781306, 4.25], [0.811654, 4.20833], [0.840266, 4.16667],
+      [0.861118, 4.125], [0.879125, 4.08333], [0.903094, 4.04167], [0.925231, 4],
+      [0.948596, 3.95833], [0.970236, 3.91667], [0.983, 3.875], [0.994922, 3.83333],
+      [1, 3.75]
+    ];
+
+    function poseToTime(pose) {
+      const target = Math.max(-1, Math.min(1, pose));
+      let nearestTime = gazeFrames[0][1];
+      let nearestDistance = Infinity;
+      for (const [sampleOffset, time] of gazeFrames) {
+        const distance = Math.abs(target - sampleOffset);
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearestTime = time;
+        }
+      }
+      return nearestTime + 1 / 240;
+    }
+
+    (function initAzakaBackdropAndMotion() {
+      const video = document.getElementById('azaka-video');
+      const poster = document.getElementById('azaka-poster');
+      const gridCanvas = document.getElementById('cloud-grid-canvas');
+      const gCtx = gridCanvas ? gridCanvas.getContext('2d') : null;
+
+      let pose = 0;
+      let targetPose = 0;
+      let mouseNormX = 0;
+      let mouseNormY = 0;
+
+      // Resize procedural cloud-grid fallback canvas
+      function resizeGridCanvas() {
+        if (!gridCanvas) return;
+        gridCanvas.width = gridCanvas.offsetWidth || window.innerWidth;
+        gridCanvas.height = gridCanvas.offsetHeight || window.innerHeight;
+      }
+      resizeGridCanvas();
+      window.addEventListener('resize', resizeGridCanvas);
+
+      window.addEventListener('mousemove', (e) => {
+        targetPose = Math.max(-1, Math.min(1, (e.clientX / window.innerWidth - 0.5) / 0.35));
+        mouseNormX = (e.clientX / window.innerWidth - 0.5);
+        mouseNormY = (e.clientY / window.innerHeight - 0.5);
+      });
+
+      // Attempt loading AZAKA scrubbed MP4 (gracefully falls back to poster + procedural cloud-grid)
+      if (video) {
+        video.addEventListener('loadeddata', () => {
+          try {
+            video.currentTime = poseToTime(0);
+            video.style.opacity = '0.52';
+            if (poster) poster.style.opacity = '0';
+          } catch (err) {}
+        });
+
+        fetch('https://media.prettysites.io/products/azaka/v2/azaka-scrub.mp4')
+          .then((res) => {
+            if (!res.ok) throw new Error('Video fetch status ' + res.status);
+            return res.blob();
+          })
+          .then((blob) => {
+            video.src = URL.createObjectURL(blob);
+          })
+          .catch(() => {
+            // Poster & procedural dark cloud-grid remain active if offline/CORS-blocked
+          });
+      }
+
+      // Animation loop for gaze scrubbing + subtle procedural cloud-grid nodes
+      let gridTick = 0;
+      function tickBackdrop() {
+        const delta = targetPose - pose;
+        pose = Math.abs(delta) < 0.001 ? targetPose : pose + delta * 0.055;
+
+        if (video && video.readyState >= 2 && !video.seeking) {
+          const time = poseToTime(pose);
+          if (Math.abs(video.currentTime - time) > 1 / 48) {
+            try { video.currentTime = time; } catch (e) {}
+          }
+        }
+
+        // Render subtle interactive AWS cloud-grid mesh
+        if (gCtx && gridCanvas) {
+          gridTick += 0.012;
+          const w = gridCanvas.width;
+          const h = gridCanvas.height;
+          gCtx.clearRect(0, 0, w, h);
+
+          // Radial pointer glow
+          const gx = w * (0.5 + mouseNormX * 0.45);
+          const gy = h * (0.45 + mouseNormY * 0.35);
+          const rad = gCtx.createRadialGradient(gx, gy, 20, gx, gy, Math.max(w, h) * 0.55);
+          rad.addColorStop(0, 'rgba(56, 189, 248, 0.16)');
+          rad.addColorStop(0.5, 'rgba(79, 70, 229, 0.07)');
+          rad.addColorStop(1, 'rgba(5, 5, 5, 0)');
+          gCtx.fillStyle = rad;
+          gCtx.fillRect(0, 0, w, h);
+
+          // Perspective grid lines reacting to pointer
+          gCtx.strokeStyle = 'rgba(255, 255, 255, 0.045)';
+          gCtx.lineWidth = 1;
+          const step = 64;
+          const offX = (-mouseNormX * 28) % step;
+          const offY = (-mouseNormY * 18) % step;
+          for (let x = offX; x < w; x += step) {
+            gCtx.beginPath();
+            gCtx.moveTo(x, 0);
+            gCtx.lineTo(x, h);
+            gCtx.stroke();
+          }
+          for (let y = offY; y < h; y += step) {
+            gCtx.beginPath();
+            gCtx.moveTo(0, y);
+            gCtx.lineTo(w, y);
+            gCtx.stroke();
+          }
+        }
+
+        requestAnimationFrame(tickBackdrop);
+      }
+      requestAnimationFrame(tickBackdrop);
+
+      // GSAP Intro Timeline & Headline Parallax
+      if (typeof gsap !== 'undefined' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+        tl.from('[data-headline]', { yPercent: 55, opacity: 0, duration: 1.25, stagger: 0.12 }, 0.15);
+        tl.from('[data-fade]', { y: 20, opacity: 0, duration: 0.9, stagger: 0.07 }, 0.45);
+
+        const wrapper = document.getElementById('azaka-parallax');
+        if (wrapper) {
+          const pX = gsap.quickTo(wrapper, 'x', { duration: 0.8, ease: 'power3.out' });
+          const pY = gsap.quickTo(wrapper, 'y', { duration: 0.8, ease: 'power3.out' });
+          window.addEventListener('mousemove', (e) => {
+            pX((e.clientX / window.innerWidth - 0.5) * -16);
+            pY((e.clientY / window.innerHeight - 0.5) * -10);
+          });
+        }
+      }
+    })();
+
+    /* --------------------------------------------------------------------------
+       2. TWO-LAYER DIFFERENCE CUSTOM CURSOR (FINE POINTERS ONLY)
+       -------------------------------------------------------------------------- */
+    (function initCustomCursor() {
+      if (window.matchMedia('(pointer: coarse)').matches || typeof gsap === 'undefined') return;
+      const dot = document.getElementById('cursor-dot');
+      const ring = document.getElementById('cursor-ring');
+      if (!dot || !ring) return;
+
+      const chevrons = ring.querySelectorAll('.chev');
+      gsap.set([dot, ring], { xPercent: -50, yPercent: -50, x: -100, y: -100, opacity: 0 });
+
+      const dotX = gsap.quickTo(dot, 'x', { duration: 0.08, ease: 'power2.out' });
+      const dotY = gsap.quickTo(dot, 'y', { duration: 0.08, ease: 'power2.out' });
+      const ringX = gsap.quickTo(ring, 'x', { duration: 0.42, ease: 'power3.out' });
+      const ringY = gsap.quickTo(ring, 'y', { duration: 0.42, ease: 'power3.out' });
+
+      let entered = false;
+      window.addEventListener('mousemove', (e) => {
+        if (!entered) {
+          entered = true;
+          gsap.set([dot, ring], { x: e.clientX, y: e.clientY });
+          gsap.to([dot, ring], { opacity: 1, duration: 0.25 });
+        }
+        dotX(e.clientX);
+        dotY(e.clientY);
+        ringX(e.clientX);
+        ringY(e.clientY);
+      });
+
+      document.addEventListener('mouseleave', () => gsap.to([dot, ring], { opacity: 0, duration: 0.2 }));
+      document.addEventListener('mouseenter', () => { if (entered) gsap.to([dot, ring], { opacity: 1, duration: 0.2 }); });
+
+      document.addEventListener('mouseover', (e) => {
+        if (e.target.closest('a, button, label, [role="button"]')) {
+          gsap.to(ring, { scale: 1.65, borderColor: 'rgba(255,255,255,0.4)', duration: 0.3, ease: 'power3.out' });
+          gsap.to(chevrons, { opacity: 0, duration: 0.18 });
+        }
+      });
+
+      document.addEventListener('mouseout', (e) => {
+        if (e.target.closest('a, button, label, [role="button"]')) {
+          gsap.to(ring, { scale: 1, borderColor: 'rgba(255,255,255,0.85)', duration: 0.3, ease: 'power3.out' });
+          gsap.to(chevrons, { opacity: 1, duration: 0.18 });
+        }
+      });
+    })();
+
+    /* --------------------------------------------------------------------------
+       3. THEME SWATCHES, STRICT CV MODE & EXACT PRINT CV
+       -------------------------------------------------------------------------- */
+    function setColorTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      try { localStorage.setItem('jay_azaka_theme', theme); } catch (e) {}
+
+      ['obsidian', 'indigo', 'sunset'].forEach((t) => {
+        const btn = document.getElementById('swatch-' + t);
+        if (btn) {
+          btn.classList.toggle('ring-2', t === theme);
+          btn.classList.toggle('ring-offset-1', t === theme);
+        }
+      });
+    }
+
+    let savedTheme = 'obsidian';
+    try { savedTheme = localStorage.getItem('jay_azaka_theme') || 'obsidian'; } catch (e) {}
+    setColorTheme(savedTheme);
+
+    function toggleStrictCV() {
+      isStrictCV = !isStrictCV;
+      document.body.classList.toggle('strict-cv-preview', isStrictCV);
+      const label = document.getElementById('strict-cv-label');
+      if (label) label.textContent = isStrictCV ? 'Portfolio' : 'Strict CV';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function printExactCV() {
+      const wasStrict = isStrictCV;
+      if (!wasStrict) document.body.classList.add('strict-cv-preview');
+      window.print();
+      if (!wasStrict) {
+        setTimeout(() => document.body.classList.remove('strict-cv-preview'), 300);
+      }
+    }
+
+    /* --------------------------------------------------------------------------
+       4. POLAROID PHOTO FALLBACK & INSTANT SWAP FILE PICKER
+       -------------------------------------------------------------------------- */
+    function handlePhotoFallback(img) {
+      img.onerror = null;
+      const svgFallback = `data:image/svg+xml;utf8,` + encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320">
+          <defs>
+            <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#0F172A"/>
+              <stop offset="100%" stop-color="#1E3A8A"/>
+            </linearGradient>
+          </defs>
+          <rect width="320" height="320" fill="url(#bg)"/>
+          <circle cx="160" cy="118" r="52" fill="#38BDF8" opacity="0.25"/>
+          <circle cx="160" cy="114" r="40" fill="#FDBA74"/>
+          <path d="M84 285 C84 215, 236 215, 236 285 Z" fill="#1E293B"/>
+          <text x="160" y="304" font-family="monospace" font-size="13" font-weight="bold" fill="#38BDF8" text-anchor="middle">JAY SAHARKAR • CLOUD &amp; ANDROID</text>
+        </svg>
+      `);
+      img.src = svgFallback;
+    }
+
+    function previewCustomPhoto(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = document.getElementById('jay-portrait-img');
+        if (img) img.src = e.target.result;
+        showToast('Portrait Photo Updated! 📸');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    /* --------------------------------------------------------------------------
+       5. FREE-FLOATING DRAGGABLE STICKY NOTES WALL (ALL 4 ORIGINAL NOTES)
+       -------------------------------------------------------------------------- */
+    const defaultNotes = [
+      {
+        id: 1,
+        text: "🚦 Ghodbunder Road Traffic Survival Guide: Leave Thane early, keep podcasts ready, and let Node.js async APIs handle the heavy lifting while stuck near Kapurbawdi!",
+        color: "#FEF08A",
+        x: 22,
+        y: 96,
+        rot: -3.5
+      },
+      {
+        id: 2,
+        text: "☁️ AWS Production Wins: Provisioned Windows Server 2022 on EC2, custom VPC, subnets, IGW, Security Groups & IIS multi-port hosting at Bartech!",
+        color: "#BAE6FD",
+        x: 22,
+        y: 510,
+        rot: 3
+      },
+      {
+        id: 3,
+        text: "📱 Kotlin + MSSQL Stack: Built field visit scheduling, geotagged check-ins & expense tracking with ViewBinding, Material Design & SQL stored procedures.",
+        color: "#FBCFE8",
+        x: window.innerWidth > 920 ? window.innerWidth - 232 : 210,
+        y: 102,
+        rot: 3.5
+      },
+      {
+        id: 4,
+        text: "⚙️ DevOps Automation: Terraform modular IaC (EC2, S3, DynamoDB) + Docker + Helm on Kubernetes + Jenkins CI/CD from GitHub!",
+        color: "#BBF7D0",
+        x: window.innerWidth > 920 ? window.innerWidth - 232 : 210,
+        y: 515,
+        rot: -2.5
+      }
+    ];
+
+    let stickyNotes = null;
+    try {
+      stickyNotes = JSON.parse(localStorage.getItem('jay_azaka_sticky_v1'));
+    } catch (e) {}
+    if (!Array.isArray(stickyNotes) || stickyNotes.length === 0) {
+      stickyNotes = JSON.parse(JSON.stringify(defaultNotes));
+    }
+
+    function saveStickyNotes() {
+      try { localStorage.setItem('jay_azaka_sticky_v1', JSON.stringify(stickyNotes)); } catch (e) {}
+    }
+
+    function escapeHTML(str) {
+      return str.replace(/[&<>"']/g, (m) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[m]));
+    }
+
+    function renderStickyNotes() {
+      const layer = document.getElementById('sticky-notes-layer');
+      if (!layer) return;
+      layer.innerHTML = '';
+
+      stickyNotes.forEach((note) => {
+        const el = document.createElement('div');
+        el.className = 'sticky-note';
+        el.style.backgroundColor = note.color;
+        el.style.left = Math.max(8, Math.min(note.x, window.innerWidth - 212)) + 'px';
+        el.style.top = Math.max(72, Math.min(note.y, window.innerHeight - 165)) + 'px';
+        el.style.transform = `rotate(${note.rot}deg)`;
+
+        el.innerHTML = `
+          <div class="flex items-center justify-between mb-1">
+            <span class="w-4"></span>
+            <div class="sticky-pin"></div>
+            <button onclick="deleteStickyNote(${note.id}, event)" aria-label="Delete sticky note" class="w-5 h-5 rounded-full hover:bg-black/10 flex items-center justify-center text-xs font-bold text-slate-700">&times;</button>
+          </div>
+          <p class="font-hand text-[19px] leading-[1.18] font-bold text-slate-900">${escapeHTML(note.text)}</p>
+        `;
+
+        // Mouse & Touch Drag Handlers
+        let startX = 0, startY = 0, origX = 0, origY = 0, dragging = false;
+
+        const onStart = (clientX, clientY) => {
+          dragging = true;
+          topZIndex++;
+          el.style.zIndex = topZIndex;
+          el.classList.add('dragging');
+          startX = clientX;
+          startY = clientY;
+          origX = parseFloat(el.style.left) || 0;
+          origY = parseFloat(el.style.top) || 0;
+        };
+
+        const onMove = (clientX, clientY) => {
+          if (!dragging) return;
+          const nx = Math.max(6, Math.min(origX + (clientX - startX), window.innerWidth - 210));
+          const ny = Math.max(68, Math.min(origY + (clientY - startY), window.innerHeight - 160));
+          el.style.left = nx + 'px';
+          el.style.top = ny + 'px';
+          note.x = nx;
+          note.y = ny;
+        };
+
+        const onEnd = () => {
+          if (!dragging) return;
+          dragging = false;
+          el.classList.remove('dragging');
+          el.style.transform = `rotate(${note.rot}deg)`;
+          saveStickyNotes();
+        };
+
+        el.addEventListener('mousedown', (e) => {
+          if (e.target.closest('button')) return;
+          onStart(e.clientX, e.clientY);
+          const mm = (ev) => onMove(ev.clientX, ev.clientY);
+          const mu = () => {
+            onEnd();
+            window.removeEventListener('mousemove', mm);
+            window.removeEventListener('mouseup', mu);
+          };
+          window.addEventListener('mousemove', mm);
+          window.addEventListener('mouseup', mu);
+        });
+
+        el.addEventListener('touchstart', (e) => {
+          if (e.target.closest('button')) return;
+          const t = e.touches[0];
+          onStart(t.clientX, t.clientY);
+        }, { passive: true });
+
+        el.addEventListener('touchmove', (e) => {
+          const t = e.touches[0];
+          onMove(t.clientX, t.clientY);
+        }, { passive: true });
+
+        el.addEventListener('touchend', onEnd);
+
+        layer.appendChild(el);
+      });
+    }
+
+    function deleteStickyNote(id, e) {
+      if (e) e.stopPropagation();
+      stickyNotes = stickyNotes.filter((n) => n.id !== id);
+      saveStickyNotes();
+      renderStickyNotes();
+      showToast('Sticky note removed');
+    }
+
+    function resetStickyNotes() {
+      stickyNotes = JSON.parse(JSON.stringify(defaultNotes));
+      saveStickyNotes();
+      renderStickyNotes();
+      showToast('All 4 original sticky notes restored! 📌');
+    }
+
+    function focusStickyNotes() {
+      topZIndex += 5;
+      document.querySelectorAll('.sticky-note').forEach((el, idx) => {
+        el.style.zIndex = topZIndex + idx;
+      });
+      showToast('Drag any sticky note around the screen! 📌');
+    }
+
+    function openNoteModal() {
+      const modal = document.getElementById('note-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeNoteModal() {
+      const modal = document.getElementById('note-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function selectNoteColor(color, btn) {
+      selectedNoteColor = color;
+      document.querySelectorAll('.note-color-btn').forEach((b) => b.classList.remove('ring-2', 'ring-sky-400'));
+      if (btn) btn.classList.add('ring-2', 'ring-sky-400');
+    }
+
+    function createNewStickyNote() {
+      const input = document.getElementById('new-note-text');
+      const text = input.value.trim();
+      if (!text) {
+        showToast('Write a quick note first! ✍️');
+        return;
+      }
+      stickyNotes.push({
+        id: Date.now(),
+        text,
+        color: selectedNoteColor,
+        x: Math.max(40, Math.min(window.innerWidth / 2 - 100 + (Math.random() * 60 - 30), window.innerWidth - 220)),
+        y: Math.max(110, Math.min(window.innerHeight / 2 - 75 + (Math.random() * 60 - 30), window.innerHeight - 180)),
+        rot: Math.floor(Math.random() * 9) - 4
+      });
+      saveStickyNotes();
+      renderStickyNotes();
+      input.value = '';
+      closeNoteModal();
+      showToast('Note Pinned to Wall! 📌');
+    }
+
+    /* --------------------------------------------------------------------------
+       6. FORWARD-FACING SUPERBIKE & TURBO CAR CAREER ROADTRIP
+       -------------------------------------------------------------------------- */
+    const stopsInfo = [
+      { pct: 0, label: "Stop 1/4: BSc IT @ S.M. Shetty, Mumbai (CGPI: 7.52)" },
+      { pct: 34, label: "Stop 2/4: MSc IT @ S.M. Shetty, Mumbai (CGPI: 6.54)" },
+      { pct: 68, label: "Stop 3/4: AWS Academy Cloud Grad & Grade A DevOps" },
+      { pct: 100, label: "Stop 4/4: Software Engineer @ Bartech Data Systems, Thane 🏁" }
+    ];
+
+    function setVehicle(type) {
+      currentVehicle = type;
+      const sprite = document.getElementById('vehicle-sprite');
+      const bikeBtn = document.getElementById('btn-vehicle-bike');
+      const carBtn = document.getElementById('btn-vehicle-car');
+
+      // Permanently forward-facing (scaleX(-1) faces right along 0% -> 100% path)
+      sprite.style.display = 'inline-block';
+      sprite.style.transform = 'scaleX(-1)';
+
+      if (type === 'bike') {
+        sprite.textContent = '🏍️';
+        bikeBtn.style.backgroundColor = 'var(--accent-primary)';
+        bikeBtn.className = 'px-3 py-1.5 rounded-lg text-slate-950 text-xs font-extrabold shadow-sm transition-all';
+        carBtn.style.backgroundColor = 'transparent';
+        carBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold themed-muted hover:opacity-80 transition-all';
+      } else {
+        sprite.textContent = '🏎️';
+        carBtn.style.backgroundColor = 'var(--accent-primary)';
+        carBtn.className = 'px-3 py-1.5 rounded-lg text-slate-950 text-xs font-extrabold shadow-sm transition-all';
+        bikeBtn.style.backgroundColor = 'transparent';
+        bikeBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold themed-muted hover:opacity-80 transition-all';
+      }
+    }
+
+    function playHornSound() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const now = ctx.currentTime;
+
+        if (currentVehicle === 'bike') {
+          [0, 0.14].forEach((offset) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(540, now + offset);
+            osc.frequency.exponentialRampToValueAtTime(660, now + offset + 0.09);
+            gain.gain.setValueAtTime(0.14, now + offset);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.11);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + offset);
+            osc.stop(now + offset + 0.11);
+          });
+        } else {
+          [340, 425].forEach((freq) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, now);
+            gain.gain.setValueAtTime(0.16, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.35);
+          });
+        }
+      } catch (e) {}
+    }
+
+    function honkHorn() {
+      playHornSound();
+      const bubble = document.getElementById('honk-bubble');
+      bubble.textContent = currentVehicle === 'bike' ? 'MEEP MEEP! 🏍️💨' : 'HONK HONK! 🏎️💨';
+      bubble.classList.remove('hidden');
+      setTimeout(() => bubble.classList.add('hidden'), 1100);
+    }
+
+    function onSliderDrive(val) {
+      const pct = parseFloat(val);
+      document.getElementById('road-percent').textContent = Math.round(pct) + '%';
+
+      const path = document.getElementById('road-asphalt-path');
+      const actor = document.getElementById('vehicle-actor');
+      if (path && actor) {
+        const totalLen = path.getTotalLength();
+        const pt = path.getPointAtLength((pct / 100) * totalLen);
+        actor.style.left = (pt.x / 1000) * 100 + '%';
+        actor.style.top = (pt.y / 180) * 100 + '%';
+      }
+
+      let activeIdx = 0;
+      if (pct >= 85) activeIdx = 3;
+      else if (pct >= 52) activeIdx = 2;
+      else if (pct >= 20) activeIdx = 1;
+
+      document.getElementById('road-milestone-banner').textContent = stopsInfo[activeIdx].label;
+
+      for (let i = 0; i < 4; i++) {
+        const card = document.getElementById('stop-card-' + i);
+        if (!card) continue;
+        if (i === activeIdx) {
+          card.classList.add('border-2', 'border-sky-400', 'bg-sky-400/10');
+        } else {
+          card.classList.remove('border-2', 'border-sky-400', 'bg-sky-400/10');
+        }
+      }
+
+      if (pct >= 98 && !celebratedFinish) {
+        celebratedFinish = true;
+        triggerConfetti();
+      } else if (pct < 90) {
+        celebratedFinish = false;
+      }
+    }
+
+    function driveToStop(idx) {
+      stopAutoDrive();
+      const targetPct = stopsInfo[idx].pct;
+      const slider = document.getElementById('road-slider');
+      slider.value = targetPct;
+      onSliderDrive(targetPct);
+    }
+
+    function toggleAutoDrive() {
+      const btn = document.getElementById('auto-drive-btn');
+      if (autoDriveInterval) {
+        stopAutoDrive();
+        return;
+      }
+      const slider = document.getElementById('road-slider');
+      if (parseFloat(slider.value) >= 100) slider.value = 0;
+
+      btn.textContent = '⏸ Pause Tour';
+      autoDriveInterval = setInterval(() => {
+        let next = parseFloat(slider.value) + 1;
+        if (next > 100) {
+          stopAutoDrive();
+          return;
+        }
+        slider.value = next;
+        onSliderDrive(next);
+      }, 45);
+    }
+
+    function stopAutoDrive() {
+      if (autoDriveInterval) {
+        clearInterval(autoDriveInterval);
+        autoDriveInterval = null;
+      }
+      document.getElementById('auto-drive-btn').textContent = '▶️ Auto-Drive Tour';
+    }
+
+    /* --------------------------------------------------------------------------
+       7. AWS SERVICE INSPECTOR, JENKINS/TERRAFORM RUNNER & ANDROID SIMULATOR
+       -------------------------------------------------------------------------- */
+    const awsDetails = {
+      ec2: {
+        title: "Windows Server 2022 on AWS EC2",
+        tag: "Bartech Prod",
+        desc: "Provision and configure Windows Server 2022 instances on AWS EC2 for enterprise applications, managing EC2 instance configurations, EBS storage, and Elastic IP addresses."
+      },
+      vpc: {
+        title: "VPC, Subnets, Internet Gateway & Security Groups",
+        tag: "Cloud Networking",
+        desc: "Configure isolated Amazon VPC networks, public/private subnets, Internet Gateways, custom route tables, and stateful Security Group firewall policies."
+      },
+      iis: {
+        title: "IIS Multi-Port Hosting & Domain Mapping",
+        tag: "App Hosting",
+        desc: "Configure Windows IIS to host multiple enterprise business applications on separate ports, perform domain mapping, and troubleshoot application connectivity issues."
+      },
+      terraform: {
+        title: "Modular Infrastructure as Code (Terraform)",
+        tag: "IaC Automation",
+        desc: "Architected reusable, modular Infrastructure as Code (IaC) using Terraform to dynamically provision AWS resources, including EC2 compute instances, S3 object storage, and DynamoDB tables."
+      },
+      k8s: {
+        title: "Docker, Kubernetes & Helm Orchestration",
+        tag: "Containers",
+        desc: "Containerized multi-tier Flask and Node.js applications with Docker, using Helm charts to deploy and scale them on a load-balanced Kubernetes cluster."
+      },
+      'aws-core': {
+        title: "AWS Cloud Ecosystem (IAM, S3, ELB/ASG, RDS, Lambda)",
+        tag: "Certified",
+        desc: "Skilled across IAM, EC2, EBS, VPC, S3, ELB & ASG, ECR, Lambda, RDS, SNS, and CloudWatch for secure, scalable, and highly available cloud architectures."
+      }
+    };
+
+    function selectAwsService(key, el) {
+      const info = awsDetails[key];
+      if (!info) return;
+      document.getElementById('aws-insp-title').textContent = info.title;
+      document.getElementById('aws-insp-tag').textContent = info.tag;
+      document.getElementById('aws-insp-desc').textContent = info.desc;
+
+      document.querySelectorAll('.aws-pill').forEach((btn) => {
+        btn.className = 'aws-pill themed-subcard px-3 py-1.5 rounded-xl font-mono text-xs font-semibold border hover:border-sky-400';
+      });
+      if (el) {
+        el.className = 'aws-pill px-3 py-1.5 rounded-xl font-mono text-xs font-extrabold bg-sky-400 text-slate-950 shadow-sm';
+      }
+    }
+
+    function runCicdPipeline() {
+      if (pipelineRunning) return;
+      pipelineRunning = true;
+      const consoleEl = document.getElementById('pipeline-console');
+      const stages = ['stage-1', 'stage-2', 'stage-3', 'stage-4'];
+      const logs = [
+        '$ git pull origin main -> Jenkins webhook triggered on AWS EC2...',
+        '$ terraform apply -auto-approve -> EC2, S3 & DynamoDB provisioned!',
+        '$ docker build -t jay/flask-node-app:latest . -> Image built!',
+        '$ helm upgrade --install prod ./chart -> Scaled on Kubernetes! ✅'
+      ];
+
+      stages.forEach((id) => {
+        const st = document.getElementById(id).querySelector('.stage-status');
+        st.textContent = 'QUEUED';
+        st.className = 'stage-status text-slate-400';
+      });
+
+      stages.forEach((id, idx) => {
+        setTimeout(() => {
+          const st = document.getElementById(id).querySelector('.stage-status');
+          st.textContent = 'RUNNING...';
+          st.className = 'stage-status text-amber-400';
+          consoleEl.textContent = logs[idx];
+
+          setTimeout(() => {
+            st.textContent = 'PASSED ✓';
+            st.className = 'stage-status text-emerald-400 font-bold';
+            if (idx === stages.length - 1) pipelineRunning = false;
+          }, 520);
+        }, idx * 680);
+      });
+    }
+
+    function simulateAndroidCheckin() {
+      const countEl = document.getElementById('checkin-count');
+      const currentVal = countEl ? (parseInt(countEl.textContent, 10) || 12) : 12;
+      logsCount = currentVal + 1;
+      if (countEl) countEl.textContent = logsCount;
+
+      const lat = (19.2183 + (Math.random() * 0.004 - 0.002)).toFixed(4);
+      const lng = (72.9781 + (Math.random() * 0.004 - 0.002)).toFixed(4);
+      const gpsEl = document.getElementById('gps-readout');
+      if (gpsEl) gpsEl.textContent = `📍 ${lat}° N, ${lng}° E (Synced ✓)`;
+      showToast('Geotagged Check-In Synced to MS SQL!');
+    }
+
+    function copyText(text, label) {
+      const el = document.createElement('input');
+      el.value = text;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      showToast(label + ' (' + text + ')');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 2800);
+    }
+
+    function triggerConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const colors = ['#38BDF8', '#F97316', '#10B981', '#FBBF24', '#EC4899'];
+      const pieces = Array.from({ length: 75 }, () => ({
+        x: Math.random() * canvas.width,
+        y: -20 - Math.random() * 120,
+        w: 8 + Math.random() * 6,
+        h: 5 + Math.random() * 5,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        vy: 3 + Math.random() * 4,
+        vx: (Math.random() - 0.5) * 4,
+        rot: Math.random() * 360
+      }));
+
+      let frame = 0;
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pieces.forEach((p) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.rot += 6;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rot * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+          ctx.restore();
+        });
+        frame++;
+        if (frame < 110) requestAnimationFrame(draw);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      draw();
+    }
+
+    // Render all 4 original sticky notes on initial load
+    renderStickyNotes();
+  </script>
+</body>
+</html>
