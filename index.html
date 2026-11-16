@@ -197,7 +197,7 @@
     }
 
     /* ==========================================================================
-       4. 3D POLAROID PORTRAIT & DRAGGABLE STICKY NOTES
+       4. 3D POLAROID AVATAR & DRAGGABLE STICKY NOTES
        ========================================================================== */
     .polaroid-card {
       transform: rotate(-2.5deg);
@@ -376,7 +376,7 @@
   </header>
 
   <!-- ==========================================================================
-       PART 1: AZAKA EDITORIAL KINETIC HERO + 3D POLAROID PORTRAIT
+       PART 1: AZAKA EDITORIAL KINETIC HERO + 3D POLAROID CARTOON AVATAR
        ========================================================================== -->
   <section id="azaka-hero" class="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-[#050505] text-white flex flex-col justify-between">
     
@@ -412,7 +412,7 @@
       </h2>
     </div>
 
-    <!-- Foreground Split Content Grid (Left Bio + Right 3D Polaroid Portrait) -->
+    <!-- Foreground Split Content Grid (Left Bio + Right 3D Polaroid Cartoon Avatar) -->
     <div class="relative z-20 max-w-7xl mx-auto w-full px-5 sm:px-8 my-auto py-16 md:py-20 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
       
       <!-- Left 7 Cols: Editorial Bio, CTA & Quick Contact Pills -->
@@ -460,7 +460,7 @@
         </div>
       </div>
 
-      <!-- Right 5 Cols: Tilted 3D Polaroid Portrait Frame -->
+      <!-- Right 5 Cols: Tilted 3D Polaroid Cartoon Character Frame -->
       <div data-fade class="lg:col-span-5 flex justify-center lg:justify-end">
         <div class="relative w-full max-w-[310px]">
           
@@ -479,22 +479,15 @@
             <!-- Washi Tape -->
             <div class="washi-tape absolute -top-3.5 left-1/2 -translate-x-1/2 w-28 h-7 rounded-sm opacity-95 z-10"></div>
 
-            <!-- Portrait Container -->
-            <div class="relative aspect-square w-full rounded-xl overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-sky-900 border border-slate-200 group">
+            <!-- Cartoon Avatar Container -->
+            <div class="relative aspect-square w-full rounded-xl overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-sky-900 border border-slate-200">
               <img
-                id="jay-portrait-img"
-                src="WhatsApp Image 2026-11-13 at 17.18.50.jpeg"
-                alt="Jay Saharkar — AWS DevOps & Android Developer"
+                id="jay-avatar-img"
+                src="avatar.png"
+                alt="Jay Saharkar — Cartoon Character Avatar"
                 class="w-full h-full object-cover object-top"
-                onerror="handlePhotoFallback(this)"
+                onerror="handleAvatarFallback(this)"
               />
-
-              <!-- Instant Swap Photo File Picker -->
-              <label for="photo-upload-input" class="cursor-pointer absolute bottom-2.5 right-2.5 px-2.5 py-1.5 rounded-lg bg-slate-950/85 hover:bg-slate-950 text-white font-mono text-[11px] font-bold backdrop-blur-md flex items-center gap-1.5 shadow-lg transition-transform hover:scale-105">
-                <i data-lucide="camera" class="w-3.5 h-3.5 text-amber-400"></i>
-                <span>Swap Photo</span>
-              </label>
-              <input id="photo-upload-input" type="file" accept="image/*" class="hidden" onchange="previewCustomPhoto(event)" />
             </div>
 
             <!-- Polaroid Handwritten Caption -->
@@ -1302,38 +1295,59 @@
     }
 
     /* --------------------------------------------------------------------------
-       4. POLAROID PHOTO FALLBACK & INSTANT SWAP FILE PICKER
+       4. CUSTOM ILLUSTRATED CARTOON AVATAR FALLBACK (IF avatar.png NOT YET SAVED)
        -------------------------------------------------------------------------- */
-    function handlePhotoFallback(img) {
+    function handleAvatarFallback(img) {
       img.onerror = null;
-      const svgFallback = `data:image/svg+xml;utf8,` + encodeURIComponent(`
+      const svgAvatar = `data:image/svg+xml;utf8,` + encodeURIComponent(`
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320">
           <defs>
             <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0%" stop-color="#0F172A"/>
-              <stop offset="100%" stop-color="#1E3A8A"/>
+              <stop offset="55%" stop-color="#1E293B"/>
+              <stop offset="100%" stop-color="#0369A1"/>
             </linearGradient>
           </defs>
           <rect width="320" height="320" fill="url(#bg)"/>
-          <circle cx="160" cy="118" r="52" fill="#38BDF8" opacity="0.25"/>
-          <circle cx="160" cy="114" r="40" fill="#FDBA74"/>
-          <path d="M84 285 C84 215, 236 215, 236 285 Z" fill="#1E293B"/>
-          <text x="160" y="304" font-family="monospace" font-size="13" font-weight="bold" fill="#38BDF8" text-anchor="middle">JAY SAHARKAR • CLOUD &amp; ANDROID</text>
+          <!-- Subtle Cloud & Tech Glow -->
+          <circle cx="160" cy="145" r="105" fill="#38BDF8" opacity="0.12"/>
+          <!-- Navy Blazer Shoulders -->
+          <path d="M58 320 C62 242, 108 224, 160 224 C212 224, 258 242, 262 320 Z" fill="#172554"/>
+          <!-- Crisp White Shirt V-Neck -->
+          <polygon points="128,226 192,226 160,295" fill="#F8FAFC"/>
+          <polygon points="128,226 146,226 144,254 123,245" fill="#E2E8F0"/>
+          <polygon points="192,226 174,226 176,254 197,245" fill="#E2E8F0"/>
+          <!-- Neck -->
+          <rect x="143" y="186" width="34" height="44" rx="14" fill="#C68652"/>
+          <!-- Ears -->
+          <ellipse cx="105" cy="146" rx="11" ry="17" fill="#C68652"/>
+          <ellipse cx="215" cy="146" rx="11" ry="17" fill="#C68652"/>
+          <!-- Face Shape -->
+          <path d="M108 118 C108 78, 212 78, 212 118 L210 156 C208 188, 184 204, 160 204 C136 204, 112 188, 110 156 Z" fill="#D4945F"/>
+          <!-- Light Jawline Stubble Shadow -->
+          <path d="M111 154 C113 186, 136 203, 160 203 C184 203, 207 186, 209 154 C205 178, 184 194, 160 194 C136 194, 115 178, 111 154 Z" fill="#3B2314" opacity="0.24"/>
+          <!-- Wavy Messy Black Hair -->
+          <path d="M104 128 C98 92, 114 60, 152 56 C174 52, 208 60, 218 86 C226 104, 220 124, 214 132 C212 108, 198 98, 182 96 C164 104, 138 102, 120 94 C112 104, 108 116, 104 128 Z" fill="#0F172A"/>
+          <path d="M118 72 C134 52, 178 48, 204 68 C216 78, 216 94, 204 96 C186 88, 154 92, 132 86 Z" fill="#1E293B"/>
+          <!-- Expressive Eyebrows -->
+          <path d="M123 125 Q137 119 150 124" stroke="#0F172A" stroke-width="5" stroke-linecap="round" fill="none"/>
+          <path d="M170 124 Q183 119 197 125" stroke="#0F172A" stroke-width="5" stroke-linecap="round" fill="none"/>
+          <!-- Eyes -->
+          <ellipse cx="137" cy="136" rx="8" ry="5.5" fill="#FFFFFF"/>
+          <circle cx="137" cy="136" r="4" fill="#1E1B18"/>
+          <circle cx="138.5" cy="134.5" r="1.4" fill="#FFFFFF"/>
+          <ellipse cx="183" cy="136" rx="8" ry="5.5" fill="#FFFFFF"/>
+          <circle cx="183" cy="136" r="4" fill="#1E1B18"/>
+          <circle cx="184.5" cy="134.5" r="1.4" fill="#FFFFFF"/>
+          <!-- Nose -->
+          <path d="M160 135 L156 155 Q160 159 165 155" stroke="#9A5B32" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <!-- Mustache -->
+          <path d="M141 167 Q160 160 179 167 Q173 171 160 168 Q147 171 141 167 Z" fill="#1E1B18"/>
+          <!-- Warm Confident Smile -->
+          <path d="M145 174 Q160 183 175 174" stroke="#7C2D12" stroke-width="3.2" stroke-linecap="round" fill="none"/>
         </svg>
       `);
-      img.src = svgFallback;
-    }
-
-    function previewCustomPhoto(event) {
-      const file = event.target.files && event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = document.getElementById('jay-portrait-img');
-        if (img) img.src = e.target.result;
-        showToast('Portrait Photo Updated! 📸');
-      };
-      reader.readAsDataURL(file);
+      img.src = svgAvatar;
     }
 
     /* --------------------------------------------------------------------------
@@ -1536,7 +1550,7 @@
       renderStickyNotes();
       input.value = '';
       closeNoteModal();
-      showToast('Note Pinned to Wall! 📌');
+      showToast('Note Pinned to Screen! 📌');
     }
 
     /* --------------------------------------------------------------------------
