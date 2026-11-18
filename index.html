@@ -10,6 +10,7 @@
   <meta property="og:description" content="Interactive Hybrid CV & Cloud Engineering Playground — AWS, Terraform, Docker, Kubernetes & Native Kotlin Android." />
   <meta property="og:image" content="https://saharkarjayy.github.io/Portfolio/jay.jpeg" />
   <meta property="og:url" content="https://saharkarjayy.github.io/Portfolio/" />
+  <meta name="twitter:card" content="summary_large_image" />
 
   <!-- Google Fonts: Syne, Manrope, JetBrains Mono & Caveat -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -465,19 +466,20 @@
   </header>
 
   <!-- ==========================================================================
-       PART 1: AZAKA POINTER-GAZE HERO + 3D POLAROID PORTRAIT ('jay.jpeg')
+       PART 1: AZAKA 360° 2D/3D POINTER-GAZE HERO + 3D POLAROID PORTRAIT ('jay.jpeg')
        ========================================================================== -->
-  <section id="azaka-hero" class="relative md:min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-[#050505] text-white flex flex-col justify-between">
+  <section id="azaka-hero" style="perspective: 1200px;" class="relative md:min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-[#050505] text-white flex flex-col justify-between">
     
     <!-- Layer 0A: Procedural Interactive Cloud-Grid Canvas -->
     <canvas id="cloud-grid-canvas" class="absolute inset-0 z-0 h-full w-full opacity-55"></canvas>
 
-    <!-- Layer 0B: AZAKA Poster & Direct-Source Pointer-Scrubbed MP4 (No CORS Fetch Block!) -->
+    <!-- Layer 0B: AZAKA Poster & Direct-Source Pointer-Scrubbed MP4 (Full X/Y 3D Gaze Tilt) -->
     <img
       id="azaka-poster"
       src="https://media.prettysites.io/products/azaka/v2/poster.jpg"
       alt=""
       onerror="this.style.display='none'"
+      style="will-change: transform;"
       class="absolute inset-0 z-[1] h-full w-full object-cover transition-opacity duration-700 opacity-65"
     />
     <video
@@ -488,6 +490,7 @@
       playsInline
       webkit-playsinline="true"
       preload="auto"
+      style="will-change: transform;"
       class="absolute inset-0 z-[2] h-full w-full object-cover transition-opacity duration-500 opacity-0"
     ></video>
 
@@ -525,7 +528,7 @@
         </div>
 
         <p data-fade class="text-sm sm:text-xl font-medium sm:font-semibold leading-[1.55] text-white/90 max-w-xl drop-shadow">
-          MSc IT graduate &amp; Software Engineer building secure, scalable AWS cloud infrastructure, DevOps pipelines, and native Kotlin Android apps.
+          MSc IT graduate &amp; Software Engineer building secure, scalable AWS cloud infrastructure, DevOps pipelines, and native Kotlin Android apps[cite: 2, 4, 5].
         </p>
 
         <!-- Compact Quick-Action Bar -->
@@ -610,7 +613,7 @@
     </div>
 
     <!-- Bottom Editorial Role Bar -->
-    <div class="relative z-20 w-full border-t border-white/10 px-4 sm:px-10 py-3.5 sm:py-4 flex items-center justify-between gap-2 text-[11px] sm:text-[15px] font-bold text-white/90 bg-black/30 backdrop-blur-xs">
+    <div class="relative z-20 w-full border-t border-white/10 px-4 sm:px-10 py-3.5 sm:py-4 flex items-center justify-between gap-2 text-[11px] sm:text-[15px] font-bold text-white/90 bg-black/30 backdrop-blur-sm">
       <span data-fade>AWS Cloud Architecture</span>
       <span data-fade class="hidden sm:inline">DevOps &amp; Terraform</span>
       <span data-fade class="hidden md:inline">Native Kotlin Android</span>
@@ -727,7 +730,7 @@
             <span>🎓</span>
           </div>
           <h3 class="font-bold text-sm mt-1.5">Bachelors in Information Technology</h3>
-          <p class="text-xs themed-muted mt-1">Bunts Sangha's S.M. Shetty, Mumbai • <strong>CGPI: 7.52</strong></p>
+          <p class="text-xs themed-muted mt-1">Bunts Sangha's S.M. Shetty, Mumbai • <strong>CGPI: 7.52</strong>[cite: 2, 4, 5]</p>
         </div>
 
         <div onclick="driveToStop(1)" id="stop-card-1" class="milestone-card shrink-0 w-[230px] sm:w-auto snap-center cursor-pointer themed-subcard rounded-2xl p-4 border transition-all">
@@ -736,7 +739,7 @@
             <span>📚</span>
           </div>
           <h3 class="font-bold text-sm mt-1.5">Masters in Information Technology</h3>
-          <p class="text-xs themed-muted mt-1">Bunts Sangha's S.M. Shetty, Mumbai • <strong>CGPI: 6.54</strong></p>
+          <p class="text-xs themed-muted mt-1">Bunts Sangha's S.M. Shetty, Mumbai • <strong>CGPI: 6.54</strong>[cite: 2, 4, 5]</p>
         </div>
 
         <div onclick="driveToStop(2)" id="stop-card-2" class="milestone-card shrink-0 w-[230px] sm:w-auto snap-center cursor-pointer themed-subcard rounded-2xl p-4 border transition-all">
@@ -745,7 +748,7 @@
             <span>☁️</span>
           </div>
           <h3 class="font-bold text-sm mt-1.5">AWS &amp; DevOps Certifications</h3>
-          <p class="text-xs themed-muted mt-1">AWS Academy Cloud Foundations &amp; Architecting + Grade A AWS &amp; DevOps (Insys)</p>
+          <p class="text-xs themed-muted mt-1">AWS Academy Cloud Foundations &amp; Architecting + Grade A AWS &amp; DevOps (Insys)[cite: 2, 4, 5]</p>
         </div>
 
         <div onclick="driveToStop(3)" id="stop-card-3" class="milestone-card shrink-0 w-[230px] sm:w-auto snap-center cursor-pointer themed-subcard rounded-2xl p-4 border transition-all">
@@ -754,7 +757,7 @@
             <span>🏁</span>
           </div>
           <h3 class="font-bold text-sm mt-1.5">Software Engineer @ Bartech</h3>
-          <p class="text-xs themed-muted mt-1">Bartech Data Systems Pvt Ltd, Thane • AWS Cloud, Android &amp; Backend</p>
+          <p class="text-xs themed-muted mt-1">Bartech Data Systems Pvt Ltd, Thane • AWS Cloud, Android &amp; Backend[cite: 2, 4, 5]</p>
         </div>
       </div>
     </section>
@@ -766,7 +769,7 @@
       <div>
         <span class="themed-primary-soft px-3 py-1 rounded-full font-mono text-[11px] sm:text-xs font-bold">01 // PRIMARY FOCUS — AWS CLOUD &amp; DEVOPS</span>
         <h2 class="font-display text-2xl sm:text-4xl font-extrabold mt-2 tracking-tight">AWS Infrastructure &amp; CI/CD Lab</h2>
-        <p class="text-xs sm:text-sm themed-muted mt-1">Inspect production AWS services at Bartech Data Systems or trigger the live Jenkins + Terraform + Kubernetes pipeline simulator.</p>
+        <p class="text-xs sm:text-sm themed-muted mt-1">Inspect production AWS services at Bartech Data Systems or trigger the live Jenkins + Terraform + Kubernetes pipeline simulator[cite: 2, 4, 5].</p>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
@@ -794,7 +797,7 @@
               <span id="aws-insp-tag" class="font-mono text-[10px] px-2 py-0.5 rounded bg-sky-400/15 themed-primary-text font-bold">Bartech Prod</span>
             </div>
             <p id="aws-insp-desc" class="text-xs sm:text-sm themed-muted leading-relaxed">
-              Provision and configure Windows Server 2022 instances on AWS EC2 for enterprise applications, managing EC2 instance configurations, EBS storage, and Elastic IP addresses.
+              Provision and configure Windows Server 2022 instances on AWS EC2 for enterprise applications, managing EC2 instance configurations, EBS storage, and Elastic IP addresses[cite: 2, 4, 5].
             </p>
           </div>
 
@@ -872,7 +875,7 @@
       <div>
         <span class="px-3 py-1 rounded-full bg-orange-500/15 text-orange-400 font-mono text-[11px] sm:text-xs font-bold">02 // PRIORITY #2 — NATIVE ANDROID &amp; BACKEND</span>
         <h2 class="font-display text-2xl sm:text-4xl font-extrabold mt-2 tracking-tight">Kotlin Android + Node.js REST + MS SQL Server</h2>
-        <p class="text-xs sm:text-sm themed-muted mt-1">Enterprise field-operations mobile app &amp; backend architecture engineered at Bartech Data Systems Pvt Ltd.</p>
+        <p class="text-xs sm:text-sm themed-muted mt-1">Enterprise field-operations mobile app &amp; backend architecture engineered at Bartech Data Systems Pvt Ltd[cite: 2, 4, 5].</p>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-center">
@@ -881,7 +884,7 @@
             <div class="text-lg mb-1">📱</div>
             <h3 class="font-bold text-sm">Android (Kotlin, ViewBinding, Material)</h3>
             <p class="text-xs themed-muted mt-1 leading-relaxed">
-              Develop and maintain native Android applications with responsive interfaces for field visit scheduling, geotagged check-ins, daily logs, and expense tracking.
+              Develop and maintain native Android applications with responsive interfaces for field visit scheduling, geotagged check-ins, daily logs, and expense tracking[cite: 2, 4, 5].
             </p>
           </div>
 
@@ -889,7 +892,7 @@
             <div class="text-lg mb-1">⚡</div>
             <h3 class="font-bold text-sm">Node.js RESTful APIs &amp; RBAC</h3>
             <p class="text-xs themed-muted mt-1 leading-relaxed">
-              Develop and maintain RESTful backend APIs with authentication, session management, role-based access controls, and asynchronous network communication.
+              Develop and maintain RESTful backend APIs with authentication, session management, role-based access controls, and asynchronous network communication[cite: 2, 4, 5].
             </p>
           </div>
 
@@ -897,7 +900,7 @@
             <div class="text-lg mb-1">🗄️</div>
             <h3 class="font-bold text-sm">Microsoft SQL Server Database Engineering</h3>
             <p class="text-xs themed-muted mt-1 leading-relaxed">
-              Design and manage Microsoft SQL Server databases, including stored procedures, triggers, and parameterized queries for reliable enterprise data management.
+              Design and manage Microsoft SQL Server databases, including stored procedures, triggers, and parameterized queries for reliable enterprise data management[cite: 2, 4, 5].
             </p>
           </div>
         </div>
@@ -986,7 +989,7 @@
           PROFESSIONAL SUMMARY
         </h2>
         <p class="text-slate-900">
-          MSc Information Technology graduate and Software Engineer with hands-on experience in AWS cloud infrastructure, application development and backend integration. Skilled in AWS services, Terraform, Docker, Kubernetes and Jenkins, with practical exposure to infrastructure provisioning, cloud networking and application deployment. Interested in building secure, scalable and highly available cloud solutions and pursuing a career in AWS Cloud Engineering and DevOps
+          MSc Information Technology graduate and Software Engineer with hands-on experience in AWS cloud infrastructure, application development and backend integration. Skilled in AWS services, Terraform, Docker, Kubernetes and Jenkins, with practical exposure to infrastructure provisioning, cloud networking and application deployment. Interested in building secure, scalable and highly available cloud solutions and pursuing a career in AWS Cloud Engineering and DevOps[cite: 2, 4, 5]
         </p>
       </div>
 
@@ -1003,29 +1006,29 @@
           <span class="text-[11.5px] font-semibold text-slate-900">Aug '26- Present | Thane, Maharashtra, India</span>
         </div>
         <p class="text-slate-900 mt-1">
-          Develop and maintain enterprise mobile and cloud-based applications, with responsibilities spanning AWS infrastructure management, Android development, backend API integration, and database management. Work on configuring cloud environments, deploying business applications, and maintaining reliable application infrastructure.
+          Develop and maintain enterprise mobile and cloud-based applications, with responsibilities spanning AWS infrastructure management, Android development, backend API integration, and database management. Work on configuring cloud environments, deploying business applications, and maintaining reliable application infrastructure[cite: 2, 4, 5].
         </p>
 
         <div class="mt-2">
           <div class="font-bold text-black">AWS Cloud Infrastructure</div>
           <ul class="list-disc pl-5 space-y-0.5 text-slate-900 mt-0.5">
-            <li>Provision and configure Windows Server 2022 instances on AWS EC2 for enterprise applications.</li>
-            <li>Configure VPC, subnets, Internet Gateway, route tables, and Security Groups.</li>
-            <li>Manage EC2 instance configurations, EBS storage, and Elastic IP addresses.</li>
-            <li>Configure IIS to host multiple business applications on separate ports.</li>
-            <li>Perform domain mapping and troubleshoot application connectivity issues.</li>
+            <li>Provision and configure Windows Server 2022 instances on AWS EC2 for enterprise applications[cite: 2, 4, 5].</li>
+            <li>Configure VPC, subnets, Internet Gateway, route tables, and Security Groups[cite: 2, 4, 5].</li>
+            <li>Manage EC2 instance configurations, EBS storage, and Elastic IP addresses[cite: 2, 4, 5].</li>
+            <li>Configure IIS to host multiple business applications on separate ports[cite: 2, 4, 5].</li>
+            <li>Perform domain mapping and troubleshoot application connectivity issues[cite: 2, 4, 5].</li>
           </ul>
         </div>
 
         <div class="mt-2">
           <div class="font-bold text-black">Application Development (Android, Node.js &amp; MSSQL)</div>
           <ul class="list-disc pl-5 space-y-0.5 text-slate-900 mt-0.5">
-            <li>Develop and maintain native Android applications using Kotlin, ViewBinding, and Material Design.</li>
-            <li>Build responsive interfaces for field visit scheduling, geotagged check-ins, daily logs, and expense tracking.</li>
-            <li>Develop and maintain RESTful backend APIs using Node.js.</li>
-            <li>Implement authentication, session management, and role-based access controls.</li>
-            <li>Design and manage Microsoft SQL Server databases, including stored procedures, triggers, and parameterized queries.</li>
-            <li>Handle API integration, asynchronous network communication, and application data management.</li>
+            <li>Develop and maintain native Android applications using Kotlin, ViewBinding, and Material Design[cite: 2, 4, 5].</li>
+            <li>Build responsive interfaces for field visit scheduling, geotagged check-ins, daily logs, and expense tracking[cite: 2, 4, 5].</li>
+            <li>Develop and maintain RESTful backend APIs using Node.js[cite: 2, 4, 5].</li>
+            <li>Implement authentication, session management, and role-based access controls[cite: 2, 4, 5].</li>
+            <li>Design and manage Microsoft SQL Server databases, including stored procedures, triggers, and parameterized queries[cite: 2, 4, 5].</li>
+            <li>Handle API integration, asynchronous network communication, and application data management[cite: 2, 4, 5].</li>
           </ul>
         </div>
       </div>
@@ -1037,9 +1040,9 @@
         </h2>
         <div class="font-bold text-black">Cloud &amp; DevOps Infrastructure Automation</div>
         <ul class="list-disc pl-5 space-y-0.5 text-slate-900 mt-0.5">
-          <li><strong>Automated Cloud Provisioning &amp; IaC:</strong> Architected reusable, modular Infrastructure as Code (IaC) using Terraform to dynamically provision AWS resources, including EC2 compute instances, S3 object storage, and DynamoDB tables.</li>
-          <li>Containerized multi-tier Flask and Node.js applications with Docker, using Helm charts to deploy and scale them on a load-balanced Kubernetes cluster.</li>
-          <li><strong>CI/CD Automation:</strong> Set up a Jenkins pipeline on AWS EC2 to automatically pull code from GitHub, build Docker images, and deploy updates smoothly.</li>
+          <li><strong>Automated Cloud Provisioning &amp; IaC:</strong> Architected reusable, modular Infrastructure as Code (IaC) using Terraform to dynamically provision AWS resources, including EC2 compute instances, S3 object storage, and DynamoDB tables[cite: 2, 4, 5].</li>
+          <li>Containerized multi-tier Flask and Node.js applications with Docker, using Helm charts to deploy and scale them on a load-balanced Kubernetes cluster[cite: 2, 4, 5].</li>
+          <li><strong>CI/CD Automation:</strong> Set up a Jenkins pipeline on AWS EC2 to automatically pull code from GitHub, build Docker images, and deploy updates smoothly[cite: 2, 4, 5].</li>
         </ul>
       </div>
 
@@ -1049,11 +1052,11 @@
           CERTIFICATIONS
         </h2>
         <ul class="list-disc pl-5 space-y-0.5 text-slate-900">
-          <li>AWS Academy Cloud Foundations, AWS Academy Graduate (Mar '25)</li>
-          <li>AWS Academy Cloud Architecting, AWS Academy Graduate (Mar '25)</li>
-          <li>AWS Training Program Certification (Grade A), Insys Technologies (Jan '25)</li>
-          <li>DevOps Training Program Certification (Grade A), Insys Technologies (Jan '25)</li>
-          <li>.NET Development Course, (In Progress) (Jan '26)</li>
+          <li>AWS Academy Cloud Foundations, AWS Academy Graduate (Mar '25)[cite: 2, 4, 5]</li>
+          <li>AWS Academy Cloud Architecting, AWS Academy Graduate (Mar '25)[cite: 2, 4, 5]</li>
+          <li>AWS Training Program Certification (Grade A), Insys Technologies (Jan '25)[cite: 2, 4, 5]</li>
+          <li>DevOps Training Program Certification (Grade A), Insys Technologies (Jan '25)[cite: 2, 4, 5]</li>
+          <li>.NET Development Course, (In Progress) (Jan '26)[cite: 2, 4, 5]</li>
         </ul>
       </div>
 
@@ -1063,12 +1066,12 @@
           SKILLS
         </h2>
         <ul class="list-disc pl-5 space-y-0.5 text-slate-900">
-          <li><strong>Cloud:</strong> AWS (IAM, EC2, EBS, VPC, S3, ELB &amp; ASG, ECR, Lambda, RDS, SNS and CloudWatch)</li>
-          <li><strong>Mobile Development:</strong> Android (Kotlin, XML Layouts, Material Design, ViewBinding)</li>
-          <li><strong>Containerization &amp; Orchestration:</strong> Docker, Kubernetes</li>
-          <li><strong>Automation:</strong> Jenkins, Ansible</li>
-          <li><strong>Infrastructure Management:</strong> Terraform</li>
-          <li><strong>Source Code Management:</strong> Git (Version Control System), GitHub</li>
+          <li><strong>Cloud:</strong> AWS (IAM, EC2, EBS, VPC, S3, ELB &amp; ASG, ECR, Lambda, RDS, SNS and CloudWatch)[cite: 2, 4, 5]</li>
+          <li><strong>Mobile Development:</strong> Android (Kotlin, XML Layouts, Material Design, ViewBinding)[cite: 2, 4, 5]</li>
+          <li><strong>Containerization &amp; Orchestration:</strong> Docker, Kubernetes[cite: 2, 4, 5]</li>
+          <li><strong>Automation:</strong> Jenkins, Ansible[cite: 2, 4, 5]</li>
+          <li><strong>Infrastructure Management:</strong> Terraform[cite: 2, 4, 5]</li>
+          <li><strong>Source Code Management:</strong> Git (Version Control System), GitHub[cite: 2, 4, 5]</li>
         </ul>
       </div>
 
@@ -1079,12 +1082,12 @@
         </h2>
         <div class="space-y-1 text-slate-900">
           <div class="flex flex-wrap justify-between gap-2">
-            <span><strong>Masters in Information Technology</strong>, Bunts Sangha's S.M. Shetty, Mumbai (CGPI: 6.54)</span>
-            <span class="font-semibold">Jun '22-Jul '24 | Mumbai, India</span>
+            <span><strong>Masters in Information Technology</strong>, Bunts Sangha's S.M. Shetty, Mumbai (CGPI: 6.54)[cite: 2, 4, 5]</span>
+            <span class="font-semibold">Jun '22-Jul '24 | Mumbai, India[cite: 2, 4, 5]</span>
           </div>
           <div class="flex flex-wrap justify-between gap-2">
-            <span><strong>Bachelors in Information Technology</strong>, Bunts Sangha's S.M. Shetty, Mumbai (CGPI: 7.52)</span>
-            <span class="font-semibold">Jun '19-Jun '22 | Mumbai, India</span>
+            <span><strong>Bachelors in Information Technology</strong>, Bunts Sangha's S.M. Shetty, Mumbai (CGPI: 7.52)[cite: 2, 4, 5]</span>
+            <span class="font-semibold">Jun '19-Jun '22 | Mumbai, India[cite: 2, 4, 5]</span>
           </div>
         </div>
       </div>
@@ -1148,7 +1151,7 @@
   </div>
 
   <!-- ==========================================================================
-       UNIFIED JAVASCRIPT ENGINE (VERIFIED & CORS-FREE)
+       UNIFIED JAVASCRIPT ENGINE (360° UP/DOWN/LEFT/RIGHT GAZE + CORS-FREE)
        ========================================================================== -->
   <script>
     // Global State
@@ -1214,7 +1217,7 @@
     }
 
     /* --------------------------------------------------------------------------
-       1. AZAKA GAZE-FRAMES LOOKUP TABLE & DIRECT VIDEO SCRUBBING (DESKTOP + MOBILE)
+       1. AZAKA GAZE-FRAMES LOOKUP TABLE & FULL 360° (UP/DOWN/LEFT/RIGHT) ENGINE
        -------------------------------------------------------------------------- */
     const gazeFrames = [
       [-1, 6.625], [-0.989573, 6.58333], [-0.987016, 6.54167], [-0.973037, 6.5],
@@ -1257,8 +1260,10 @@
       const gridCanvas = document.getElementById('cloud-grid-canvas');
       const gCtx = gridCanvas ? gridCanvas.getContext('2d') : null;
 
-      let pose = 0;
-      let targetPose = 0;
+      let poseX = 0;
+      let targetPoseX = 0;
+      let poseY = 0;
+      let targetPoseY = 0;
       let mouseNormX = 0;
       let mouseNormY = 0;
       let mobileVideoUnlocked = false;
@@ -1278,7 +1283,7 @@
         if (p && typeof p.then === 'function') {
           p.then(() => {
             video.pause();
-            video.currentTime = poseToTime(pose);
+            video.currentTime = poseToTime(poseX);
             video.style.opacity = '0.78';
             if (poster) poster.style.opacity = '0';
           }).catch(() => {});
@@ -1288,7 +1293,10 @@
       function updatePointerGaze(clientX, clientY) {
         const w = window.innerWidth || 1;
         const h = window.innerHeight || 1;
-        targetPose = Math.max(-1, Math.min(1, (clientX / w - 0.5) / 0.35));
+        // Horizontal gaze (-1 left to +1 right)
+        targetPoseX = Math.max(-1, Math.min(1, (clientX / w - 0.5) / 0.35));
+        // Vertical gaze (-1 top to +1 bottom)
+        targetPoseY = Math.max(-1, Math.min(1, (clientY / h - 0.5) / 0.35));
         mouseNormX = (clientX / w - 0.5);
         mouseNormY = (clientY / h - 0.5);
       }
@@ -1329,23 +1337,40 @@
       }
 
       function tickBackdrop() {
-        const delta = targetPose - pose;
-        pose = Math.abs(delta) < 0.001 ? targetPose : pose + delta * 0.065;
+        // Smoothly interpolate both X (left/right) and Y (up/down)
+        const deltaX = targetPoseX - poseX;
+        poseX = Math.abs(deltaX) < 0.001 ? targetPoseX : poseX + deltaX * 0.065;
 
+        const deltaY = targetPoseY - poseY;
+        poseY = Math.abs(deltaY) < 0.001 ? targetPoseY : poseY + deltaY * 0.065;
+
+        // 1. Scrub video frames for left/right head turn
         if (video && video.readyState >= 1 && !video.seeking) {
-          const time = poseToTime(pose);
+          const time = poseToTime(poseX);
           if (Math.abs(video.currentTime - time) > 1 / 48) {
             try { video.currentTime = time; } catch (e) {}
           }
         }
 
+        // 2. Apply 3D vertical pitch + pan so the dog tilts up/down & leans toward cursor/finger
+        // Scale(1.08) prevents edges from showing when tilting
+        const tiltX = -poseY * 9;      // Tilts up/down (+/- 9 deg)
+        const tiltY = poseX * 6;       // Subtle 3D yaw (+/- 6 deg)
+        const panY = -poseY * 22;      // Shifts camera vertically (+/- 22px)
+        const panX = -poseX * 14;      // Shifts camera horizontally (+/- 14px)
+        const transform3D = `perspective(1000px) scale(1.08) translate3d(${panX.toFixed(1)}px, ${panY.toFixed(1)}px, 0) rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg)`;
+
+        if (video) video.style.transform = transform3D;
+        if (poster) poster.style.transform = transform3D;
+
+        // 3. Render interactive cloud-grid glow following X and Y
         if (gCtx && gridCanvas) {
           const w = gridCanvas.width;
           const h = gridCanvas.height;
           gCtx.clearRect(0, 0, w, h);
 
           const gx = w * (0.5 + mouseNormX * 0.45);
-          const gy = h * (0.45 + mouseNormY * 0.35);
+          const gy = h * (0.45 + mouseNormY * 0.45);
           const rad = gCtx.createRadialGradient(gx, gy, 20, gx, gy, Math.max(w, h) * 0.55);
           rad.addColorStop(0, 'rgba(56, 189, 248, 0.16)');
           rad.addColorStop(0.5, 'rgba(79, 70, 229, 0.07)');
@@ -1368,8 +1393,8 @@
           const pX = gsap.quickTo(wrapper, 'x', { duration: 0.8, ease: 'power3.out' });
           const pY = gsap.quickTo(wrapper, 'y', { duration: 0.8, ease: 'power3.out' });
           const updateParallax = (clientX, clientY) => {
-            pX((clientX / window.innerWidth - 0.5) * -16);
-            pY((clientY / window.innerHeight - 0.5) * -10);
+            pX((clientX / window.innerWidth - 0.5) * -18);
+            pY((clientY / window.innerHeight - 0.5) * -14);
           };
           window.addEventListener('mousemove', (e) => updateParallax(e.clientX, e.clientY), { passive: true });
           window.addEventListener('touchmove', (e) => {
