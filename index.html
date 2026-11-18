@@ -117,10 +117,18 @@
        ========================================================================== */
     .azaka-headline {
       font-family: 'Syne', 'Manrope', sans-serif;
-      font-size: clamp(38px, 8.2vw, 118px);
-      line-height: 0.88;
-      letter-spacing: -0.04em;
+      font-size: clamp(32px, 9vw, 48px);
+      line-height: 0.92;
+      letter-spacing: -0.035em;
       font-weight: 700;
+    }
+
+    @media (min-width: 768px) {
+      .azaka-headline {
+        font-size: clamp(56px, 8.2vw, 118px);
+        line-height: 0.88;
+        letter-spacing: -0.04em;
+      }
     }
 
     .link-underline { position: relative; }
@@ -197,7 +205,7 @@
     }
 
     /* ==========================================================================
-       4. 3D POLAROID AVATAR & DRAGGABLE STICKY NOTES
+       4. 3D POLAROID PORTRAIT & DRAGGABLE STICKY NOTES
        ========================================================================== */
     .polaroid-card {
       transform: rotate(-2.5deg);
@@ -240,6 +248,37 @@
       background: radial-gradient(circle at 35% 35%, #F87171, #B91C1C);
       box-shadow: 0 2px 4px rgba(0,0,0,0.35);
       margin: 0 auto 6px;
+    }
+
+    /* Mobile-First Sticky Notes Declutter: hidden on <768px unless explicitly toggled */
+    @media (max-width: 767px) {
+      body:not(.mobile-notes-open) #sticky-notes-layer {
+        display: none !important;
+      }
+      body.mobile-notes-open #sticky-notes-layer {
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+        background: rgba(5, 5, 5, 0.82);
+        backdrop-filter: blur(10px);
+        display: flex !important;
+        flex-direction: row;
+        align-items: center;
+        gap: 16px;
+        padding: 84px 20px 96px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+      }
+      body.mobile-notes-open #sticky-notes-layer .sticky-note {
+        position: relative !important;
+        left: auto !important;
+        top: auto !important;
+        flex: 0 0 250px;
+        width: 250px;
+        min-height: 185px;
+        scroll-snap-align: center;
+        transform: rotate(0deg) !important;
+      }
     }
 
     /* ==========================================================================
@@ -335,18 +374,26 @@
   <!-- Free-Floating Draggable Sticky Notes Layer -->
   <div id="sticky-notes-layer" aria-label="Draggable Sticky Notes Wall"></div>
 
+  <!-- Mobile Sticky Notes Backdrop Header (Shown only when mobile notes overlay is active) -->
+  <div id="mobile-notes-header" class="hidden fixed top-4 inset-x-4 z-[65] items-center justify-between px-4 py-3 rounded-2xl bg-neutral-900/95 border border-white/15 text-white shadow-2xl backdrop-blur-md">
+    <span class="font-display font-bold text-sm">📌 Jay's Sticky Notes (Swipe)</span>
+    <button onclick="toggleMobileNotes(false)" class="px-3 py-1 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold">
+      Close &times;
+    </button>
+  </div>
+
   <!-- ==========================================================================
-       TOP EDITORIAL HEADER (AZAKA WORDMARK + SWIPE LINKS + CONTROLS)
+       TOP EDITORIAL HEADER (ULTRA-CLEAN ON MOBILE + FULL DESKTOP CONTROLS)
        ========================================================================== -->
   <header id="playground-header" style="background-color: var(--nav-bg); border-color: var(--border-card);" class="sticky top-0 z-40 border-b backdrop-blur-xl transition-colors">
-    <div class="max-w-7xl mx-auto px-4 sm:px-8 h-16 flex items-center justify-between gap-3">
+    <div class="max-w-7xl mx-auto px-4 sm:px-8 h-14 sm:h-16 flex items-center justify-between gap-2">
       
       <!-- Editorial Wordmark -->
-      <a href="#azaka-hero" class="font-display text-lg sm:text-2xl font-extrabold tracking-[-0.03em] flex items-center gap-1 shrink-0">
+      <a href="#azaka-hero" class="font-display text-base sm:text-2xl font-extrabold tracking-[-0.03em] flex items-center gap-0.5 shrink-0">
         <span>JAY SAHARKAR</span><span class="align-super text-[0.45em] font-semibold">®</span>
       </a>
 
-      <!-- Swipe-Underline Navigation Links -->
+      <!-- Desktop Swipe-Underline Navigation Links -->
       <nav class="hidden lg:flex items-center gap-6 text-[13px] font-semibold">
         <a href="#roadtrip" class="link-underline">Journey</a>
         <a href="#aws-lab" class="link-underline">AWS &amp; DevOps</a>
@@ -354,31 +401,64 @@
         <button onclick="focusStickyNotes()" class="link-underline">Sticky Wall</button>
       </nav>
 
-      <!-- Right Controls: 3 Theme Swatches, Strict CV Toggle & Print CV -->
-      <div class="flex items-center gap-2 sm:gap-2.5">
-        <div class="themed-card flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border shadow-sm" title="Switch Theme">
+      <!-- Right Controls: Clean Mobile Action Strip + Full Desktop Palette -->
+      <div class="flex items-center gap-1.5 sm:gap-2.5">
+        <!-- Desktop-Only Theme Swatches (Moved inside Mobile Menu Drawer on < 768px) -->
+        <div class="hidden md:flex themed-card items-center gap-1.5 px-2.5 py-1.5 rounded-full border shadow-sm" title="Switch Theme">
           <button onclick="setColorTheme('obsidian')" id="swatch-obsidian" aria-label="Editorial Obsidian Theme" class="w-4 h-4 rounded-full bg-neutral-950 border border-sky-400 ring-2 ring-offset-1 ring-sky-400 transition-transform hover:scale-110"></button>
           <button onclick="setColorTheme('indigo')" id="swatch-indigo" aria-label="Electric Indigo Light Theme" class="w-4 h-4 rounded-full bg-indigo-600 transition-transform hover:scale-110"></button>
           <button onclick="setColorTheme('sunset')" id="swatch-sunset" aria-label="AWS Sunset Theme" class="w-4 h-4 rounded-full bg-orange-500 transition-transform hover:scale-110"></button>
         </div>
 
-        <button id="toggle-strict-cv-btn" onclick="toggleStrictCV()" class="themed-card inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold shadow-sm hover:border-sky-400 transition-all">
+        <button id="toggle-strict-cv-btn" onclick="toggleStrictCV()" class="themed-card inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl border text-[11px] sm:text-xs font-bold shadow-sm hover:border-sky-400 transition-all">
           <i data-lucide="file-text" class="w-3.5 h-3.5 themed-primary-text"></i>
           <span id="strict-cv-label">Strict CV</span>
         </button>
 
-        <button onclick="printExactCV()" style="background-color: var(--accent-primary);" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-slate-950 font-extrabold text-xs shadow-md hover:opacity-95 active:scale-95 transition-all">
+        <button onclick="printExactCV()" style="background-color: var(--accent-primary);" class="inline-flex items-center gap-1 px-2.5 sm:px-3.5 py-1.5 rounded-xl text-slate-950 font-extrabold text-[11px] sm:text-xs shadow-md hover:opacity-95 active:scale-95 transition-all" aria-label="Print Official CV">
           <i data-lucide="printer" class="w-3.5 h-3.5"></i>
-          <span>Print CV</span>
+          <span class="hidden sm:inline">Print CV</span>
         </button>
+
+        <!-- Mobile Hamburger Menu Toggle (< 768px) -->
+        <button onclick="toggleMobileMenu()" id="mobile-menu-btn" class="md:hidden themed-card inline-flex items-center justify-center p-1.5 rounded-xl border text-xs font-bold" aria-label="Open Mobile Menu">
+          <i data-lucide="menu" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Collapsible Mobile Drawer (Navigation + Theme Switcher + Notes Trigger) -->
+    <div id="mobile-nav-drawer" style="background-color: var(--bg-card); border-color: var(--border-card);" class="hidden md:hidden border-t px-4 py-4 space-y-4 shadow-2xl">
+      <div class="grid grid-cols-2 gap-2 text-xs font-bold">
+        <a href="#roadtrip" onclick="toggleMobileMenu(false)" class="themed-subcard px-3 py-2.5 rounded-xl border flex items-center gap-2">
+          <span>🏍️</span><span>Career Roadtrip</span>
+        </a>
+        <a href="#aws-lab" onclick="toggleMobileMenu(false)" class="themed-subcard px-3 py-2.5 rounded-xl border flex items-center gap-2">
+          <span>☁️</span><span>AWS &amp; DevOps</span>
+        </a>
+        <a href="#android-lab" onclick="toggleMobileMenu(false)" class="themed-subcard px-3 py-2.5 rounded-xl border flex items-center gap-2">
+          <span>📱</span><span>Android Lab</span>
+        </a>
+        <button onclick="toggleMobileMenu(false); toggleMobileNotes(true);" class="themed-subcard px-3 py-2.5 rounded-xl border flex items-center gap-2 text-left">
+          <span>📌</span><span>Notes (<span id="mobile-menu-note-count">4</span>)</span>
+        </button>
+      </div>
+
+      <div class="flex items-center justify-between pt-2 border-t border-white/10">
+        <span class="text-xs font-semibold themed-muted">Theme Palette</span>
+        <div class="flex items-center gap-2.5">
+          <button onclick="setColorTheme('obsidian')" class="px-2.5 py-1 rounded-lg bg-neutral-950 text-white border border-sky-400 text-[11px] font-bold">Obsidian</button>
+          <button onclick="setColorTheme('indigo')" class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white text-[11px] font-bold">Indigo</button>
+          <button onclick="setColorTheme('sunset')" class="px-2.5 py-1 rounded-lg bg-orange-500 text-white text-[11px] font-bold">Sunset</button>
+        </div>
       </div>
     </div>
   </header>
 
   <!-- ==========================================================================
-       PART 1: AZAKA EDITORIAL KINETIC HERO + 3D POLAROID CARTOON AVATAR
+       PART 1: AZAKA EDITORIAL KINETIC HERO + 3D POLAROID PORTRAIT
        ========================================================================== -->
-  <section id="azaka-hero" class="relative min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-[#050505] text-white flex flex-col justify-between">
+  <section id="azaka-hero" class="relative md:min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-[#050505] text-white flex flex-col justify-between">
     
     <!-- Layer 0A: Procedural Dark Cloud-Grid Canvas Fallback (Guaranteed Offline/CORS-Safe) -->
     <canvas id="cloud-grid-canvas" class="absolute inset-0 z-0 h-full w-full opacity-80"></canvas>
@@ -402,97 +482,120 @@
     <!-- Atmospheric Vignette -->
     <div class="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(120%_90%_at_50%_50%,rgba(5,5,5,0.28)_35%,rgba(5,5,5,0.88)_100%)]"></div>
 
-    <!-- Parallax Split Display Headlines (AZAKA Composition) -->
-    <div id="azaka-parallax" class="pointer-events-none absolute inset-0 z-10">
-      <h1 class="azaka-headline absolute top-[5%] left-[4vw] md:top-[7%] md:left-[3vw] text-white/95 select-none">
+    <!-- Desktop Parallax Split Display Headlines (Hidden on < 768px to prevent mobile overlap) -->
+    <div id="azaka-parallax" class="hidden md:block pointer-events-none absolute inset-0 z-10">
+      <h1 class="azaka-headline absolute top-[7%] left-[3vw] text-white/95 select-none">
         <span data-headline class="block">Cloud &amp; AWS</span>
       </h1>
-      <h2 class="azaka-headline absolute bottom-[13%] right-[4vw] md:bottom-[10%] md:right-[3vw] text-white/95 text-right select-none">
+      <h2 class="azaka-headline absolute bottom-[10%] right-[3vw] text-white/95 text-right select-none">
         <span data-headline class="block">Engineering</span>
       </h2>
     </div>
 
-    <!-- Foreground Split Content Grid (Left Bio + Right 3D Polaroid Cartoon Avatar) -->
-    <div class="relative z-20 max-w-7xl mx-auto w-full px-5 sm:px-8 my-auto py-16 md:py-20 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+    <!-- Foreground Split Content Grid (Clean Mobile Flow + Desktop Editorial Split) -->
+    <div class="relative z-20 max-w-7xl mx-auto w-full px-4 sm:px-8 my-auto py-8 sm:py-16 md:py-20 grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-10 items-center">
       
-      <!-- Left 7 Cols: Editorial Bio, CTA & Quick Contact Pills -->
-      <div class="lg:col-span-7 space-y-6 pt-12 md:pt-20">
-        <div data-fade class="inline-flex flex-wrap items-center gap-2">
-          <span class="px-3 py-1 rounded-full bg-sky-400/15 border border-sky-400/30 text-sky-300 font-mono text-xs font-bold">
-            AWS DEVOPS | ANDROID DEVELOPER
+      <!-- Left 7 Cols: Stacked Mobile Headline, Bio, CTA & Compact Contact Pills -->
+      <div class="lg:col-span-7 space-y-4 sm:space-y-6 md:pt-20">
+        <!-- Mobile-Only Clean Stacked Syne Headline (Zero Overlap) -->
+        <div class="md:hidden space-y-1">
+          <h1 data-headline class="azaka-headline text-white">Cloud &amp; AWS</h1>
+          <h2 data-headline class="azaka-headline text-sky-400">Engineering</h2>
+        </div>
+
+        <div data-fade class="inline-flex flex-wrap items-center gap-1.5 sm:gap-2">
+          <span class="px-2.5 py-1 rounded-full bg-sky-400/15 border border-sky-400/30 text-sky-300 font-mono text-[11px] sm:text-xs font-bold">
+            AWS DEVOPS | ANDROID
           </span>
-          <span class="px-3 py-1 rounded-full bg-orange-500/15 border border-orange-400/30 text-orange-300 font-mono text-xs font-bold">
-            THANE, MH, INDIA
+          <span class="px-2.5 py-1 rounded-full bg-orange-500/15 border border-orange-400/30 text-orange-300 font-mono text-[11px] sm:text-xs font-bold">
+            THANE, INDIA
           </span>
         </div>
 
-        <p data-fade class="text-lg sm:text-xl font-semibold leading-[1.5] text-white/90 max-w-xl">
+        <p data-fade class="text-sm sm:text-xl font-medium sm:font-semibold leading-[1.55] text-white/85 max-w-xl">
           MSc IT graduate &amp; Software Engineer building secure, scalable AWS cloud infrastructure, DevOps pipelines, and native Kotlin Android apps.
         </p>
 
-        <div data-fade class="flex flex-wrap items-center gap-5 pt-1">
-          <a href="#roadtrip" class="link-underline text-base sm:text-lg font-bold text-white inline-flex items-center gap-2">
+        <!-- Compact Single-Row Quick-Action Bar on Mobile -->
+        <div data-fade class="flex flex-wrap items-center gap-3 sm:gap-5 pt-1">
+          <a href="#roadtrip" class="link-underline text-sm sm:text-lg font-bold text-white inline-flex items-center gap-1.5">
             <span>Explore Journey</span>
             <span class="text-sky-400">&rarr;</span>
           </a>
 
-          <button onclick="triggerConfetti()" class="px-4 py-2 rounded-full bg-orange-500 hover:bg-orange-400 text-white text-xs font-extrabold shadow-lg transition-transform hover:scale-105 active:scale-95">
-            🙌 High-Five Jay!
+          <button onclick="triggerConfetti()" class="px-3.5 py-2 rounded-full bg-orange-500 hover:bg-orange-400 text-white text-xs font-extrabold shadow-lg transition-transform hover:scale-105 active:scale-95">
+            🙌 High-Five!
+          </button>
+
+          <!-- Mobile-Only Quick Sticky Notes Trigger -->
+          <button onclick="toggleMobileNotes(true)" class="md:hidden px-3.5 py-2 rounded-full bg-amber-300 text-slate-950 text-xs font-extrabold shadow-lg active:scale-95 transition-transform">
+            📝 Notes (<span id="hero-mobile-note-count">4</span>)
           </button>
         </div>
 
-        <!-- Quick-Copy Email & Phone Pills -->
-        <div data-fade class="flex flex-wrap items-center gap-2.5 pt-2">
-          <button onclick="copyText('jaysaharkar@gmail.com', 'Email Copied!')" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 backdrop-blur-md text-xs font-mono font-semibold text-white transition-all">
+        <!-- Quick-Copy Email & Phone Pills (Compact on Mobile) -->
+        <div data-fade class="flex flex-wrap items-center gap-2 pt-1">
+          <button onclick="copyText('jaysaharkar@gmail.com', 'Email Copied!')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 backdrop-blur-md text-[11px] sm:text-xs font-mono font-semibold text-white transition-all">
             <i data-lucide="mail" class="w-3.5 h-3.5 text-sky-400"></i>
             <span>jaysaharkar@gmail.com</span>
           </button>
 
-          <button onclick="copyText('8850517641', 'Phone Copied!')" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 backdrop-blur-md text-xs font-mono font-semibold text-white transition-all">
+          <button onclick="copyText('8850517641', 'Phone Copied!')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 backdrop-blur-md text-[11px] sm:text-xs font-mono font-semibold text-white transition-all">
             <i data-lucide="phone" class="w-3.5 h-3.5 text-emerald-400"></i>
             <span>8850517641</span>
           </button>
 
-          <a href="https://linkedin.com/in/jay-saharkar" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 backdrop-blur-md text-xs font-mono font-semibold text-white transition-all">
+          <a href="https://linkedin.com/in/jay-saharkar" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 backdrop-blur-md text-xs font-mono font-semibold text-white transition-all">
             <i data-lucide="linkedin" class="w-3.5 h-3.5 text-sky-300"></i>
             <span>linkedin.com/in/jay-saharkar</span>
           </a>
         </div>
       </div>
 
-      <!-- Right 5 Cols: Tilted 3D Polaroid Cartoon Character Frame -->
-      <div data-fade class="lg:col-span-5 flex justify-center lg:justify-end">
-        <div class="relative w-full max-w-[310px]">
-        
+      <!-- Right 5 Cols: Tilted 3D Polaroid Portrait Frame (max-w-[240px] on Mobile, max-w-[310px] on Desktop) -->
+      <div data-fade class="lg:col-span-5 flex justify-center lg:justify-end pt-2 lg:pt-0">
+        <div class="relative w-full max-w-[240px] md:max-w-[310px]">
+          
+          <!-- Floating Sticker Top-Left -->
+          <div class="animate-sticker-1 absolute -top-4 -left-3 sm:-top-5 sm:-left-4 z-20 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-2xl bg-amber-300 text-slate-950 font-hand text-base sm:text-lg font-bold shadow-xl border-2 border-white">
+            ☁️ AWS Certified x2
+          </div>
 
           <!-- Floating Sticker Bottom-Right -->
-          <div class="animate-sticker-2 absolute -bottom-4 -right-3 z-20 px-3.5 py-1.5 rounded-2xl bg-emerald-400 text-slate-950 font-mono text-xs font-extrabold shadow-xl border-2 border-white">
+          <div class="animate-sticker-2 absolute -bottom-3 -right-2 sm:-bottom-4 sm:-right-3 z-20 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-2xl bg-emerald-400 text-slate-950 font-mono text-[10px] sm:text-xs font-extrabold shadow-xl border-2 border-white">
             📍 Thane, MH
           </div>
 
           <!-- Polaroid Frame -->
-          <div class="polaroid-card relative bg-white p-3.5 pb-5 rounded-2xl shadow-2xl border border-slate-200 text-slate-900">
+          <div class="polaroid-card relative bg-white p-3 sm:p-3.5 pb-4 sm:pb-5 rounded-2xl shadow-2xl border border-slate-200 text-slate-900">
             <!-- Washi Tape -->
-            <div class="washi-tape absolute -top-3.5 left-1/2 -translate-x-1/2 w-28 h-7 rounded-sm opacity-95 z-10"></div>
+            <div class="washi-tape absolute -top-3 left-1/2 -translate-x-1/2 w-24 sm:w-28 h-6 sm:h-7 rounded-sm opacity-95 z-10"></div>
 
-            <!-- Cartoon Avatar Container -->
-            <div class="relative aspect-square w-full rounded-xl overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-sky-900 border border-slate-200">
+            <!-- Portrait Container -->
+            <div class="relative aspect-square w-full rounded-xl overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-sky-900 border border-slate-200 group">
               <img
-                id="jay-avatar-img"
-                src="avatar.png"
-                alt="Jay Saharkar — Cartoon Character Avatar"
+                id="jay-portrait-img"
+                src="WhatsApp Image 2026-11-13 at 17.18.50.jpeg"
+                alt="Jay Saharkar — AWS DevOps & Android Developer"
                 class="w-full h-full object-cover object-top"
-                onerror="handleAvatarFallback(this)"
+                onerror="handlePhotoFallback(this)"
               />
+
+              <!-- Instant Swap Photo File Picker -->
+              <label for="photo-upload-input" class="cursor-pointer absolute bottom-2 right-2 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-lg bg-slate-950/85 hover:bg-slate-950 text-white font-mono text-[10px] sm:text-[11px] font-bold backdrop-blur-md flex items-center gap-1 shadow-lg transition-transform hover:scale-105">
+                <i data-lucide="camera" class="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400"></i>
+                <span>Swap Photo</span>
+              </label>
+              <input id="photo-upload-input" type="file" accept="image/*" class="hidden" onchange="previewCustomPhoto(event)" />
             </div>
 
             <!-- Polaroid Handwritten Caption -->
-            <div class="mt-3.5 flex items-center justify-between px-1">
+            <div class="mt-3 flex items-center justify-between px-1">
               <div>
-                <div class="font-hand text-2xl font-bold text-slate-900 leading-none">Jay Saharkar 🚀</div>
-                <div class="font-mono text-[10px] text-slate-500 mt-1">BSc IT &rarr; MSc IT &rarr; Bartech SWE</div>
+                <div class="font-hand text-xl sm:text-2xl font-bold text-slate-900 leading-none">Jay Saharkar 🚀</div>
+                <div class="font-mono text-[9px] sm:text-[10px] text-slate-500 mt-1">BSc IT &rarr; MSc IT &rarr; Bartech SWE</div>
               </div>
-              <span class="px-2 py-1 rounded-lg bg-indigo-50 text-indigo-700 font-mono text-[10px] font-bold">
+              <span class="px-2 py-0.5 sm:py-1 rounded-lg bg-indigo-50 text-indigo-700 font-mono text-[9px] sm:text-[10px] font-bold">
                 Aug '26–Now
               </span>
             </div>
@@ -502,7 +605,7 @@
     </div>
 
     <!-- Bottom Editorial Role Bar (AZAKA Footer Strip) -->
-    <div class="relative z-20 w-full border-t border-white/10 px-5 sm:px-10 py-4 flex flex-wrap items-center justify-between gap-3 text-xs sm:text-[15px] font-bold text-white/90">
+    <div class="relative z-20 w-full border-t border-white/10 px-4 sm:px-10 py-3.5 sm:py-4 flex items-center justify-between gap-2 text-[11px] sm:text-[15px] font-bold text-white/90">
       <span data-fade>AWS Cloud Architecture</span>
       <span data-fade class="hidden sm:inline">DevOps &amp; Terraform</span>
       <span data-fade class="hidden md:inline">Native Kotlin Android</span>
@@ -513,56 +616,58 @@
   <!-- ==========================================================================
        PART 2: PLAYFUL CREATIVE DEV PLAYGROUND SECTIONS
        ========================================================================== -->
-  <main id="playground-world" class="max-w-7xl mx-auto px-4 sm:px-8 pt-16 pb-28 space-y-20">
+  <main id="playground-world" class="max-w-7xl mx-auto px-4 sm:px-8 md:px-12 py-12 md:py-24 pb-28 space-y-12 md:space-y-24">
 
     <!-- ========================================================================
          SECTION A: FORWARD-FACING SUPERBIKE & TURBO CAR CAREER ROADTRIP
          ======================================================================== -->
-    <section id="roadtrip" class="themed-card rounded-3xl border p-6 sm:p-8 shadow-xl relative overflow-hidden">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+    <section id="roadtrip" class="themed-card rounded-3xl border p-5 sm:p-8 shadow-xl relative overflow-hidden">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
         <div>
-          <span class="themed-primary-soft px-3 py-1 rounded-full font-mono text-xs font-bold">🛣️ INTERACTIVE CAREER ROADTRIP</span>
-          <h2 class="font-display text-2xl sm:text-4xl font-extrabold mt-2 tracking-tight">
+          <span class="themed-primary-soft px-3 py-1 rounded-full font-mono text-[11px] sm:text-xs font-bold">🛣️ INTERACTIVE CAREER ROADTRIP</span>
+          <h2 class="font-display text-xl sm:text-4xl font-extrabold mt-2 tracking-tight">
             Mumbai Lecture Halls &rarr; Thane Cloud Engineering
           </h2>
           <p class="text-xs sm:text-sm themed-muted mt-1">
-            Choose your ride (<strong>Superbike</strong> or <strong>Turbo Car</strong>), honk the horn, scrub the throttle, or launch <strong>Auto-Drive Tour</strong>!
+            Pick your ride, honk the horn, scrub the throttle, or launch <strong>Auto-Drive Tour</strong>!
           </p>
         </div>
 
-        <!-- Vehicle Switcher, Horn & Auto-Drive (No Flip Button — Permanently Forward-Facing) -->
-        <div class="flex flex-wrap items-center gap-2">
-          <div class="themed-subcard p-1 rounded-xl border inline-flex items-center gap-1">
-            <button id="btn-vehicle-bike" onclick="setVehicle('bike')" style="background-color: var(--accent-primary);" class="px-3 py-1.5 rounded-lg text-slate-950 text-xs font-extrabold shadow-sm transition-all">
-              🏍️ Superbike
+        <!-- Clean 2-Row Touch-Friendly Control Strip on Mobile -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+          <div class="themed-subcard p-1 rounded-xl border grid grid-cols-2 sm:inline-flex items-center gap-1">
+            <button id="btn-vehicle-bike" onclick="setVehicle('bike')" style="background-color: var(--accent-primary);" class="px-3 py-1.5 rounded-lg text-slate-950 text-xs font-extrabold shadow-sm transition-all text-center">
+              🏍️ Bike
             </button>
-            <button id="btn-vehicle-car" onclick="setVehicle('car')" class="px-3 py-1.5 rounded-lg text-xs font-bold themed-muted hover:opacity-80 transition-all">
-              🏎️ Turbo Car
+            <button id="btn-vehicle-car" onclick="setVehicle('car')" class="px-3 py-1.5 rounded-lg text-xs font-bold themed-muted hover:opacity-80 transition-all text-center">
+              🏎️ Car
             </button>
           </div>
 
-          <button onclick="honkHorn()" class="themed-card px-3.5 py-2 rounded-xl border text-xs font-bold hover:scale-105 active:scale-95 transition-transform">
-            📣 Beep!
-          </button>
+          <div class="grid grid-cols-2 sm:flex items-center gap-2">
+            <button onclick="honkHorn()" class="themed-card px-3.5 py-2 rounded-xl border text-xs font-bold hover:scale-105 active:scale-95 transition-transform text-center">
+              📣 Beep!
+            </button>
 
-          <button id="auto-drive-btn" onclick="toggleAutoDrive()" style="background-color: var(--accent-secondary);" class="px-4 py-2 rounded-xl text-white text-xs font-extrabold shadow-md hover:opacity-95 transition-all">
-            ▶️ Auto-Drive Tour
-          </button>
+            <button id="auto-drive-btn" onclick="toggleAutoDrive()" style="background-color: var(--accent-secondary);" class="px-3.5 py-2 rounded-xl text-white text-xs font-extrabold shadow-md hover:opacity-95 transition-all text-center">
+              ▶️ Auto-Drive
+            </button>
+          </div>
         </div>
       </div>
 
       <!-- Scenic Highway Box -->
-      <div class="relative rounded-2xl overflow-hidden border border-sky-400/30 bg-gradient-to-b from-sky-200 via-indigo-100 to-emerald-100 p-4 sm:p-6">
-        <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-mono font-bold text-slate-800 mb-2">
-          <span>📍 START: S.M. Shetty Mumbai (2019)</span>
-          <span id="road-milestone-banner" class="px-3 py-1 rounded-full bg-white/95 text-indigo-700 shadow-sm">
+      <div class="relative rounded-2xl overflow-hidden border border-sky-400/30 bg-gradient-to-b from-sky-200 via-indigo-100 to-emerald-100 p-3.5 sm:p-6">
+        <div class="flex flex-wrap items-center justify-between gap-1.5 text-[11px] sm:text-xs font-mono font-bold text-slate-800 mb-2">
+          <span class="hidden sm:inline">📍 START: S.M. Shetty Mumbai (2019)</span>
+          <span id="road-milestone-banner" class="px-2.5 py-1 rounded-full bg-white/95 text-indigo-700 shadow-sm text-[11px] sm:text-xs">
             Stop 1/4: BSc IT @ S.M. Shetty (CGPI: 7.52)
           </span>
-          <span>🏁 DEST: Bartech Thane (Present)</span>
+          <span class="hidden sm:inline">🏁 DEST: Bartech Thane (Present)</span>
         </div>
 
         <!-- Winding Highway SVG + Forward-Facing Vehicle -->
-        <div class="relative w-full h-36 sm:h-44 select-none">
+        <div class="relative w-full h-32 sm:h-44 select-none">
           <svg id="highway-svg" viewBox="0 0 1000 180" preserveAspectRatio="none" class="w-full h-full overflow-visible">
             <path d="M0,150 Q220,70 480,140 T1000,120 L1000,180 L0,180 Z" fill="#86EFAC" opacity="0.7" />
             <path d="M0,160 Q350,95 680,145 T1000,135 L1000,180 L0,180 Z" fill="#4ADE80" opacity="0.55" />
@@ -596,42 +701,42 @@
             <div id="honk-bubble" class="hidden -top-8 left-1/2 -translate-x-1/2 absolute px-2 py-0.5 rounded-lg bg-amber-400 text-slate-950 font-mono text-[10px] font-extrabold whitespace-nowrap shadow">
               MEEP MEEP! 🏍️💨
             </div>
-            <div class="vehicle-vibe text-3xl sm:text-4xl drop-shadow-md">
+            <div class="vehicle-vibe text-2xl sm:text-4xl drop-shadow-md">
               <span id="vehicle-sprite" style="display: inline-block; transform: scaleX(-1);">🏍️</span>
             </div>
           </div>
         </div>
 
         <!-- Throttle Slider -->
-        <div class="mt-2 flex items-center gap-3">
-          <span class="font-mono text-[11px] font-bold text-slate-800">THROTTLE</span>
+        <div class="mt-2 flex items-center gap-2.5">
+          <span class="font-mono text-[10px] sm:text-[11px] font-bold text-slate-800">THROTTLE</span>
           <input id="road-slider" type="range" min="0" max="100" value="0" oninput="onSliderDrive(this.value)" class="w-full accent-indigo-600 cursor-pointer h-2 bg-white/90 rounded-lg" />
-          <span id="road-percent" class="font-mono text-xs font-extrabold text-indigo-900 w-10 text-right">0%</span>
+          <span id="road-percent" class="font-mono text-xs font-extrabold text-indigo-900 w-9 text-right">0%</span>
         </div>
       </div>
 
-      <!-- 4 Milestone Story Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
-        <div onclick="driveToStop(0)" id="stop-card-0" class="milestone-card cursor-pointer rounded-2xl p-4 border-2 border-sky-400 bg-sky-400/10 transition-all">
-          <div class="flex items-center justify-between text-xs font-mono font-bold themed-primary-text">
-            <span>STOP 01 • JUN '19–JUN '22</span>
+      <!-- 4 Milestone Story Cards (Horizontal Swipe Snap on Mobile, 4-Col Grid on Desktop) -->
+      <div class="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mt-5 overflow-x-auto pb-2 sm:pb-0 snap-x snap-mandatory">
+        <div onclick="driveToStop(0)" id="stop-card-0" class="milestone-card shrink-0 w-[230px] sm:w-auto snap-center cursor-pointer rounded-2xl p-4 border-2 border-sky-400 bg-sky-400/10 transition-all">
+          <div class="flex items-center justify-between text-[11px] font-mono font-bold themed-primary-text">
+            <span>STOP 01 • JUN '19–'22</span>
             <span>🎓</span>
           </div>
           <h3 class="font-bold text-sm mt-1.5">Bachelors in Information Technology</h3>
           <p class="text-xs themed-muted mt-1">Bunts Sangha's S.M. Shetty, Mumbai • <strong>CGPI: 7.52</strong></p>
         </div>
 
-        <div onclick="driveToStop(1)" id="stop-card-1" class="milestone-card cursor-pointer themed-subcard rounded-2xl p-4 border transition-all">
-          <div class="flex items-center justify-between text-xs font-mono font-bold text-orange-500">
-            <span>STOP 02 • JUN '22–JUL '24</span>
+        <div onclick="driveToStop(1)" id="stop-card-1" class="milestone-card shrink-0 w-[230px] sm:w-auto snap-center cursor-pointer themed-subcard rounded-2xl p-4 border transition-all">
+          <div class="flex items-center justify-between text-[11px] font-mono font-bold text-orange-500">
+            <span>STOP 02 • JUN '22–'24</span>
             <span>📚</span>
           </div>
           <h3 class="font-bold text-sm mt-1.5">Masters in Information Technology</h3>
           <p class="text-xs themed-muted mt-1">Bunts Sangha's S.M. Shetty, Mumbai • <strong>CGPI: 6.54</strong></p>
         </div>
 
-        <div onclick="driveToStop(2)" id="stop-card-2" class="milestone-card cursor-pointer themed-subcard rounded-2xl p-4 border transition-all">
-          <div class="flex items-center justify-between text-xs font-mono font-bold text-sky-400">
+        <div onclick="driveToStop(2)" id="stop-card-2" class="milestone-card shrink-0 w-[230px] sm:w-auto snap-center cursor-pointer themed-subcard rounded-2xl p-4 border transition-all">
+          <div class="flex items-center justify-between text-[11px] font-mono font-bold text-sky-400">
             <span>STOP 03 • JAN–MAR '25</span>
             <span>☁️</span>
           </div>
@@ -639,9 +744,9 @@
           <p class="text-xs themed-muted mt-1">AWS Academy Cloud Foundations &amp; Architecting + Grade A AWS &amp; DevOps (Insys)</p>
         </div>
 
-        <div onclick="driveToStop(3)" id="stop-card-3" class="milestone-card cursor-pointer themed-subcard rounded-2xl p-4 border transition-all">
-          <div class="flex items-center justify-between text-xs font-mono font-bold text-emerald-400">
-            <span>STOP 04 • AUG '26–PRESENT</span>
+        <div onclick="driveToStop(3)" id="stop-card-3" class="milestone-card shrink-0 w-[230px] sm:w-auto snap-center cursor-pointer themed-subcard rounded-2xl p-4 border transition-all">
+          <div class="flex items-center justify-between text-[11px] font-mono font-bold text-emerald-400">
+            <span>STOP 04 • AUG '26–NOW</span>
             <span>🏁</span>
           </div>
           <h3 class="font-bold text-sm mt-1.5">Software Engineer @ Bartech</h3>
@@ -653,34 +758,34 @@
     <!-- ========================================================================
          SECTION B: INTERACTIVE AWS-FIRST & ANDROID ENGINEERING BENTO GRID
          ======================================================================== -->
-    <section id="aws-lab" class="space-y-6">
+    <section id="aws-lab" class="space-y-5">
       <div>
-        <span class="themed-primary-soft px-3 py-1 rounded-full font-mono text-xs font-bold">01 // PRIMARY FOCUS — AWS CLOUD &amp; DEVOPS</span>
-        <h2 class="font-display text-3xl sm:text-4xl font-extrabold mt-2 tracking-tight">AWS Infrastructure &amp; CI/CD Lab</h2>
-        <p class="text-sm themed-muted mt-1">Inspect production AWS services at Bartech Data Systems or trigger the live Jenkins + Terraform + Kubernetes pipeline simulator.</p>
+        <span class="themed-primary-soft px-3 py-1 rounded-full font-mono text-[11px] sm:text-xs font-bold">01 // PRIMARY FOCUS — AWS CLOUD &amp; DEVOPS</span>
+        <h2 class="font-display text-2xl sm:text-4xl font-extrabold mt-2 tracking-tight">AWS Infrastructure &amp; CI/CD Lab</h2>
+        <p class="text-xs sm:text-sm themed-muted mt-1">Inspect production AWS services at Bartech Data Systems or trigger the live Jenkins + Terraform + Kubernetes pipeline simulator.</p>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
         <!-- Left 7 Cols: AWS Service Explorer -->
-        <div class="lg:col-span-7 themed-card rounded-3xl border p-6 sm:p-7 shadow-lg space-y-5">
+        <div class="lg:col-span-7 themed-card rounded-3xl border p-5 sm:p-7 shadow-lg space-y-5">
           <div class="flex items-center justify-between">
-            <h3 class="font-display font-bold text-lg flex items-center gap-2">
+            <h3 class="font-display font-bold text-base sm:text-lg flex items-center gap-2">
               <span class="text-xl">☁️</span> Production AWS Cloud Stack
             </h3>
             <span class="font-mono text-[11px] px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-400 font-bold">ap-south-1</span>
           </div>
 
           <div class="flex flex-wrap gap-2">
-            <button onclick="selectAwsService('ec2', this)" class="aws-pill px-3 py-1.5 rounded-xl font-mono text-xs font-extrabold bg-sky-400 text-slate-950 shadow-sm">EC2 &amp; Win Server 2022</button>
-            <button onclick="selectAwsService('vpc', this)" class="aws-pill themed-subcard px-3 py-1.5 rounded-xl font-mono text-xs font-semibold border hover:border-sky-400">VPC, Subnets &amp; IGW</button>
-            <button onclick="selectAwsService('iis', this)" class="aws-pill themed-subcard px-3 py-1.5 rounded-xl font-mono text-xs font-semibold border hover:border-sky-400">IIS Multi-Port &amp; DNS</button>
-            <button onclick="selectAwsService('terraform', this)" class="aws-pill themed-subcard px-3 py-1.5 rounded-xl font-mono text-xs font-semibold border hover:border-sky-400">Terraform IaC</button>
-            <button onclick="selectAwsService('k8s', this)" class="aws-pill themed-subcard px-3 py-1.5 rounded-xl font-mono text-xs font-semibold border hover:border-sky-400">Docker, K8s &amp; Helm</button>
-            <button onclick="selectAwsService('aws-core', this)" class="aws-pill themed-subcard px-3 py-1.5 rounded-xl font-mono text-xs font-semibold border hover:border-sky-400">IAM, S3, ELB/ASG, RDS, Lambda</button>
+            <button onclick="selectAwsService('ec2', this)" class="aws-pill px-3 py-1.5 rounded-xl font-mono text-[11px] sm:text-xs font-extrabold bg-sky-400 text-slate-950 shadow-sm">EC2 &amp; Win Server 2022</button>
+            <button onclick="selectAwsService('vpc', this)" class="aws-pill themed-subcard px-3 py-1.5 rounded-xl font-mono text-[11px] sm:text-xs font-semibold border hover:border-sky-400">VPC, Subnets &amp; IGW</button>
+            <button onclick="selectAwsService('iis', this)" class="aws-pill themed-subcard px-3 py-1.5 rounded-xl font-mono text-[11px] sm:text-xs font-semibold border hover:border-sky-400">IIS Multi-Port &amp; DNS</button>
+            <button onclick="selectAwsService('terraform', this)" class="aws-pill themed-subcard px-3 py-1.5 rounded-xl font-mono text-[11px] sm:text-xs font-semibold border hover:border-sky-400">Terraform IaC</button>
+            <button onclick="selectAwsService('k8s', this)" class="aws-pill themed-subcard px-3 py-1.5 rounded-xl font-mono text-[11px] sm:text-xs font-semibold border hover:border-sky-400">Docker, K8s &amp; Helm</button>
+            <button onclick="selectAwsService('aws-core', this)" class="aws-pill themed-subcard px-3 py-1.5 rounded-xl font-mono text-[11px] sm:text-xs font-semibold border hover:border-sky-400">IAM, S3, ELB/ASG, RDS, Lambda</button>
           </div>
 
-          <div class="themed-subcard rounded-2xl border p-5 space-y-2">
-            <div class="flex items-center justify-between">
+          <div class="themed-subcard rounded-2xl border p-4 sm:p-5 space-y-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
               <span id="aws-insp-title" class="font-bold text-sm themed-primary-text">Windows Server 2022 on AWS EC2</span>
               <span id="aws-insp-tag" class="font-mono text-[10px] px-2 py-0.5 rounded bg-sky-400/15 themed-primary-text font-bold">Bartech Prod</span>
             </div>
@@ -690,7 +795,7 @@
           </div>
 
           <!-- Full AWS & DevOps Skill Matrix -->
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1 font-mono text-[11px]">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 font-mono text-[11px]">
             <div class="themed-subcard p-2.5 rounded-xl border text-center">
               <div class="font-bold">IAM, EC2, EBS, VPC</div>
               <div class="themed-muted text-[10px]">Core Compute &amp; Net</div>
@@ -711,17 +816,17 @@
         </div>
 
         <!-- Right 5 Cols: Jenkins + Terraform CI/CD Runner -->
-        <div class="lg:col-span-5 rounded-3xl bg-neutral-950 text-slate-100 border border-white/15 p-6 shadow-xl flex flex-col justify-between">
+        <div class="lg:col-span-5 rounded-3xl bg-neutral-950 text-slate-100 border border-white/15 p-5 sm:p-6 shadow-xl flex flex-col justify-between">
           <div>
-            <div class="flex items-center justify-between pb-3 mb-4 border-b border-white/10">
+            <div class="flex flex-wrap items-center justify-between gap-2 pb-3 mb-4 border-b border-white/10">
               <div class="flex items-center gap-2">
                 <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
                 <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-                <span class="font-mono text-xs text-slate-400 ml-1">jenkins-ec2-pipeline</span>
+                <span class="font-mono text-xs text-slate-400 ml-1">jenkins-ec2</span>
               </div>
-              <button onclick="runCicdPipeline()" class="px-3 py-1 rounded-lg bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-mono text-xs font-extrabold transition-colors">
-                ▶ Run Jenkins + Terraform CI/CD
+              <button onclick="runCicdPipeline()" class="px-3 py-1.5 rounded-lg bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-mono text-[11px] sm:text-xs font-extrabold transition-colors">
+                ▶ Run CI/CD
               </button>
             </div>
 
@@ -729,22 +834,22 @@
               Cloud &amp; DevOps Infrastructure Automation
             </div>
 
-            <div class="space-y-2 font-mono text-xs">
-              <div id="stage-1" class="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
-                <span>1. GitHub Webhook &rarr; Jenkins</span>
-                <span class="stage-status text-slate-400">READY</span>
+            <div class="space-y-2 font-mono text-[11px] sm:text-xs">
+              <div id="stage-1" class="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between gap-2">
+                <span>1. GitHub &rarr; Jenkins</span>
+                <span class="stage-status text-slate-400 shrink-0">READY</span>
               </div>
-              <div id="stage-2" class="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
-                <span>2. Terraform IaC (EC2, S3, DynamoDB)</span>
-                <span class="stage-status text-slate-400">READY</span>
+              <div id="stage-2" class="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between gap-2">
+                <span>2. Terraform IaC (EC2/S3)</span>
+                <span class="stage-status text-slate-400 shrink-0">READY</span>
               </div>
-              <div id="stage-3" class="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
-                <span>3. Docker Build (Flask &amp; Node.js)</span>
-                <span class="stage-status text-slate-400">READY</span>
+              <div id="stage-3" class="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between gap-2">
+                <span>3. Docker (Flask/Node)</span>
+                <span class="stage-status text-slate-400 shrink-0">READY</span>
               </div>
-              <div id="stage-4" class="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
-                <span>4. Helm Scale &rarr; K8s Cluster</span>
-                <span class="stage-status text-slate-400">READY</span>
+              <div id="stage-4" class="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between gap-2">
+                <span>4. Helm &rarr; K8s Cluster</span>
+                <span class="stage-status text-slate-400 shrink-0">READY</span>
               </div>
             </div>
           </div>
@@ -759,15 +864,15 @@
     <!-- ========================================================================
          SECTION C: NATIVE ANDROID (KOTLIN), NODE.JS & MS SQL SERVER
          ======================================================================== -->
-    <section id="android-lab" class="space-y-6">
+    <section id="android-lab" class="space-y-5">
       <div>
-        <span class="px-3 py-1 rounded-full bg-orange-500/15 text-orange-400 font-mono text-xs font-bold">02 // PRIORITY #2 — NATIVE ANDROID &amp; BACKEND</span>
-        <h2 class="font-display text-3xl sm:text-4xl font-extrabold mt-2 tracking-tight">Kotlin Android + Node.js REST + MS SQL Server</h2>
-        <p class="text-sm themed-muted mt-1">Enterprise field-operations mobile app &amp; backend architecture engineered at Bartech Data Systems Pvt Ltd.</p>
+        <span class="px-3 py-1 rounded-full bg-orange-500/15 text-orange-400 font-mono text-[11px] sm:text-xs font-bold">02 // PRIORITY #2 — NATIVE ANDROID &amp; BACKEND</span>
+        <h2 class="font-display text-2xl sm:text-4xl font-extrabold mt-2 tracking-tight">Kotlin Android + Node.js REST + MS SQL Server</h2>
+        <p class="text-xs sm:text-sm themed-muted mt-1">Enterprise field-operations mobile app &amp; backend architecture engineered at Bartech Data Systems Pvt Ltd.</p>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-        <div class="lg:col-span-7 themed-card rounded-3xl border p-6 sm:p-7 shadow-lg grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-center">
+        <div class="lg:col-span-7 themed-card rounded-3xl border p-5 sm:p-7 shadow-lg grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="themed-subcard p-4 rounded-2xl border">
             <div class="text-lg mb-1">📱</div>
             <h3 class="font-bold text-sm">Android (Kotlin, ViewBinding, Material)</h3>
@@ -795,7 +900,7 @@
 
         <!-- Pocket Phone Geotagged Check-In Simulator -->
         <div class="lg:col-span-5 flex justify-center">
-          <div class="w-full max-w-[300px] rounded-[2.2rem] bg-neutral-900 p-3 shadow-2xl border-2 border-white/15 text-white">
+          <div class="w-full max-w-[290px] sm:max-w-[300px] rounded-[2.2rem] bg-neutral-900 p-3 shadow-2xl border-2 border-white/15 text-white">
             <div class="bg-neutral-950 rounded-[1.7rem] p-4 space-y-3.5">
               <div class="flex items-center justify-between text-[10px] font-mono text-slate-400">
                 <span>Kotlin • ViewBinding</span>
@@ -836,62 +941,7 @@
        PART 3: EXACT OFFICIAL 1-PAGE PRINTABLE CV ('JayCV(AWS& ANDROID)(13-11-26).pdf')
        (Hidden in Portfolio Mode; Shown in Strict CV Mode & @media print)
        ========================================================================== -->
-  <section id="formal-cv-sheet" class="hidden max-w-[820px] mx-auto my-8 bg-white text-black p-8 sm:p-10 rounded-2xl shadow-2xl border border-slate-200">
-    <!-- Top Banner in Strict CV Screen Mode Only -->
-    <div class="no-print mb-5 pb-3 border-b border-slate-200 flex items-center justify-between gap-2">
-      <span class="font-mono text-xs font-bold text-indigo-600">📄 Official 1-Page CV Preview (Print-Ready A4)</span>
-      <div class="flex items-center gap-2">
-        <button onclick="toggleStrictCV()" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold">
-          &larr; Back to Interactive Portfolio
-        </button>
-        <button onclick="window.print()" class="px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold">
-          🖨️ Print Now
-        </button>
-      </div>
-    </div>
-
-    <!-- EXACT OFFICIAL CV CONTENT WORD-FOR-WORD -->
-    <div class="space-y-3.5 text-[12.5px] leading-[1.42] text-slate-950 font-sans">
-      <!-- Header -->
-      <header class="border-b-2 border-slate-950 pb-2.5">
-        <h1 class="text-2xl font-extrabold tracking-tight text-black">Jay Saharkar</h1>
-        <p class="text-sm font-bold text-slate-800 mt-0.5">AWS DevOps | Android Developer</p>
-        <div class="flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-800 mt-1.5 font-medium">
-          <span>8850517641</span>
-          <span>|</span>
-          <span>jaysaharkar@gmail.com</span>
-          <span>|</span>
-          <span>Thane, MH, India</span>
-          <span>|</span>
-          <span>linkedin.com/in/jay-saharkar</span>
-        </div>
-      </header>
-
-      <!-- Professional Summary -->
-      <div>
-        <h2 class="text-xs font-extrabold uppercase tracking-wider text-black border-b border-slate-400 pb-0.5 mb-1.5">
-          PROFESSIONAL SUMMARY
-        </h2>
-        <p class="text-slate-900">
-          MSc Information Technology graduate and Software Engineer with hands-on experience in AWS cloud infrastructure, application development and backend integration. Skilled in AWS services, Terraform, Docker, Kubernetes and Jenkins, with practical exposure to infrastructure provisioning, cloud networking and application deployment. Interested in building secure, scalable and highly available cloud solutions and pursuing a career in AWS Cloud Engineering and DevOps
-        </p>
-      </div>
-
-      <!-- Experience -->
-      <div>
-        <h2 class="text-xs font-extrabold uppercase tracking-wider text-black border-b border-slate-400 pb-0.5 mb-1.5">
-          EXPERIENCE
-        </h2>
-        <div class="flex flex-wrap items-baseline justify-between gap-2">
-          <div>
-            <span class="font-bold text-black">Software Engineer</span> | <span class="font-semibold text-slate-900">Bartech Data Systems Pvt Ltd</span>
-          </div>
-          <div class="text-xs font-semibold text-slate-800">
-            Aug '26- Present | Thane, Maharashtra, India
-          </div>
-        </div>
-        <p class="text-slate-900 mt-1">
-          Develop and maintain enterprise mobile and cloud-based applications, with responsibilities spanning AWS infrastructure management, Android development, backend API integration, and database management. Work on configuring cloud environments, deploying business applications, and maintaining reliable application infrastructure.
+  <section id="formal-cv-sheet" class="hidden max-w-[820px] mx-auto my-6 sm:my-8 bg-white text-black p-5 sm:p-10 rounded-2xl shadow-2xl border border-slate-200">
         </p>
 
         <div class="mt-2">
@@ -982,10 +1032,18 @@
   <!-- ==========================================================================
        FLOATING STICKY NOTE CREATOR DOCK (BOTTOM-LEFT)
        ========================================================================== -->
-  <div id="sticky-dock" class="fixed bottom-5 left-5 z-40 flex items-center gap-2">
-    <button onclick="openNoteModal()" style="background-color: var(--accent-primary);" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-slate-950 text-xs font-extrabold shadow-xl hover:scale-105 active:scale-95 transition-transform">
-      <span>📝 + Stick a Note</span>
-    </button>
+  <div id="sticky-dock" class="fixed bottom-4 left-4 right-4 sm:right-auto sm:bottom-5 sm:left-5 z-40 flex items-center justify-between sm:justify-start gap-2">
+    <div class="flex items-center gap-2">
+      <!-- Mobile-Only Toggle Pill to Open/Close Swipeable Sticky Notes Carousel -->
+      <button onclick="toggleMobileNotes()" id="mobile-notes-toggle-btn" class="md:hidden inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl bg-amber-300 text-slate-950 text-xs font-extrabold shadow-xl active:scale-95 transition-transform">
+        <span>📝 Notes (<span id="dock-mobile-note-count">4</span>)</span>
+      </button>
+
+      <button onclick="openNoteModal()" style="background-color: var(--accent-primary);" class="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2.5 rounded-2xl text-slate-950 text-xs font-extrabold shadow-xl hover:scale-105 active:scale-95 transition-transform">
+        <span>+ Stick a Note</span>
+      </button>
+    </div>
+
     <button onclick="resetStickyNotes()" class="themed-card px-3 py-2.5 rounded-2xl border text-xs font-bold shadow-md hover:opacity-90" title="Reset Sticky Notes">
       ↺ Reset
     </button>
@@ -1033,6 +1091,7 @@
   <script>
     // Hoisted Global State Variables
     var isStrictCV = false;
+    var isMobileNotesOpen = false;
     var selectedNoteColor = '#FEF08A';
     var topZIndex = 45;
     var autoDriveInterval = null;
@@ -1044,6 +1103,31 @@
 
     if (typeof lucide !== 'undefined') {
       lucide.createIcons();
+    }
+
+    function toggleMobileMenu(forceState) {
+      const drawer = document.getElementById('mobile-nav-drawer');
+      if (!drawer) return;
+      const shouldOpen = typeof forceState === 'boolean' ? forceState : drawer.classList.contains('hidden');
+      drawer.classList.toggle('hidden', !shouldOpen);
+    }
+
+    function toggleMobileNotes(forceState) {
+      isMobileNotesOpen = typeof forceState === 'boolean' ? forceState : !isMobileNotesOpen;
+      document.body.classList.toggle('mobile-notes-open', isMobileNotesOpen);
+      const header = document.getElementById('mobile-notes-header');
+      if (header) {
+        header.classList.toggle('hidden', !isMobileNotesOpen);
+        header.classList.toggle('flex', isMobileNotesOpen);
+      }
+    }
+
+    function updateNoteCounters() {
+      const count = stickyNotes ? stickyNotes.length : 0;
+      ['hero-mobile-note-count', 'dock-mobile-note-count', 'mobile-menu-note-count'].forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = count;
+      });
     }
 
     /* --------------------------------------------------------------------------
@@ -1291,59 +1375,38 @@
     }
 
     /* --------------------------------------------------------------------------
-       4. CUSTOM ILLUSTRATED CARTOON AVATAR FALLBACK (IF avatar.png NOT YET SAVED)
+       4. POLAROID PHOTO FALLBACK & INSTANT SWAP FILE PICKER
        -------------------------------------------------------------------------- */
-    function handleAvatarFallback(img) {
+    function handlePhotoFallback(img) {
       img.onerror = null;
-      const svgAvatar = `data:image/svg+xml;utf8,` + encodeURIComponent(`
+      const svgFallback = `data:image/svg+xml;utf8,` + encodeURIComponent(`
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320">
           <defs>
             <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0%" stop-color="#0F172A"/>
-              <stop offset="55%" stop-color="#1E293B"/>
-              <stop offset="100%" stop-color="#0369A1"/>
+              <stop offset="100%" stop-color="#1E3A8A"/>
             </linearGradient>
           </defs>
           <rect width="320" height="320" fill="url(#bg)"/>
-          <!-- Subtle Cloud & Tech Glow -->
-          <circle cx="160" cy="145" r="105" fill="#38BDF8" opacity="0.12"/>
-          <!-- Navy Blazer Shoulders -->
-          <path d="M58 320 C62 242, 108 224, 160 224 C212 224, 258 242, 262 320 Z" fill="#172554"/>
-          <!-- Crisp White Shirt V-Neck -->
-          <polygon points="128,226 192,226 160,295" fill="#F8FAFC"/>
-          <polygon points="128,226 146,226 144,254 123,245" fill="#E2E8F0"/>
-          <polygon points="192,226 174,226 176,254 197,245" fill="#E2E8F0"/>
-          <!-- Neck -->
-          <rect x="143" y="186" width="34" height="44" rx="14" fill="#C68652"/>
-          <!-- Ears -->
-          <ellipse cx="105" cy="146" rx="11" ry="17" fill="#C68652"/>
-          <ellipse cx="215" cy="146" rx="11" ry="17" fill="#C68652"/>
-          <!-- Face Shape -->
-          <path d="M108 118 C108 78, 212 78, 212 118 L210 156 C208 188, 184 204, 160 204 C136 204, 112 188, 110 156 Z" fill="#D4945F"/>
-          <!-- Light Jawline Stubble Shadow -->
-          <path d="M111 154 C113 186, 136 203, 160 203 C184 203, 207 186, 209 154 C205 178, 184 194, 160 194 C136 194, 115 178, 111 154 Z" fill="#3B2314" opacity="0.24"/>
-          <!-- Wavy Messy Black Hair -->
-          <path d="M104 128 C98 92, 114 60, 152 56 C174 52, 208 60, 218 86 C226 104, 220 124, 214 132 C212 108, 198 98, 182 96 C164 104, 138 102, 120 94 C112 104, 108 116, 104 128 Z" fill="#0F172A"/>
-          <path d="M118 72 C134 52, 178 48, 204 68 C216 78, 216 94, 204 96 C186 88, 154 92, 132 86 Z" fill="#1E293B"/>
-          <!-- Expressive Eyebrows -->
-          <path d="M123 125 Q137 119 150 124" stroke="#0F172A" stroke-width="5" stroke-linecap="round" fill="none"/>
-          <path d="M170 124 Q183 119 197 125" stroke="#0F172A" stroke-width="5" stroke-linecap="round" fill="none"/>
-          <!-- Eyes -->
-          <ellipse cx="137" cy="136" rx="8" ry="5.5" fill="#FFFFFF"/>
-          <circle cx="137" cy="136" r="4" fill="#1E1B18"/>
-          <circle cx="138.5" cy="134.5" r="1.4" fill="#FFFFFF"/>
-          <ellipse cx="183" cy="136" rx="8" ry="5.5" fill="#FFFFFF"/>
-          <circle cx="183" cy="136" r="4" fill="#1E1B18"/>
-          <circle cx="184.5" cy="134.5" r="1.4" fill="#FFFFFF"/>
-          <!-- Nose -->
-          <path d="M160 135 L156 155 Q160 159 165 155" stroke="#9A5B32" stroke-width="3" stroke-linecap="round" fill="none"/>
-          <!-- Mustache -->
-          <path d="M141 167 Q160 160 179 167 Q173 171 160 168 Q147 171 141 167 Z" fill="#1E1B18"/>
-          <!-- Warm Confident Smile -->
-          <path d="M145 174 Q160 183 175 174" stroke="#7C2D12" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+          <circle cx="160" cy="118" r="52" fill="#38BDF8" opacity="0.25"/>
+          <circle cx="160" cy="114" r="40" fill="#FDBA74"/>
+          <path d="M84 285 C84 215, 236 215, 236 285 Z" fill="#1E293B"/>
+          <text x="160" y="304" font-family="monospace" font-size="13" font-weight="bold" fill="#38BDF8" text-anchor="middle">JAY SAHARKAR • CLOUD &amp; ANDROID</text>
         </svg>
       `);
-      img.src = svgAvatar;
+      img.src = svgFallback;
+    }
+
+    function previewCustomPhoto(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = document.getElementById('jay-portrait-img');
+        if (img) img.src = e.target.result;
+        showToast('Portrait Photo Updated! 📸');
+      };
+      reader.readAsDataURL(file);
     }
 
     /* --------------------------------------------------------------------------
@@ -1406,6 +1469,7 @@
       const layer = document.getElementById('sticky-notes-layer');
       if (!layer) return;
       layer.innerHTML = '';
+      updateNoteCounters();
 
       stickyNotes.forEach((note) => {
         const el = document.createElement('div');
@@ -1502,6 +1566,10 @@
     }
 
     function focusStickyNotes() {
+      if (window.innerWidth < 768) {
+        toggleMobileNotes(true);
+        return;
+      }
       topZIndex += 5;
       document.querySelectorAll('.sticky-note').forEach((el, idx) => {
         el.style.zIndex = topZIndex + idx;
@@ -1546,7 +1614,10 @@
       renderStickyNotes();
       input.value = '';
       closeNoteModal();
-      showToast('Note Pinned to Screen! 📌');
+      if (window.innerWidth < 768) {
+        toggleMobileNotes(true);
+      }
+      showToast('Note Pinned to Wall! 📌');
     }
 
     /* --------------------------------------------------------------------------
