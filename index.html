@@ -23,6 +23,10 @@
   <!-- GSAP 3 via CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
 
+  <!-- Three.js + GLTFLoader via CDN for Mini Jay .glb Character -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+
   <!-- Lucide Icons via CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -321,6 +325,8 @@
     body.strict-cv-preview #playground-world,
     body.strict-cv-preview #sticky-notes-layer,
     body.strict-cv-preview #sticky-dock,
+    body.strict-cv-preview #mini-jay-stage,
+    body.strict-cv-preview #mini-jay-nametag,
     body.strict-cv-preview .cursor-dot,
     body.strict-cv-preview .cursor-ring {
       display: none !important;
@@ -352,6 +358,8 @@
       #confetti-canvas,
       #toast,
       #mobile-notes-header,
+      #mini-jay-stage,
+      #mini-jay-nametag,
       .cursor-dot,
       .cursor-ring,
       .no-print {
@@ -376,6 +384,17 @@
   <div id="cursor-ring" class="cursor-ring">
     <span class="chev">◀</span>
     <span class="chev">▶</span>
+  </div>
+
+  <!-- ==========================================================================
+       3D MINI JAY CHARACTER OVERLAY STAGE & FLOATING NAME TAG
+       ========================================================================== -->
+  <div id="mini-jay-stage" class="fixed inset-0 pointer-events-none z-30 overflow-hidden">
+    <canvas id="mini-jay-canvas" class="w-full h-full block"></canvas>
+  </div>
+  <div id="mini-jay-nametag" class="fixed pointer-events-none z-30 -translate-x-1/2 -translate-y-full px-2.5 py-1 rounded-full bg-sky-400/95 text-slate-950 font-mono text-[10px] font-extrabold shadow-lg border border-white flex items-center gap-1 transition-opacity duration-300 opacity-0">
+    <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-ping"></span>
+    <span id="mini-jay-status">JAY • GUIDE</span>
   </div>
 
   <!-- Confetti Canvas -->
@@ -466,36 +485,15 @@
   </header>
 
   <!-- ==========================================================================
-       PART 1: AZAKA 360° 2D/3D POINTER-GAZE HERO + 3D POLAROID PORTRAIT ('jay.jpeg')
+       PART 1: EDITORIAL KINETIC HERO + 3D POLAROID PORTRAIT ('jay.jpeg')
        ========================================================================== -->
-  <section id="azaka-hero" style="perspective: 1200px;" class="relative md:min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-[#050505] text-white flex flex-col justify-between">
+  <section id="azaka-hero" class="relative md:min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-[#050505] text-white flex flex-col justify-between">
     
-    <!-- Layer 0A: Procedural Interactive Cloud-Grid Canvas -->
-    <canvas id="cloud-grid-canvas" class="absolute inset-0 z-0 h-full w-full opacity-55"></canvas>
-
-    <!-- Layer 0B: AZAKA Poster & Direct-Source Pointer-Scrubbed MP4 (Full X/Y 3D Gaze Tilt) -->
-    <img
-      id="azaka-poster"
-      src="https://media.prettysites.io/products/azaka/v2/poster.jpg"
-      alt=""
-      onerror="this.style.display='none'"
-      style="will-change: transform;"
-      class="absolute inset-0 z-[1] h-full w-full object-cover transition-opacity duration-700 opacity-65"
-    />
-    <video
-      id="azaka-video"
-      src="https://media.prettysites.io/products/azaka/v2/azaka-scrub.mp4"
-      poster="https://media.prettysites.io/products/azaka/v2/poster.jpg"
-      muted
-      playsInline
-      webkit-playsinline="true"
-      preload="auto"
-      style="will-change: transform;"
-      class="absolute inset-0 z-[2] h-full w-full object-cover transition-opacity duration-500 opacity-0"
-    ></video>
+    <!-- Layer 0: Interactive Cloud-Grid Canvas -->
+    <canvas id="cloud-grid-canvas" class="absolute inset-0 z-0 h-full w-full opacity-75"></canvas>
 
     <!-- Atmospheric Vignette -->
-    <div class="pointer-events-none absolute inset-0 z-[3] bg-[radial-gradient(115%_90%_at_50%_50%,rgba(5,5,5,0.22)_30%,rgba(5,5,5,0.82)_100%)]"></div>
+    <div class="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(115%_90%_at_50%_50%,rgba(5,5,5,0.15)_30%,rgba(5,5,5,0.85)_100%)]"></div>
 
     <!-- Desktop Parallax Split Display Headlines -->
     <div id="azaka-parallax" class="hidden md:block pointer-events-none absolute inset-0 z-10">
@@ -528,7 +526,7 @@
         </div>
 
         <p data-fade class="text-sm sm:text-xl font-medium sm:font-semibold leading-[1.55] text-white/90 max-w-xl drop-shadow">
-          MSc IT graduate &amp; Software Engineer building secure, scalable AWS cloud infrastructure, DevOps pipelines, and native Kotlin Android apps[cite: 2, 4, 5].
+          MSc IT graduate &amp; Software Engineer building secure, scalable AWS cloud infrastructure, DevOps pipelines, and native Kotlin Android apps.
         </p>
 
         <!-- Compact Quick-Action Bar -->
@@ -567,7 +565,7 @@
         </div>
       </div>
 
-      <!-- Right 5 Cols: Tilted 3D Polaroid Portrait Frame (Multi-Path Auto-Resolver for jay.jpeg) -->
+      <!-- Right 5 Cols: Tilted 3D Polaroid Portrait Frame ('jay.jpeg') -->
       <div data-fade class="lg:col-span-5 flex justify-center lg:justify-end pt-2 lg:pt-0">
         <div class="relative w-full max-w-[240px] md:max-w-[310px]">
           
@@ -730,7 +728,7 @@
             <span>🎓</span>
           </div>
           <h3 class="font-bold text-sm mt-1.5">Bachelors in Information Technology</h3>
-          <p class="text-xs themed-muted mt-1">Bunts Sangha's S.M. Shetty, Mumbai • <strong>CGPI: 7.52</strong>[cite: 2, 4, 5]</p>
+          <p class="text-xs themed-muted mt-1">Bunts Sangha's S.M. Shetty, Mumbai • <strong>CGPI: 7.52</strong></p>
         </div>
 
         <div onclick="driveToStop(1)" id="stop-card-1" class="milestone-card shrink-0 w-[230px] sm:w-auto snap-center cursor-pointer themed-subcard rounded-2xl p-4 border transition-all">
@@ -739,7 +737,7 @@
             <span>📚</span>
           </div>
           <h3 class="font-bold text-sm mt-1.5">Masters in Information Technology</h3>
-          <p class="text-xs themed-muted mt-1">Bunts Sangha's S.M. Shetty, Mumbai • <strong>CGPI: 6.54</strong>[cite: 2, 4, 5]</p>
+          <p class="text-xs themed-muted mt-1">Bunts Sangha's S.M. Shetty, Mumbai • <strong>CGPI: 6.54</strong></p>
         </div>
 
         <div onclick="driveToStop(2)" id="stop-card-2" class="milestone-card shrink-0 w-[230px] sm:w-auto snap-center cursor-pointer themed-subcard rounded-2xl p-4 border transition-all">
@@ -748,7 +746,7 @@
             <span>☁️</span>
           </div>
           <h3 class="font-bold text-sm mt-1.5">AWS &amp; DevOps Certifications</h3>
-          <p class="text-xs themed-muted mt-1">AWS Academy Cloud Foundations &amp; Architecting + Grade A AWS &amp; DevOps (Insys)[cite: 2, 4, 5]</p>
+          <p class="text-xs themed-muted mt-1">AWS Academy Cloud Foundations &amp; Architecting + Grade A AWS &amp; DevOps (Insys)</p>
         </div>
 
         <div onclick="driveToStop(3)" id="stop-card-3" class="milestone-card shrink-0 w-[230px] sm:w-auto snap-center cursor-pointer themed-subcard rounded-2xl p-4 border transition-all">
@@ -757,7 +755,7 @@
             <span>🏁</span>
           </div>
           <h3 class="font-bold text-sm mt-1.5">Software Engineer @ Bartech</h3>
-          <p class="text-xs themed-muted mt-1">Bartech Data Systems Pvt Ltd, Thane • AWS Cloud, Android &amp; Backend[cite: 2, 4, 5]</p>
+          <p class="text-xs themed-muted mt-1">Bartech Data Systems Pvt Ltd, Thane • AWS Cloud, Android &amp; Backend</p>
         </div>
       </div>
     </section>
@@ -769,7 +767,7 @@
       <div>
         <span class="themed-primary-soft px-3 py-1 rounded-full font-mono text-[11px] sm:text-xs font-bold">01 // PRIMARY FOCUS — AWS CLOUD &amp; DEVOPS</span>
         <h2 class="font-display text-2xl sm:text-4xl font-extrabold mt-2 tracking-tight">AWS Infrastructure &amp; CI/CD Lab</h2>
-        <p class="text-xs sm:text-sm themed-muted mt-1">Inspect production AWS services at Bartech Data Systems or trigger the live Jenkins + Terraform + Kubernetes pipeline simulator[cite: 2, 4, 5].</p>
+        <p class="text-xs sm:text-sm themed-muted mt-1">Inspect production AWS services at Bartech Data Systems or trigger the live Jenkins + Terraform + Kubernetes pipeline simulator.</p>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
@@ -797,7 +795,7 @@
               <span id="aws-insp-tag" class="font-mono text-[10px] px-2 py-0.5 rounded bg-sky-400/15 themed-primary-text font-bold">Bartech Prod</span>
             </div>
             <p id="aws-insp-desc" class="text-xs sm:text-sm themed-muted leading-relaxed">
-              Provision and configure Windows Server 2022 instances on AWS EC2 for enterprise applications, managing EC2 instance configurations, EBS storage, and Elastic IP addresses[cite: 2, 4, 5].
+              Provision and configure Windows Server 2022 instances on AWS EC2 for enterprise applications, managing EC2 instance configurations, EBS storage, and Elastic IP addresses.
             </p>
           </div>
 
@@ -875,7 +873,7 @@
       <div>
         <span class="px-3 py-1 rounded-full bg-orange-500/15 text-orange-400 font-mono text-[11px] sm:text-xs font-bold">02 // PRIORITY #2 — NATIVE ANDROID &amp; BACKEND</span>
         <h2 class="font-display text-2xl sm:text-4xl font-extrabold mt-2 tracking-tight">Kotlin Android + Node.js REST + MS SQL Server</h2>
-        <p class="text-xs sm:text-sm themed-muted mt-1">Enterprise field-operations mobile app &amp; backend architecture engineered at Bartech Data Systems Pvt Ltd[cite: 2, 4, 5].</p>
+        <p class="text-xs sm:text-sm themed-muted mt-1">Enterprise field-operations mobile app &amp; backend architecture engineered at Bartech Data Systems Pvt Ltd.</p>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-center">
@@ -884,7 +882,7 @@
             <div class="text-lg mb-1">📱</div>
             <h3 class="font-bold text-sm">Android (Kotlin, ViewBinding, Material)</h3>
             <p class="text-xs themed-muted mt-1 leading-relaxed">
-              Develop and maintain native Android applications with responsive interfaces for field visit scheduling, geotagged check-ins, daily logs, and expense tracking[cite: 2, 4, 5].
+              Develop and maintain native Android applications with responsive interfaces for field visit scheduling, geotagged check-ins, daily logs, and expense tracking.
             </p>
           </div>
 
@@ -892,7 +890,7 @@
             <div class="text-lg mb-1">⚡</div>
             <h3 class="font-bold text-sm">Node.js RESTful APIs &amp; RBAC</h3>
             <p class="text-xs themed-muted mt-1 leading-relaxed">
-              Develop and maintain RESTful backend APIs with authentication, session management, role-based access controls, and asynchronous network communication[cite: 2, 4, 5].
+              Develop and maintain RESTful backend APIs with authentication, session management, role-based access controls, and asynchronous network communication.
             </p>
           </div>
 
@@ -900,7 +898,7 @@
             <div class="text-lg mb-1">🗄️</div>
             <h3 class="font-bold text-sm">Microsoft SQL Server Database Engineering</h3>
             <p class="text-xs themed-muted mt-1 leading-relaxed">
-              Design and manage Microsoft SQL Server databases, including stored procedures, triggers, and parameterized queries for reliable enterprise data management[cite: 2, 4, 5].
+              Design and manage Microsoft SQL Server databases, including stored procedures, triggers, and parameterized queries for reliable enterprise data management.
             </p>
           </div>
         </div>
@@ -989,7 +987,7 @@
           PROFESSIONAL SUMMARY
         </h2>
         <p class="text-slate-900">
-          MSc Information Technology graduate and Software Engineer with hands-on experience in AWS cloud infrastructure, application development and backend integration. Skilled in AWS services, Terraform, Docker, Kubernetes and Jenkins, with practical exposure to infrastructure provisioning, cloud networking and application deployment. Interested in building secure, scalable and highly available cloud solutions and pursuing a career in AWS Cloud Engineering and DevOps[cite: 2, 4, 5]
+          MSc Information Technology graduate and Software Engineer with hands-on experience in AWS cloud infrastructure, application development and backend integration. Skilled in AWS services, Terraform, Docker, Kubernetes and Jenkins, with practical exposure to infrastructure provisioning, cloud networking and application deployment. Interested in building secure, scalable and highly available cloud solutions and pursuing a career in AWS Cloud Engineering and DevOps
         </p>
       </div>
 
@@ -1006,29 +1004,29 @@
           <span class="text-[11.5px] font-semibold text-slate-900">Aug '26- Present | Thane, Maharashtra, India</span>
         </div>
         <p class="text-slate-900 mt-1">
-          Develop and maintain enterprise mobile and cloud-based applications, with responsibilities spanning AWS infrastructure management, Android development, backend API integration, and database management. Work on configuring cloud environments, deploying business applications, and maintaining reliable application infrastructure[cite: 2, 4, 5].
+          Develop and maintain enterprise mobile and cloud-based applications, with responsibilities spanning AWS infrastructure management, Android development, backend API integration, and database management. Work on configuring cloud environments, deploying business applications, and maintaining reliable application infrastructure.
         </p>
 
         <div class="mt-2">
           <div class="font-bold text-black">AWS Cloud Infrastructure</div>
           <ul class="list-disc pl-5 space-y-0.5 text-slate-900 mt-0.5">
-            <li>Provision and configure Windows Server 2022 instances on AWS EC2 for enterprise applications[cite: 2, 4, 5].</li>
-            <li>Configure VPC, subnets, Internet Gateway, route tables, and Security Groups[cite: 2, 4, 5].</li>
-            <li>Manage EC2 instance configurations, EBS storage, and Elastic IP addresses[cite: 2, 4, 5].</li>
-            <li>Configure IIS to host multiple business applications on separate ports[cite: 2, 4, 5].</li>
-            <li>Perform domain mapping and troubleshoot application connectivity issues[cite: 2, 4, 5].</li>
+            <li>Provision and configure Windows Server 2022 instances on AWS EC2 for enterprise applications.</li>
+            <li>Configure VPC, subnets, Internet Gateway, route tables, and Security Groups.</li>
+            <li>Manage EC2 instance configurations, EBS storage, and Elastic IP addresses.</li>
+            <li>Configure IIS to host multiple business applications on separate ports.</li>
+            <li>Perform domain mapping and troubleshoot application connectivity issues.</li>
           </ul>
         </div>
 
         <div class="mt-2">
           <div class="font-bold text-black">Application Development (Android, Node.js &amp; MSSQL)</div>
           <ul class="list-disc pl-5 space-y-0.5 text-slate-900 mt-0.5">
-            <li>Develop and maintain native Android applications using Kotlin, ViewBinding, and Material Design[cite: 2, 4, 5].</li>
-            <li>Build responsive interfaces for field visit scheduling, geotagged check-ins, daily logs, and expense tracking[cite: 2, 4, 5].</li>
-            <li>Develop and maintain RESTful backend APIs using Node.js[cite: 2, 4, 5].</li>
-            <li>Implement authentication, session management, and role-based access controls[cite: 2, 4, 5].</li>
-            <li>Design and manage Microsoft SQL Server databases, including stored procedures, triggers, and parameterized queries[cite: 2, 4, 5].</li>
-            <li>Handle API integration, asynchronous network communication, and application data management[cite: 2, 4, 5].</li>
+            <li>Develop and maintain native Android applications using Kotlin, ViewBinding, and Material Design.</li>
+            <li>Build responsive interfaces for field visit scheduling, geotagged check-ins, daily logs, and expense tracking.</li>
+            <li>Develop and maintain RESTful backend APIs using Node.js.</li>
+            <li>Implement authentication, session management, and role-based access controls.</li>
+            <li>Design and manage Microsoft SQL Server databases, including stored procedures, triggers, and parameterized queries.</li>
+            <li>Handle API integration, asynchronous network communication, and application data management.</li>
           </ul>
         </div>
       </div>
@@ -1040,9 +1038,9 @@
         </h2>
         <div class="font-bold text-black">Cloud &amp; DevOps Infrastructure Automation</div>
         <ul class="list-disc pl-5 space-y-0.5 text-slate-900 mt-0.5">
-          <li><strong>Automated Cloud Provisioning &amp; IaC:</strong> Architected reusable, modular Infrastructure as Code (IaC) using Terraform to dynamically provision AWS resources, including EC2 compute instances, S3 object storage, and DynamoDB tables[cite: 2, 4, 5].</li>
-          <li>Containerized multi-tier Flask and Node.js applications with Docker, using Helm charts to deploy and scale them on a load-balanced Kubernetes cluster[cite: 2, 4, 5].</li>
-          <li><strong>CI/CD Automation:</strong> Set up a Jenkins pipeline on AWS EC2 to automatically pull code from GitHub, build Docker images, and deploy updates smoothly[cite: 2, 4, 5].</li>
+          <li><strong>Automated Cloud Provisioning &amp; IaC:</strong> Architected reusable, modular Infrastructure as Code (IaC) using Terraform to dynamically provision AWS resources, including EC2 compute instances, S3 object storage, and DynamoDB tables.</li>
+          <li>Containerized multi-tier Flask and Node.js applications with Docker, using Helm charts to deploy and scale them on a load-balanced Kubernetes cluster.</li>
+          <li><strong>CI/CD Automation:</strong> Set up a Jenkins pipeline on AWS EC2 to automatically pull code from GitHub, build Docker images, and deploy updates smoothly.</li>
         </ul>
       </div>
 
@@ -1052,11 +1050,11 @@
           CERTIFICATIONS
         </h2>
         <ul class="list-disc pl-5 space-y-0.5 text-slate-900">
-          <li>AWS Academy Cloud Foundations, AWS Academy Graduate (Mar '25)[cite: 2, 4, 5]</li>
-          <li>AWS Academy Cloud Architecting, AWS Academy Graduate (Mar '25)[cite: 2, 4, 5]</li>
-          <li>AWS Training Program Certification (Grade A), Insys Technologies (Jan '25)[cite: 2, 4, 5]</li>
-          <li>DevOps Training Program Certification (Grade A), Insys Technologies (Jan '25)[cite: 2, 4, 5]</li>
-          <li>.NET Development Course, (In Progress) (Jan '26)[cite: 2, 4, 5]</li>
+          <li>AWS Academy Cloud Foundations, AWS Academy Graduate (Mar '25)</li>
+          <li>AWS Academy Cloud Architecting, AWS Academy Graduate (Mar '25)</li>
+          <li>AWS Training Program Certification (Grade A), Insys Technologies (Jan '25)</li>
+          <li>DevOps Training Program Certification (Grade A), Insys Technologies (Jan '25)</li>
+          <li>.NET Development Course, (In Progress) (Jan '26)</li>
         </ul>
       </div>
 
@@ -1066,12 +1064,12 @@
           SKILLS
         </h2>
         <ul class="list-disc pl-5 space-y-0.5 text-slate-900">
-          <li><strong>Cloud:</strong> AWS (IAM, EC2, EBS, VPC, S3, ELB &amp; ASG, ECR, Lambda, RDS, SNS and CloudWatch)[cite: 2, 4, 5]</li>
-          <li><strong>Mobile Development:</strong> Android (Kotlin, XML Layouts, Material Design, ViewBinding)[cite: 2, 4, 5]</li>
-          <li><strong>Containerization &amp; Orchestration:</strong> Docker, Kubernetes[cite: 2, 4, 5]</li>
-          <li><strong>Automation:</strong> Jenkins, Ansible[cite: 2, 4, 5]</li>
-          <li><strong>Infrastructure Management:</strong> Terraform[cite: 2, 4, 5]</li>
-          <li><strong>Source Code Management:</strong> Git (Version Control System), GitHub[cite: 2, 4, 5]</li>
+          <li><strong>Cloud:</strong> AWS (IAM, EC2, EBS, VPC, S3, ELB &amp; ASG, ECR, Lambda, RDS, SNS and CloudWatch)</li>
+          <li><strong>Mobile Development:</strong> Android (Kotlin, XML Layouts, Material Design, ViewBinding)</li>
+          <li><strong>Containerization &amp; Orchestration:</strong> Docker, Kubernetes</li>
+          <li><strong>Automation:</strong> Jenkins, Ansible</li>
+          <li><strong>Infrastructure Management:</strong> Terraform</li>
+          <li><strong>Source Code Management:</strong> Git (Version Control System), GitHub</li>
         </ul>
       </div>
 
@@ -1082,12 +1080,12 @@
         </h2>
         <div class="space-y-1 text-slate-900">
           <div class="flex flex-wrap justify-between gap-2">
-            <span><strong>Masters in Information Technology</strong>, Bunts Sangha's S.M. Shetty, Mumbai (CGPI: 6.54)[cite: 2, 4, 5]</span>
-            <span class="font-semibold">Jun '22-Jul '24 | Mumbai, India[cite: 2, 4, 5]</span>
+            <span><strong>Masters in Information Technology</strong>, Bunts Sangha's S.M. Shetty, Mumbai (CGPI: 6.54)</span>
+            <span class="font-semibold">Jun '22-Jul '24 | Mumbai, India</span>
           </div>
           <div class="flex flex-wrap justify-between gap-2">
-            <span><strong>Bachelors in Information Technology</strong>, Bunts Sangha's S.M. Shetty, Mumbai (CGPI: 7.52)[cite: 2, 4, 5]</span>
-            <span class="font-semibold">Jun '19-Jun '22 | Mumbai, India[cite: 2, 4, 5]</span>
+            <span><strong>Bachelors in Information Technology</strong>, Bunts Sangha's S.M. Shetty, Mumbai (CGPI: 7.52)</span>
+            <span class="font-semibold">Jun '19-Jun '22 | Mumbai, India</span>
           </div>
         </div>
       </div>
@@ -1151,7 +1149,7 @@
   </div>
 
   <!-- ==========================================================================
-       UNIFIED JAVASCRIPT ENGINE (360° UP/DOWN/LEFT/RIGHT GAZE + CORS-FREE)
+       UNIFIED JAVASCRIPT ENGINE (MINI JAY .GLB 3D RIG + PLAYGROUND + STRICT CV)
        ========================================================================== -->
   <script>
     // Global State
@@ -1217,160 +1215,195 @@
     }
 
     /* --------------------------------------------------------------------------
-       1. AZAKA GAZE-FRAMES LOOKUP TABLE & FULL 360° (UP/DOWN/LEFT/RIGHT) ENGINE
+       1. THREE.JS MINI JAY (.GLB) 360° GAZE, WALKTHROUGH & POINTING ENGINE
        -------------------------------------------------------------------------- */
-    const gazeFrames = [
-      [-1, 6.625], [-0.989573, 6.58333], [-0.987016, 6.54167], [-0.973037, 6.5],
-      [-0.95878, 6.45833], [-0.95072, 6.41667], [-0.934967, 6.375], [-0.905884, 6.33333],
-      [-0.885304, 6.29167], [-0.847395, 6.25], [-0.809184, 6.20833], [-0.780175, 6.16667],
-      [-0.739262, 6.125], [-0.691055, 6.08333], [-0.647524, 6.04167], [-0.601202, 6],
-      [-0.53784, 5.95833], [-0.487224, 5.91667], [-0.432633, 5.875], [-0.365313, 5.83333],
-      [-0.300768, 5.79167], [-0.250106, 5.75], [-0.195359, 5.70833], [-0.146696, 5.66667],
-      [-0.109318, 5.625], [-0.064347, 5.58333], [-0.0246, 5.54167], [0.000244, 5.5],
-      [0.02262, 5.45833], [0.038401, 5.41667], [0.051857, 5.375], [0.075289, 5.33333],
-      [0.098576, 5.29167], [0.113463, 5.25], [0.127848, 5.20833], [0.135921, 5.16667],
-      [0.143755, 5.125], [0.151374, 5.08333], [0.168584, 5.04167], [0.194113, 5],
-      [0.218156, 4.95833], [0.23622, 4.91667], [0.26717, 4.875], [0.30034, 4.83333],
-      [0.331439, 4.79167], [0.365152, 4.75], [0.409352, 4.70833], [0.445363, 4.66667],
-      [0.480052, 4.625], [0.521814, 4.58333], [0.56279, 4.54167], [0.591908, 4.5],
-      [0.632717, 4.45833], [0.6651, 4.41667], [0.691963, 4.375], [0.723907, 4.33333],
-      [0.762351, 4.29167], [0.781306, 4.25], [0.811654, 4.20833], [0.840266, 4.16667],
-      [0.861118, 4.125], [0.879125, 4.08333], [0.903094, 4.04167], [0.925231, 4],
-      [0.948596, 3.95833], [0.970236, 3.91667], [0.983, 3.875], [0.994922, 3.83333],
-      [1, 3.75]
-    ];
-
-    function poseToTime(pose) {
-      const target = Math.max(-1, Math.min(1, pose));
-      let nearestTime = gazeFrames[0][1];
-      let nearestDistance = Infinity;
-      for (const [sampleOffset, time] of gazeFrames) {
-        const distance = Math.abs(target - sampleOffset);
-        if (distance < nearestDistance) {
-          nearestDistance = distance;
-          nearestTime = time;
-        }
-      }
-      return nearestTime + 1 / 240;
-    }
-
-    (function initAzakaBackdrop() {
-      const video = document.getElementById('azaka-video');
-      const poster = document.getElementById('azaka-poster');
+    (function initMiniJay3D() {
+      const canvas = document.getElementById('mini-jay-canvas');
+      const nametag = document.getElementById('mini-jay-nametag');
+      const statusEl = document.getElementById('mini-jay-status');
       const gridCanvas = document.getElementById('cloud-grid-canvas');
       const gCtx = gridCanvas ? gridCanvas.getContext('2d') : null;
 
-      let poseX = 0;
-      let targetPoseX = 0;
-      let poseY = 0;
-      let targetPoseY = 0;
-      let mouseNormX = 0;
-      let mouseNormY = 0;
-      let mobileVideoUnlocked = false;
+      let pointerNormX = 0;
+      let pointerNormY = 0;
 
-      function resizeGridCanvas() {
+      // Resize background cloud-grid canvas
+      function resizeGrid() {
         if (!gridCanvas) return;
         gridCanvas.width = gridCanvas.offsetWidth || window.innerWidth;
         gridCanvas.height = gridCanvas.offsetHeight || window.innerHeight;
       }
-      resizeGridCanvas();
-      window.addEventListener('resize', resizeGridCanvas);
+      resizeGrid();
+      window.addEventListener('resize', resizeGrid);
 
-      function unlockMobileVideo() {
-        if (mobileVideoUnlocked || !video) return;
-        mobileVideoUnlocked = true;
-        const p = video.play();
-        if (p && typeof p.then === 'function') {
-          p.then(() => {
-            video.pause();
-            video.currentTime = poseToTime(poseX);
-            video.style.opacity = '0.78';
-            if (poster) poster.style.opacity = '0';
-          }).catch(() => {});
-        }
+      if (!canvas || typeof THREE === 'undefined' || !THREE.GLTFLoader) return;
+
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.outputEncoding = THREE.sRGBEncoding;
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(34, window.innerWidth / window.innerHeight, 0.1, 100);
+      camera.position.set(0, 1.35, 3.8);
+
+      // Studio Lighting for AvatarBody, AvatarHead & Outfit PBR Materials
+      const hemiLight = new THREE.HemisphereLight(0xffffff, 0x1e293b, 1.35);
+      hemiLight.position.set(0, 3, 2);
+      scene.add(hemiLight);
+
+      const dirLight = new THREE.DirectionalLight(0x38bdf8, 1.1);
+      dirLight.position.set(2.5, 3.5, 4);
+      scene.add(dirLight);
+
+      const rimLight = new THREE.DirectionalLight(0xf97316, 0.65);
+      rimLight.position.set(-2.5, 2, -2);
+      scene.add(rimLight);
+
+      let avatarRoot = null;
+      const bones = {};
+      const restQuats = {};
+      const morphMeshes = [];
+
+      // Walkthrough & Pointing State
+      let currentX = 0;
+      let targetX = 0;
+      let walkPhase = 0;
+      let pointTimer = 0;
+      let pointTargetNormX = 0;
+      let pointTargetNormY = 0;
+
+      const glbCandidates = [
+        './jay.glb',
+        'jay.glb',
+        '/Portfolio/jay.glb',
+        'https://saharkarjayy.github.io/Portfolio/jay.glb',
+        'https://raw.githubusercontent.com/saharkarjayy/Portfolio/main/jay.glb'
+      ];
+
+      const loader = new THREE.GLTFLoader();
+
+      function tryLoadGlb(idx) {
+        if (idx >= glbCandidates.length) return;
+        loader.load(
+          glbCandidates[idx],
+          (gltf) => {
+            avatarRoot = gltf.scene;
+            scene.add(avatarRoot);
+
+            // Position Mini Jay so his upper/full body is framed nicely
+            const isMobile = window.innerWidth < 768;
+            avatarRoot.position.set(isMobile ? 0.35 : 0.0, isMobile ? -0.35 : -0.25, 0);
+            currentX = avatarRoot.position.x;
+            targetX = currentX;
+
+            // Collect Skeleton Bones & Save Rest Pose Quaternions
+            const trackedBones = [
+              'Hips', 'Spine', 'Spine1', 'Spine2', 'Neck', 'Head',
+              'LeftEye', 'RightEye', 'HeadTop_End',
+              'LeftShoulder', 'LeftArm', 'LeftForeArm',
+              'RightShoulder', 'RightArm', 'RightForeArm', 'RightHand',
+              'LeftUpLeg', 'LeftLeg', 'RightUpLeg', 'RightLeg'
+            ];
+
+            avatarRoot.traverse((node) => {
+              if (node.isBone && trackedBones.includes(node.name)) {
+                bones[node.name] = node;
+                restQuats[node.name] = node.quaternion.clone();
+              }
+              if (node.isMesh && node.morphTargetDictionary && node.morphTargetInfluences) {
+                morphMeshes.push(node);
+              }
+            });
+
+            // Relax T-pose arms down to natural standing posture
+            if (bones.LeftArm && restQuats.LeftArm) {
+              const qL = new THREE.Quaternion().setFromEuler(new THREE.Euler(0, 0, -1.18));
+              restQuats.LeftArm.multiply(qL);
+              bones.LeftArm.quaternion.copy(restQuats.LeftArm);
+            }
+            if (bones.RightArm && restQuats.RightArm) {
+              const qR = new THREE.Quaternion().setFromEuler(new THREE.Euler(0, 0, 1.18));
+              restQuats.RightArm.multiply(qR);
+              bones.RightArm.quaternion.copy(restQuats.RightArm);
+            }
+
+            // Set subtle friendly smile via ARKit morph targets
+            morphMeshes.forEach((m) => {
+              const dict = m.morphTargetDictionary;
+              if (dict.mouthSmileLeft !== undefined) m.morphTargetInfluences[dict.mouthSmileLeft] = 0.32;
+              if (dict.mouthSmileRight !== undefined) m.morphTargetInfluences[dict.mouthSmileRight] = 0.32;
+            });
+
+            if (nametag) nametag.style.opacity = '1';
+          },
+          undefined,
+          () => tryLoadGlb(idx + 1)
+        );
       }
+      tryLoadGlb(0);
 
-      function updatePointerGaze(clientX, clientY) {
+      // Update Gaze on Mouse & Touch (Windows, Android, iOS)
+      function updatePointer(clientX, clientY) {
         const w = window.innerWidth || 1;
         const h = window.innerHeight || 1;
-        // Horizontal gaze (-1 left to +1 right)
-        targetPoseX = Math.max(-1, Math.min(1, (clientX / w - 0.5) / 0.35));
-        // Vertical gaze (-1 top to +1 bottom)
-        targetPoseY = Math.max(-1, Math.min(1, (clientY / h - 0.5) / 0.35));
-        mouseNormX = (clientX / w - 0.5);
-        mouseNormY = (clientY / h - 0.5);
+        pointerNormX = (clientX / w - 0.5) * 2; // -1 left to +1 right
+        pointerNormY = (clientY / h - 0.5) * 2; // -1 top to +1 bottom
       }
 
-      window.addEventListener('mousemove', (e) => {
-        updatePointerGaze(e.clientX, e.clientY);
-      }, { passive: true });
-
-      window.addEventListener('pointermove', (e) => {
-        updatePointerGaze(e.clientX, e.clientY);
-      }, { passive: true });
-
+      window.addEventListener('mousemove', (e) => updatePointer(e.clientX, e.clientY), { passive: true });
+      window.addEventListener('pointermove', (e) => updatePointer(e.clientX, e.clientY), { passive: true });
       window.addEventListener('touchstart', (e) => {
-        unlockMobileVideo();
-        if (e.touches && e.touches[0]) {
-          updatePointerGaze(e.touches[0].clientX, e.touches[0].clientY);
-        }
+        if (e.touches && e.touches[0]) updatePointer(e.touches[0].clientX, e.touches[0].clientY);
       }, { passive: true });
-
       window.addEventListener('touchmove', (e) => {
-        if (e.touches && e.touches[0]) {
-          updatePointerGaze(e.touches[0].clientX, e.touches[0].clientY);
+        if (e.touches && e.touches[0]) updatePointer(e.touches[0].clientX, e.touches[0].clientY);
+      }, { passive: true });
+
+      // Click / Tap Anywhere -> Mini Jay Walks Toward Selection & Points at It
+      window.addEventListener('pointerdown', (e) => {
+        if (!avatarRoot) return;
+        const w = window.innerWidth || 1;
+        const h = window.innerHeight || 1;
+        updatePointer(e.clientX, e.clientY);
+
+        pointTargetNormX = (e.clientX / w - 0.5) * 2;
+        pointTargetNormY = (e.clientY / h - 0.5) * 2;
+
+        // Walk partway toward the clicked horizontal zone
+        const maxWalk = window.innerWidth < 768 ? 0.45 : 1.05;
+        targetX = Math.max(-maxWalk, Math.min(maxWalk, pointTargetNormX * 0.65));
+        pointTimer = 95; // frames to hold point gesture
+
+        if (statusEl) {
+          const clickedEl = e.target.closest('button, a, section');
+          const label = clickedEl && clickedEl.id ? clickedEl.id.toUpperCase() : 'CHECKING THIS OUT 👉';
+          statusEl.textContent = 'JAY • ' + label;
         }
       }, { passive: true });
 
-      if (video) {
-        const onVideoReady = () => {
-          try {
-            video.currentTime = poseToTime(0);
-            video.style.opacity = '0.78';
-            if (poster) poster.style.opacity = '0';
-          } catch (err) {}
-        };
-        video.addEventListener('loadedmetadata', onVideoReady);
-        video.addEventListener('loadeddata', onVideoReady);
-        video.addEventListener('canplay', onVideoReady);
-        video.load();
-      }
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
 
-      function tickBackdrop() {
-        // Smoothly interpolate both X (left/right) and Y (up/down)
-        const deltaX = targetPoseX - poseX;
-        poseX = Math.abs(deltaX) < 0.001 ? targetPoseX : poseX + deltaX * 0.065;
+      let smoothYaw = 0;
+      let smoothPitch = 0;
+      let clockTick = 0;
+      const tempQuat = new THREE.Quaternion();
+      const headWorldPos = new THREE.Vector3();
 
-        const deltaY = targetPoseY - poseY;
-        poseY = Math.abs(deltaY) < 0.001 ? targetPoseY : poseY + deltaY * 0.065;
+      function animateMiniJay() {
+        clockTick += 0.04;
 
-        // 1. Scrub video frames for left/right head turn
-        if (video && video.readyState >= 1 && !video.seeking) {
-          const time = poseToTime(poseX);
-          if (Math.abs(video.currentTime - time) > 1 / 48) {
-            try { video.currentTime = time; } catch (e) {}
-          }
-        }
-
-        // 2. Apply 3D vertical pitch + pan so the dog tilts up/down & leans toward cursor/finger
-        // Scale(1.08) prevents edges from showing when tilting
-        const tiltX = -poseY * 9;      // Tilts up/down (+/- 9 deg)
-        const tiltY = poseX * 6;       // Subtle 3D yaw (+/- 6 deg)
-        const panY = -poseY * 22;      // Shifts camera vertically (+/- 22px)
-        const panX = -poseX * 14;      // Shifts camera horizontally (+/- 14px)
-        const transform3D = `perspective(1000px) scale(1.08) translate3d(${panX.toFixed(1)}px, ${panY.toFixed(1)}px, 0) rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg)`;
-
-        if (video) video.style.transform = transform3D;
-        if (poster) poster.style.transform = transform3D;
-
-        // 3. Render interactive cloud-grid glow following X and Y
+        // 1. Draw subtle interactive cloud-grid glow in Hero
         if (gCtx && gridCanvas) {
           const w = gridCanvas.width;
           const h = gridCanvas.height;
           gCtx.clearRect(0, 0, w, h);
-
-          const gx = w * (0.5 + mouseNormX * 0.45);
-          const gy = h * (0.45 + mouseNormY * 0.45);
+          const gx = w * (0.5 + pointerNormX * 0.25);
+          const gy = h * (0.45 + pointerNormY * 0.25);
           const rad = gCtx.createRadialGradient(gx, gy, 20, gx, gy, Math.max(w, h) * 0.55);
           rad.addColorStop(0, 'rgba(56, 189, 248, 0.16)');
           rad.addColorStop(0.5, 'rgba(79, 70, 229, 0.07)');
@@ -1379,28 +1412,114 @@
           gCtx.fillRect(0, 0, w, h);
         }
 
-        requestAnimationFrame(tickBackdrop);
-      }
-      requestAnimationFrame(tickBackdrop);
+        if (avatarRoot) {
+          // 2. Smooth 360° Gaze Interpolation (Up, Down, Left, Right)
+          const targetYaw = Math.max(-0.65, Math.min(0.65, pointerNormX * 0.55));
+          const targetPitch = Math.max(-0.45, Math.min(0.45, pointerNormY * 0.42));
+          smoothYaw += (targetYaw - smoothYaw) * 0.09;
+          smoothPitch += (targetPitch - smoothPitch) * 0.09;
 
+          // Rotate Spine, Neck, Head & Eyeballs toward pointer
+          if (bones.Spine2 && restQuats.Spine2) {
+            tempQuat.setFromEuler(new THREE.Euler(smoothPitch * 0.22, smoothYaw * 0.25, 0, 'YXZ'));
+            bones.Spine2.quaternion.copy(restQuats.Spine2).multiply(tempQuat);
+          }
+          if (bones.Neck && restQuats.Neck) {
+            tempQuat.setFromEuler(new THREE.Euler(smoothPitch * 0.35, smoothYaw * 0.35, 0, 'YXZ'));
+            bones.Neck.quaternion.copy(restQuats.Neck).multiply(tempQuat);
+          }
+          if (bones.Head && restQuats.Head) {
+            tempQuat.setFromEuler(new THREE.Euler(smoothPitch * 0.55, smoothYaw * 0.55, 0, 'YXZ'));
+            bones.Head.quaternion.copy(restQuats.Head).multiply(tempQuat);
+          }
+          ['LeftEye', 'RightEye'].forEach((eyeName) => {
+            if (bones[eyeName] && restQuats[eyeName]) {
+              tempQuat.setFromEuler(new THREE.Euler(smoothPitch * 0.4, smoothYaw * 0.45, 0, 'YXZ'));
+              bones[eyeName].quaternion.copy(restQuats[eyeName]).multiply(tempQuat);
+            }
+          });
+
+          // 3. Walking Locomotion When Moving to a Clicked Spot
+          const dx = targetX - currentX;
+          const isWalking = Math.abs(dx) > 0.015;
+          if (isWalking) {
+            currentX += dx * 0.06;
+            avatarRoot.position.x = currentX;
+            walkPhase += 0.22;
+
+            const legSwing = Math.sin(walkPhase) * 0.42;
+            if (bones.LeftUpLeg && restQuats.LeftUpLeg) {
+              tempQuat.setFromEuler(new THREE.Euler(legSwing, 0, 0));
+              bones.LeftUpLeg.quaternion.copy(restQuats.LeftUpLeg).multiply(tempQuat);
+            }
+            if (bones.RightUpLeg && restQuats.RightUpLeg) {
+              tempQuat.setFromEuler(new THREE.Euler(-legSwing, 0, 0));
+              bones.RightUpLeg.quaternion.copy(restQuats.RightUpLeg).multiply(tempQuat);
+            }
+            if (bones.LeftArm && restQuats.LeftArm) {
+              tempQuat.setFromEuler(new THREE.Euler(-legSwing * 0.45, 0, 0));
+              bones.LeftArm.quaternion.copy(restQuats.LeftArm).multiply(tempQuat);
+            }
+          } else {
+            // Subtle idle breathing bob
+            avatarRoot.position.y = (window.innerWidth < 768 ? -0.35 : -0.25) + Math.sin(clockTick * 0.6) * 0.012;
+          }
+
+          // 4. Right-Arm Pointing Gesture When User Selects Anything
+          if (pointTimer > 0) {
+            pointTimer--;
+            if (bones.RightArm && restQuats.RightArm) {
+              const armPitch = -1.05 - pointTargetNormY * 0.35;
+              const armYaw = pointTargetNormX * 0.45;
+              tempQuat.setFromEuler(new THREE.Euler(armPitch, armYaw, -0.35, 'YXZ'));
+              bones.RightArm.quaternion.slerp(restQuats.RightArm.clone().multiply(tempQuat), 0.18);
+            }
+            if (bones.RightForeArm && restQuats.RightForeArm) {
+              tempQuat.setFromEuler(new THREE.Euler(-0.35, 0, 0));
+              bones.RightForeArm.quaternion.slerp(restQuats.RightForeArm.clone().multiply(tempQuat), 0.18);
+            }
+            if (pointTimer === 1 && statusEl) {
+              statusEl.textContent = 'JAY • GUIDE';
+            }
+          } else if (bones.RightArm && restQuats.RightArm) {
+            bones.RightArm.quaternion.slerp(restQuats.RightArm, 0.1);
+            if (bones.RightForeArm && restQuats.RightForeArm) {
+              bones.RightForeArm.quaternion.slerp(restQuats.RightForeArm, 0.1);
+            }
+          }
+
+          // 5. Natural Eye Blinking via ARKit Morph Targets
+          const blinkCycle = clockTick % 9.5;
+          const blinkVal = (blinkCycle > 9.15 && blinkCycle < 9.45) ? Math.sin(((blinkCycle - 9.15) / 0.3) * Math.PI) : 0;
+          morphMeshes.forEach((m) => {
+            const d = m.morphTargetDictionary;
+            if (d.eyeBlinkLeft !== undefined) m.morphTargetInfluences[d.eyeBlinkLeft] = blinkVal;
+            if (d.eyeBlinkRight !== undefined) m.morphTargetInfluences[d.eyeBlinkRight] = blinkVal;
+          });
+
+          // 6. Keep Floating "JAY" Tag Anchored Above HeadTop_End Bone
+          if (nametag && (bones.HeadTop_End || bones.Head)) {
+            const targetBone = bones.HeadTop_End || bones.Head;
+            targetBone.getWorldPosition(headWorldPos);
+            headWorldPos.y += 0.08;
+            headWorldPos.project(camera);
+            const screenX = (headWorldPos.x * 0.5 + 0.5) * window.innerWidth;
+            const screenY = (-headWorldPos.y * 0.5 + 0.5) * window.innerHeight;
+            nametag.style.left = `${screenX.toFixed(1)}px`;
+            nametag.style.top = `${Math.max(68, screenY).toFixed(1)}px`;
+          }
+        }
+
+        renderer.render(scene, camera);
+        requestAnimationFrame(animateMiniJay);
+      }
+      requestAnimationFrame(animateMiniJay);
+
+      // GSAP Intro Animations
       if (typeof gsap !== 'undefined' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
         tl.from('[data-headline]', { yPercent: 55, opacity: 0, duration: 1.25, stagger: 0.12 }, 0.15);
         tl.from('[data-fade]', { y: 20, opacity: 0, duration: 0.9, stagger: 0.07 }, 0.45);
-
-        const wrapper = document.getElementById('azaka-parallax');
-        if (wrapper) {
-          const pX = gsap.quickTo(wrapper, 'x', { duration: 0.8, ease: 'power3.out' });
-          const pY = gsap.quickTo(wrapper, 'y', { duration: 0.8, ease: 'power3.out' });
-          const updateParallax = (clientX, clientY) => {
-            pX((clientX / window.innerWidth - 0.5) * -18);
-            pY((clientY / window.innerHeight - 0.5) * -14);
-          };
-          window.addEventListener('mousemove', (e) => updateParallax(e.clientX, e.clientY), { passive: true });
-          window.addEventListener('touchmove', (e) => {
-            if (e.touches && e.touches[0]) updateParallax(e.touches[0].clientX, e.touches[0].clientY);
-          }, { passive: true });
-        }
       }
     })();
 
@@ -1493,7 +1612,6 @@
 
       window.addEventListener('afterprint', cleanupAfterPrint);
 
-      // Allow DOM layout to paint before invoking native print dialog
       setTimeout(() => {
         window.print();
       }, 150);
