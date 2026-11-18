@@ -12,7 +12,7 @@
   if (typeof THREE === 'undefined' || !THREE.GLTFLoader) return;
 
   /* ── TUNABLES ───────────────────────────────────────────────────────────── */
-  const SIZE_DESKTOP = ['2in', '3in'];        // width, height
+  const SIZE_DESKTOP = ['3in', '3in'];        // width, height
   const SIZE_MOBILE  = ['1.45in', '2.175in']; // used under 768px wide
   const WALK_SPEED = 4.4, CLIMB_SPEED = 3.4;  // px per frame @60fps
   const SCROLL_PERCH_HOLD = 2200;             // ms after last scroll before he climbs back down
