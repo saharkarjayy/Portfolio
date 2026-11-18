@@ -12,7 +12,7 @@
   <meta property="og:url" content="https://saharkarjayy.github.io/Portfolio/" />
   <meta name="twitter:card" content="summary_large_image" />
 
-  <!-- Google Fonts: Syne, Manrope, JetBrains Mono & Caveat -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet" />
@@ -23,7 +23,7 @@
   <!-- GSAP 3 via CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
 
-  <!-- Three.js + GLTFLoader via CDN for Mini Jay .glb Character -->
+  <!-- Three.js + GLTFLoader via CDN (used by mini-jay.js) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
@@ -46,9 +46,7 @@
   </script>
 
   <style>
-    /* ==========================================================================
-       1. THEME TOKENS (Default: Editorial Obsidian)
-       ========================================================================== */
+    /* 1. THEME TOKENS (Default: Editorial Obsidian) */
     :root, [data-theme="obsidian"] {
       --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
       --dur-quick: 300ms;
@@ -123,9 +121,7 @@
       color: var(--accent-primary);
     }
 
-    /* ==========================================================================
-       2. AZAKA EDITORIAL KINETIC TYPOGRAPHY & UNDERLINE SWIPE
-       ========================================================================== */
+    /* 2. EDITORIAL KINETIC TYPOGRAPHY & UNDERLINE SWIPE */
     .azaka-headline {
       font-family: 'Syne', 'Manrope', sans-serif;
       font-size: clamp(32px, 9vw, 48px);
@@ -166,9 +162,7 @@
       100% { transform: scaleX(1); transform-origin: left; }
     }
 
-    /* ==========================================================================
-       3. TWO-LAYER DIFFERENCE CUSTOM CURSOR (DESKTOP FINE POINTERS ONLY)
-       ========================================================================== */
+    /* 3. TWO-LAYER DIFFERENCE CUSTOM CURSOR (DESKTOP FINE POINTERS ONLY) */
     @media (pointer: fine) {
       body:not(.strict-cv-preview) a,
       body:not(.strict-cv-preview) button,
@@ -215,9 +209,7 @@
       .cursor-dot, .cursor-ring { display: none !important; }
     }
 
-    /* ==========================================================================
-       4. 3D POLAROID PORTRAIT & DRAGGABLE STICKY NOTES
-       ========================================================================== */
+    /* 4. 3D POLAROID PORTRAIT & DRAGGABLE STICKY NOTES */
     .polaroid-card {
       transform: rotate(-2.5deg);
       transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
@@ -292,9 +284,7 @@
       }
     }
 
-    /* ==========================================================================
-       5. STICKER FLOAT & VEHICLE VIBRATION
-       ========================================================================== */
+    /* 5. STICKER FLOAT & VEHICLE VIBRATION */
     @keyframes floatSlow {
       0%, 100% { transform: translateY(0px) rotate(3deg); }
       50% { transform: translateY(-7px) rotate(5deg); }
@@ -318,15 +308,13 @@
       }
     }
 
-    /* ==========================================================================
-       6. STRICT CV PREVIEW & @MEDIA PRINT (100% EXACT OFFICIAL CV)
-       ========================================================================== */
+    /* 6. STRICT CV PREVIEW & @MEDIA PRINT */
     body.strict-cv-preview #azaka-hero,
     body.strict-cv-preview #playground-world,
     body.strict-cv-preview #sticky-notes-layer,
     body.strict-cv-preview #sticky-dock,
     body.strict-cv-preview #mini-jay-stage,
-    body.strict-cv-preview #mini-jay-nametag,
+    body.strict-cv-preview #jay-ladder,
     body.strict-cv-preview .cursor-dot,
     body.strict-cv-preview .cursor-ring {
       display: none !important;
@@ -359,7 +347,7 @@
       #toast,
       #mobile-notes-header,
       #mini-jay-stage,
-      #mini-jay-nametag,
+      #jay-ladder,
       .cursor-dot,
       .cursor-ring,
       .no-print {
@@ -386,16 +374,7 @@
     <span class="chev">▶</span>
   </div>
 
-  <!-- ==========================================================================
-       3D MINI JAY CHARACTER OVERLAY STAGE & FLOATING NAME TAG
-       ========================================================================== -->
-  <div id="mini-jay-stage" class="fixed inset-0 pointer-events-none z-30 overflow-hidden">
-    <canvas id="mini-jay-canvas" class="w-full h-full block"></canvas>
-  </div>
-  <div id="mini-jay-nametag" class="fixed pointer-events-none z-30 -translate-x-1/2 -translate-y-full px-2.5 py-1 rounded-full bg-sky-400/95 text-slate-950 font-mono text-[10px] font-extrabold shadow-lg border border-white flex items-center gap-1 transition-opacity duration-300 opacity-0">
-    <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-ping"></span>
-    <span id="mini-jay-status">JAY • GUIDE</span>
-  </div>
+  <!-- (Mini Jay + his ladder are created automatically by mini-jay.js) -->
 
   <!-- Confetti Canvas -->
   <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
@@ -411,18 +390,14 @@
     </button>
   </div>
 
-  <!-- ==========================================================================
-       TOP EDITORIAL HEADER
-       ========================================================================== -->
+  <!-- TOP EDITORIAL HEADER -->
   <header id="playground-header" style="background-color: var(--nav-bg); border-color: var(--border-card);" class="sticky top-0 z-40 border-b backdrop-blur-xl transition-colors">
     <div class="max-w-7xl mx-auto px-4 sm:px-8 h-14 sm:h-16 flex items-center justify-between gap-2">
-      
-      <!-- Editorial Wordmark -->
+
       <a href="#azaka-hero" class="font-display text-base sm:text-2xl font-extrabold tracking-[-0.03em] flex items-center gap-0.5 shrink-0">
         <span>JAY SAHARKAR</span><span class="align-super text-[0.45em] font-semibold">®</span>
       </a>
 
-      <!-- Desktop Swipe-Underline Navigation Links -->
       <nav class="hidden lg:flex items-center gap-6 text-[13px] font-semibold">
         <a href="#roadtrip" class="link-underline">Journey</a>
         <a href="#aws-lab" class="link-underline">AWS &amp; DevOps</a>
@@ -430,9 +405,7 @@
         <button onclick="focusStickyNotes()" class="link-underline">Sticky Wall</button>
       </nav>
 
-      <!-- Right Controls -->
       <div class="flex items-center gap-1.5 sm:gap-2.5">
-        <!-- Desktop-Only Theme Swatches -->
         <div class="hidden md:flex themed-card items-center gap-1.5 px-2.5 py-1.5 rounded-full border shadow-sm" title="Switch Theme">
           <button onclick="setColorTheme('obsidian')" id="swatch-obsidian" aria-label="Editorial Obsidian Theme" class="w-4 h-4 rounded-full bg-neutral-950 border border-sky-400 ring-2 ring-offset-1 ring-sky-400 transition-transform hover:scale-110"></button>
           <button onclick="setColorTheme('indigo')" id="swatch-indigo" aria-label="Electric Indigo Light Theme" class="w-4 h-4 rounded-full bg-indigo-600 transition-transform hover:scale-110"></button>
@@ -449,7 +422,6 @@
           <span>Print CV</span>
         </button>
 
-        <!-- Mobile Hamburger Menu Toggle (< 768px) -->
         <button onclick="toggleMobileMenu()" id="mobile-menu-btn" class="md:hidden themed-card inline-flex items-center justify-center p-1.5 rounded-xl border text-xs font-bold" aria-label="Open Mobile Menu">
           <i data-lucide="menu" class="w-4 h-4"></i>
         </button>
@@ -484,18 +456,13 @@
     </div>
   </header>
 
-  <!-- ==========================================================================
-       PART 1: EDITORIAL KINETIC HERO + 3D POLAROID PORTRAIT ('jay.jpeg')
-       ========================================================================== -->
+  <!-- PART 1: EDITORIAL KINETIC HERO + POLAROID PORTRAIT -->
   <section id="azaka-hero" class="relative md:min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-[#050505] text-white flex flex-col justify-between">
-    
-    <!-- Layer 0: Interactive Cloud-Grid Canvas -->
+
     <canvas id="cloud-grid-canvas" class="absolute inset-0 z-0 h-full w-full opacity-75"></canvas>
 
-    <!-- Atmospheric Vignette -->
     <div class="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(115%_90%_at_50%_50%,rgba(5,5,5,0.15)_30%,rgba(5,5,5,0.85)_100%)]"></div>
 
-    <!-- Desktop Parallax Split Display Headlines -->
     <div id="azaka-parallax" class="hidden md:block pointer-events-none absolute inset-0 z-10">
       <h1 class="azaka-headline absolute top-[7%] left-[3vw] text-white/95 select-none">
         <span data-headline class="block">Cloud &amp; AWS</span>
@@ -505,12 +472,9 @@
       </h2>
     </div>
 
-    <!-- Foreground Split Content Grid -->
     <div class="relative z-20 max-w-7xl mx-auto w-full px-4 sm:px-8 my-auto py-8 sm:py-16 md:py-20 grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-10 items-center">
-      
-      <!-- Left 7 Cols -->
+
       <div class="lg:col-span-7 space-y-4 sm:space-y-6 md:pt-20">
-        <!-- Mobile-Only Clean Stacked Syne Headline -->
         <div class="md:hidden space-y-1">
           <h1 data-headline class="azaka-headline text-white">Cloud &amp; AWS</h1>
           <h2 data-headline class="azaka-headline text-sky-400">Engineering</h2>
@@ -529,7 +493,6 @@
           MSc IT graduate &amp; Software Engineer building secure, scalable AWS cloud infrastructure, DevOps pipelines, and native Kotlin Android apps.
         </p>
 
-        <!-- Compact Quick-Action Bar -->
         <div data-fade class="flex flex-wrap items-center gap-3 sm:gap-5 pt-1">
           <a href="#roadtrip" class="link-underline text-sm sm:text-lg font-bold text-white inline-flex items-center gap-1.5">
             <span>Explore Journey</span>
@@ -540,13 +503,11 @@
             🙌 High-Five!
           </button>
 
-          <!-- Mobile-Only Quick Sticky Notes Trigger -->
           <button onclick="toggleMobileNotes(true)" class="md:hidden px-3.5 py-2 rounded-full bg-amber-300 text-slate-950 text-xs font-extrabold shadow-lg active:scale-95 transition-transform">
             📝 Notes (<span id="hero-mobile-note-count">4</span>)
           </button>
         </div>
 
-        <!-- Quick-Copy Email & Phone Pills -->
         <div data-fade class="flex flex-wrap items-center gap-2 pt-1">
           <button onclick="copyText('jaysaharkar@gmail.com', 'Email Copied!')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/45 hover:bg-black/65 border border-white/20 backdrop-blur-md text-[11px] sm:text-xs font-mono font-semibold text-white transition-all">
             <i data-lucide="mail" class="w-3.5 h-3.5 text-sky-400"></i>
@@ -565,26 +526,21 @@
         </div>
       </div>
 
-      <!-- Right 5 Cols: Tilted 3D Polaroid Portrait Frame ('jay.jpeg') -->
+      <!-- Tilted Polaroid Portrait Frame ('jay.jpeg') -->
       <div data-fade class="lg:col-span-5 flex justify-center lg:justify-end pt-2 lg:pt-0">
         <div class="relative w-full max-w-[240px] md:max-w-[310px]">
-          
-          <!-- Floating Sticker Top-Left -->
+
           <div class="animate-sticker-1 absolute -top-4 -left-3 sm:-top-5 sm:-left-4 z-20 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-2xl bg-amber-300 text-slate-950 font-hand text-base sm:text-lg font-bold shadow-xl border-2 border-white">
             ☁️ AWS Certified x2
           </div>
 
-          <!-- Floating Sticker Bottom-Right -->
           <div class="animate-sticker-2 absolute -bottom-3 -right-2 sm:-bottom-4 sm:-right-3 z-20 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-2xl bg-emerald-400 text-slate-950 font-mono text-[10px] sm:text-xs font-extrabold shadow-xl border-2 border-white">
             📍 Thane, MH
           </div>
 
-          <!-- Polaroid Frame -->
           <div class="polaroid-card relative bg-white p-3 sm:p-3.5 pb-4 sm:pb-5 rounded-2xl shadow-2xl border border-slate-200 text-slate-900">
-            <!-- Washi Tape -->
             <div class="washi-tape absolute -top-3 left-1/2 -translate-x-1/2 w-24 sm:w-28 h-6 sm:h-7 rounded-sm opacity-95 z-10"></div>
 
-            <!-- Portrait Container -->
             <div class="relative aspect-square w-full rounded-xl overflow-hidden bg-slate-900 border border-slate-200">
               <img
                 id="jay-portrait-img"
@@ -595,7 +551,6 @@
               />
             </div>
 
-            <!-- Polaroid Handwritten Caption -->
             <div class="mt-3 flex items-center justify-between px-1">
               <div>
                 <div class="font-hand text-xl sm:text-2xl font-bold text-slate-900 leading-none">Jay Saharkar 🚀</div>
@@ -610,7 +565,6 @@
       </div>
     </div>
 
-    <!-- Bottom Editorial Role Bar -->
     <div class="relative z-20 w-full border-t border-white/10 px-4 sm:px-10 py-3.5 sm:py-4 flex items-center justify-between gap-2 text-[11px] sm:text-[15px] font-bold text-white/90 bg-black/30 backdrop-blur-sm">
       <span data-fade>AWS Cloud Architecture</span>
       <span data-fade class="hidden sm:inline">DevOps &amp; Terraform</span>
@@ -619,14 +573,10 @@
     </div>
   </section>
 
-  <!-- ==========================================================================
-       PART 2: PLAYFUL CREATIVE DEV PLAYGROUND SECTIONS
-       ========================================================================== -->
+  <!-- PART 2: PLAYGROUND SECTIONS -->
   <main id="playground-world" class="max-w-7xl mx-auto px-4 sm:px-8 md:px-12 py-12 md:py-24 pb-28 space-y-12 md:space-y-24">
 
-    <!-- ========================================================================
-         SECTION A: FORWARD-FACING SUPERBIKE & TURBO CAR CAREER ROADTRIP
-         ======================================================================== -->
+    <!-- SECTION A: CAREER ROADTRIP -->
     <section id="roadtrip" class="themed-card rounded-3xl border p-5 sm:p-8 shadow-xl relative overflow-hidden">
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
         <div>
@@ -661,7 +611,6 @@
         </div>
       </div>
 
-      <!-- Scenic Highway Box -->
       <div class="relative rounded-2xl overflow-hidden border border-sky-400/30 bg-gradient-to-b from-sky-200 via-indigo-100 to-emerald-100 p-3.5 sm:p-6">
         <div class="flex flex-wrap items-center justify-between gap-1.5 text-[11px] sm:text-xs font-mono font-bold text-slate-800 mb-2">
           <span class="hidden sm:inline">📍 START: S.M. Shetty Mumbai (2019)</span>
@@ -671,18 +620,15 @@
           <span class="hidden sm:inline">🏁 DEST: Bartech Thane (Present)</span>
         </div>
 
-        <!-- Winding Highway SVG + Forward-Facing Vehicle -->
         <div class="relative w-full h-32 sm:h-44 select-none">
           <svg id="highway-svg" viewBox="0 0 1000 180" preserveAspectRatio="none" class="w-full h-full overflow-visible">
             <path d="M0,150 Q220,70 480,140 T1000,120 L1000,180 L0,180 Z" fill="#86EFAC" opacity="0.7" />
             <path d="M0,160 Q350,95 680,145 T1000,135 L1000,180 L0,180 Z" fill="#4ADE80" opacity="0.55" />
 
-            <!-- Highway Shoulder & Asphalt -->
             <path d="M 35 125 C 240 45, 360 155, 520 95 C 680 35, 810 140, 965 80" fill="none" stroke="#4F46E5" stroke-width="34" stroke-linecap="round" />
             <path id="road-asphalt-path" d="M 35 125 C 240 45, 360 155, 520 95 C 680 35, 810 140, 965 80" fill="none" stroke="#0F172A" stroke-width="26" stroke-linecap="round" />
             <path d="M 35 125 C 240 45, 360 155, 520 95 C 680 35, 810 140, 965 80" fill="none" stroke="#FBBF24" stroke-width="2.5" stroke-dasharray="12 12" stroke-linecap="round" />
 
-            <!-- 4 Milestone Nodes -->
             <g class="cursor-pointer" onclick="driveToStop(0)">
               <circle cx="35" cy="125" r="11" fill="#F97316" stroke="#FFFFFF" stroke-width="3" />
               <text x="35" y="160" font-family="monospace" font-size="11" font-weight="bold" fill="#0F172A" text-anchor="middle">2019 BSc</text>
@@ -701,7 +647,6 @@
             </g>
           </svg>
 
-          <!-- Moving Vehicle Sprite Overlay (Permanently Facing Forward via scaleX(-1)) -->
           <div id="vehicle-actor" style="left: 3.5%; top: 69%;" class="absolute -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-all duration-150">
             <div id="honk-bubble" class="hidden -top-8 left-1/2 -translate-x-1/2 absolute px-2 py-0.5 rounded-lg bg-amber-400 text-slate-950 font-mono text-[10px] font-extrabold whitespace-nowrap shadow">
               MEEP MEEP! 🏍️💨
@@ -712,7 +657,6 @@
           </div>
         </div>
 
-        <!-- Throttle Slider -->
         <div class="mt-2 flex items-center gap-2.5">
           <span class="font-mono text-[10px] sm:text-[11px] font-bold text-slate-800">THROTTLE</span>
           <input id="road-slider" type="range" min="0" max="100" value="0" oninput="onSliderDrive(this.value)" class="w-full accent-indigo-600 cursor-pointer h-2 bg-white/90 rounded-lg" />
@@ -720,7 +664,6 @@
         </div>
       </div>
 
-      <!-- 4 Milestone Story Cards -->
       <div class="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mt-5 overflow-x-auto pb-2 sm:pb-0 snap-x snap-mandatory">
         <div onclick="driveToStop(0)" id="stop-card-0" class="milestone-card shrink-0 w-[230px] sm:w-auto snap-center cursor-pointer rounded-2xl p-4 border-2 border-sky-400 bg-sky-400/10 transition-all">
           <div class="flex items-center justify-between text-[11px] font-mono font-bold themed-primary-text">
@@ -760,9 +703,7 @@
       </div>
     </section>
 
-    <!-- ========================================================================
-         SECTION B: INTERACTIVE AWS-FIRST & ANDROID ENGINEERING BENTO GRID
-         ======================================================================== -->
+    <!-- SECTION B: AWS & DEVOPS -->
     <section id="aws-lab" class="space-y-5">
       <div>
         <span class="themed-primary-soft px-3 py-1 rounded-full font-mono text-[11px] sm:text-xs font-bold">01 // PRIMARY FOCUS — AWS CLOUD &amp; DEVOPS</span>
@@ -771,7 +712,6 @@
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
-        <!-- Left 7 Cols: AWS Service Explorer -->
         <div class="lg:col-span-7 themed-card rounded-3xl border p-5 sm:p-7 shadow-lg space-y-5">
           <div class="flex items-center justify-between">
             <h3 class="font-display font-bold text-base sm:text-lg flex items-center gap-2">
@@ -799,7 +739,6 @@
             </p>
           </div>
 
-          <!-- Full AWS & DevOps Skill Matrix -->
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 font-mono text-[11px]">
             <div class="themed-subcard p-2.5 rounded-xl border text-center">
               <div class="font-bold">IAM, EC2, EBS, VPC</div>
@@ -820,7 +759,6 @@
           </div>
         </div>
 
-        <!-- Right 5 Cols: Jenkins + Terraform CI/CD Runner -->
         <div class="lg:col-span-5 rounded-3xl bg-neutral-950 text-slate-100 border border-white/15 p-5 sm:p-6 shadow-xl flex flex-col justify-between">
           <div>
             <div class="flex flex-wrap items-center justify-between gap-2 pb-3 mb-4 border-b border-white/10">
@@ -866,9 +804,7 @@
       </div>
     </section>
 
-    <!-- ========================================================================
-         SECTION C: NATIVE ANDROID (KOTLIN), NODE.JS & MS SQL SERVER
-         ======================================================================== -->
+    <!-- SECTION C: ANDROID -->
     <section id="android-lab" class="space-y-5">
       <div>
         <span class="px-3 py-1 rounded-full bg-orange-500/15 text-orange-400 font-mono text-[11px] sm:text-xs font-bold">02 // PRIORITY #2 — NATIVE ANDROID &amp; BACKEND</span>
@@ -903,7 +839,6 @@
           </div>
         </div>
 
-        <!-- Pocket Phone Geotagged Check-In Simulator -->
         <div class="lg:col-span-5 flex justify-center">
           <div class="w-full max-w-[290px] sm:max-w-[300px] rounded-[2.2rem] bg-neutral-900 p-3 shadow-2xl border-2 border-white/15 text-white">
             <div class="bg-neutral-950 rounded-[1.7rem] p-4 space-y-3.5">
@@ -942,11 +877,8 @@
 
   </main>
 
-  <!-- ==========================================================================
-       PART 3: EXACT OFFICIAL 1-PAGE PRINTABLE CV ('JAYCV(AWS&Android) (1).pdf')
-       ========================================================================== -->
+  <!-- PART 3: OFFICIAL 1-PAGE PRINTABLE CV -->
   <section id="formal-cv-sheet" class="hidden max-w-[820px] mx-auto my-6 sm:my-8 bg-white text-black p-5 sm:p-10 rounded-2xl shadow-2xl border border-slate-200">
-    <!-- Top Action Banner (Hidden when printing) -->
     <div class="no-print flex flex-wrap items-center justify-between gap-2 pb-4 mb-5 border-b border-slate-200">
       <span class="text-xs font-mono font-bold text-slate-600">OFFICIAL STRICT CV PREVIEW (VERBATIM)</span>
       <div class="flex flex-wrap items-center gap-2">
@@ -963,7 +895,6 @@
     </div>
 
     <div class="space-y-3 text-[12px] leading-[1.42] text-black font-sans">
-      <!-- Header -->
       <div class="border-b-2 border-black pb-2">
         <div class="flex flex-wrap items-baseline justify-between gap-2">
           <div>
@@ -981,7 +912,6 @@
         </div>
       </div>
 
-      <!-- Professional Summary -->
       <div>
         <h2 class="text-xs font-extrabold uppercase tracking-wider text-black border-b border-slate-400 pb-0.5 mb-1">
           PROFESSIONAL SUMMARY
@@ -991,7 +921,6 @@
         </p>
       </div>
 
-      <!-- Experience -->
       <div>
         <h2 class="text-xs font-extrabold uppercase tracking-wider text-black border-b border-slate-400 pb-0.5 mb-1.5">
           EXPERIENCE
@@ -1031,7 +960,6 @@
         </div>
       </div>
 
-      <!-- Cloud Project -->
       <div>
         <h2 class="text-xs font-extrabold uppercase tracking-wider text-black border-b border-slate-400 pb-0.5 mb-1.5">
           CLOUD PROJECT
@@ -1044,7 +972,6 @@
         </ul>
       </div>
 
-      <!-- Certifications -->
       <div>
         <h2 class="text-xs font-extrabold uppercase tracking-wider text-black border-b border-slate-400 pb-0.5 mb-1.5">
           CERTIFICATIONS
@@ -1058,7 +985,6 @@
         </ul>
       </div>
 
-      <!-- Skills -->
       <div>
         <h2 class="text-xs font-extrabold uppercase tracking-wider text-black border-b border-slate-400 pb-0.5 mb-1.5">
           SKILLS
@@ -1073,7 +999,6 @@
         </ul>
       </div>
 
-      <!-- Education -->
       <div>
         <h2 class="text-xs font-extrabold uppercase tracking-wider text-black border-b border-slate-400 pb-0.5 mb-1.5">
           EDUCATION
@@ -1092,12 +1017,9 @@
     </div>
   </section>
 
-  <!-- ==========================================================================
-       FLOATING STICKY NOTE CREATOR DOCK (BOTTOM-LEFT)
-       ========================================================================== -->
+  <!-- FLOATING STICKY NOTE CREATOR DOCK (BOTTOM-LEFT) -->
   <div id="sticky-dock" class="fixed bottom-4 left-4 right-4 sm:right-auto sm:bottom-5 sm:left-5 z-40 flex items-center justify-between sm:justify-start gap-2">
     <div class="flex items-center gap-2">
-      <!-- Mobile-Only Toggle Pill to Open/Close Swipeable Sticky Notes Carousel -->
       <button onclick="toggleMobileNotes()" id="mobile-notes-toggle-btn" class="md:hidden inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl bg-amber-300 text-slate-950 text-xs font-extrabold shadow-xl active:scale-95 transition-transform">
         <span>📝 Notes (<span id="dock-mobile-note-count">4</span>)</span>
       </button>
@@ -1149,10 +1071,10 @@
   </div>
 
   <!-- ==========================================================================
-       UNIFIED JAVASCRIPT ENGINE (MINI JAY .GLB 3D RIG + PLAYGROUND + STRICT CV)
+       MAIN JAVASCRIPT (playground, sticky notes, roadtrip, CV mode)
+       Mini Jay's 3D character now lives in mini-jay.js (loaded at the very end)
        ========================================================================== -->
   <script>
-    // Global State
     var isStrictCV = false;
     var isMobileNotesOpen = false;
     var selectedNoteColor = '#FEF08A';
@@ -1171,9 +1093,7 @@
       lucide.createIcons();
     }
 
-    /* --------------------------------------------------------------------------
-       0. MULTI-PATH PORTRAIT PHOTO RESOLVER (GUARANTEES jay.jpeg LOADS)
-       -------------------------------------------------------------------------- */
+    /* 0. PORTRAIT PHOTO RESOLVER */
     const portraitFallbacks = [
       'jay.jpeg',
       '/Portfolio/jay.jpeg',
@@ -1214,318 +1134,7 @@
       });
     }
 
-    /* --------------------------------------------------------------------------
-       1. THREE.JS MINI JAY (.GLB) 360° GAZE, WALKTHROUGH & POINTING ENGINE
-       -------------------------------------------------------------------------- */
-    (function initMiniJay3D() {
-      const canvas = document.getElementById('mini-jay-canvas');
-      const nametag = document.getElementById('mini-jay-nametag');
-      const statusEl = document.getElementById('mini-jay-status');
-      const gridCanvas = document.getElementById('cloud-grid-canvas');
-      const gCtx = gridCanvas ? gridCanvas.getContext('2d') : null;
-
-      let pointerNormX = 0;
-      let pointerNormY = 0;
-
-      // Resize background cloud-grid canvas
-      function resizeGrid() {
-        if (!gridCanvas) return;
-        gridCanvas.width = gridCanvas.offsetWidth || window.innerWidth;
-        gridCanvas.height = gridCanvas.offsetHeight || window.innerHeight;
-      }
-      resizeGrid();
-      window.addEventListener('resize', resizeGrid);
-
-      if (!canvas || typeof THREE === 'undefined' || !THREE.GLTFLoader) return;
-
-      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.outputEncoding = THREE.sRGBEncoding;
-
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(34, window.innerWidth / window.innerHeight, 0.1, 100);
-      camera.position.set(0, 1.35, 3.8);
-
-      // Studio Lighting for AvatarBody, AvatarHead & Outfit PBR Materials
-      const hemiLight = new THREE.HemisphereLight(0xffffff, 0x1e293b, 1.35);
-      hemiLight.position.set(0, 3, 2);
-      scene.add(hemiLight);
-
-      const dirLight = new THREE.DirectionalLight(0x38bdf8, 1.1);
-      dirLight.position.set(2.5, 3.5, 4);
-      scene.add(dirLight);
-
-      const rimLight = new THREE.DirectionalLight(0xf97316, 0.65);
-      rimLight.position.set(-2.5, 2, -2);
-      scene.add(rimLight);
-
-      let avatarRoot = null;
-      const bones = {};
-      const restQuats = {};
-      const morphMeshes = [];
-
-      // Walkthrough & Pointing State
-      let currentX = 0;
-      let targetX = 0;
-      let walkPhase = 0;
-      let pointTimer = 0;
-      let pointTargetNormX = 0;
-      let pointTargetNormY = 0;
-
-      const glbCandidates = [
-        './jay.glb',
-        'jay.glb',
-        '/Portfolio/jay.glb',
-        'https://saharkarjayy.github.io/Portfolio/jay.glb',
-        'https://raw.githubusercontent.com/saharkarjayy/Portfolio/main/jay.glb'
-      ];
-
-      const loader = new THREE.GLTFLoader();
-
-      function tryLoadGlb(idx) {
-        if (idx >= glbCandidates.length) return;
-        loader.load(
-          glbCandidates[idx],
-          (gltf) => {
-            avatarRoot = gltf.scene;
-            scene.add(avatarRoot);
-
-            // Position Mini Jay so his upper/full body is framed nicely
-            const isMobile = window.innerWidth < 768;
-            avatarRoot.position.set(isMobile ? 0.35 : 0.0, isMobile ? -0.35 : -0.25, 0);
-            currentX = avatarRoot.position.x;
-            targetX = currentX;
-
-            // Collect Skeleton Bones & Save Rest Pose Quaternions
-            const trackedBones = [
-              'Hips', 'Spine', 'Spine1', 'Spine2', 'Neck', 'Head',
-              'LeftEye', 'RightEye', 'HeadTop_End',
-              'LeftShoulder', 'LeftArm', 'LeftForeArm',
-              'RightShoulder', 'RightArm', 'RightForeArm', 'RightHand',
-              'LeftUpLeg', 'LeftLeg', 'RightUpLeg', 'RightLeg'
-            ];
-
-            avatarRoot.traverse((node) => {
-              if (node.isBone && trackedBones.includes(node.name)) {
-                bones[node.name] = node;
-                restQuats[node.name] = node.quaternion.clone();
-              }
-              if (node.isMesh && node.morphTargetDictionary && node.morphTargetInfluences) {
-                morphMeshes.push(node);
-              }
-            });
-
-            // Relax T-pose arms down to natural standing posture
-            if (bones.LeftArm && restQuats.LeftArm) {
-              const qL = new THREE.Quaternion().setFromEuler(new THREE.Euler(0, 0, -1.18));
-              restQuats.LeftArm.multiply(qL);
-              bones.LeftArm.quaternion.copy(restQuats.LeftArm);
-            }
-            if (bones.RightArm && restQuats.RightArm) {
-              const qR = new THREE.Quaternion().setFromEuler(new THREE.Euler(0, 0, 1.18));
-              restQuats.RightArm.multiply(qR);
-              bones.RightArm.quaternion.copy(restQuats.RightArm);
-            }
-
-            // Set subtle friendly smile via ARKit morph targets
-            morphMeshes.forEach((m) => {
-              const dict = m.morphTargetDictionary;
-              if (dict.mouthSmileLeft !== undefined) m.morphTargetInfluences[dict.mouthSmileLeft] = 0.32;
-              if (dict.mouthSmileRight !== undefined) m.morphTargetInfluences[dict.mouthSmileRight] = 0.32;
-            });
-
-            if (nametag) nametag.style.opacity = '1';
-          },
-          undefined,
-          () => tryLoadGlb(idx + 1)
-        );
-      }
-      tryLoadGlb(0);
-
-      // Update Gaze on Mouse & Touch (Windows, Android, iOS)
-      function updatePointer(clientX, clientY) {
-        const w = window.innerWidth || 1;
-        const h = window.innerHeight || 1;
-        pointerNormX = (clientX / w - 0.5) * 2; // -1 left to +1 right
-        pointerNormY = (clientY / h - 0.5) * 2; // -1 top to +1 bottom
-      }
-
-      window.addEventListener('mousemove', (e) => updatePointer(e.clientX, e.clientY), { passive: true });
-      window.addEventListener('pointermove', (e) => updatePointer(e.clientX, e.clientY), { passive: true });
-      window.addEventListener('touchstart', (e) => {
-        if (e.touches && e.touches[0]) updatePointer(e.touches[0].clientX, e.touches[0].clientY);
-      }, { passive: true });
-      window.addEventListener('touchmove', (e) => {
-        if (e.touches && e.touches[0]) updatePointer(e.touches[0].clientX, e.touches[0].clientY);
-      }, { passive: true });
-
-      // Click / Tap Anywhere -> Mini Jay Walks Toward Selection & Points at It
-      window.addEventListener('pointerdown', (e) => {
-        if (!avatarRoot) return;
-        const w = window.innerWidth || 1;
-        const h = window.innerHeight || 1;
-        updatePointer(e.clientX, e.clientY);
-
-        pointTargetNormX = (e.clientX / w - 0.5) * 2;
-        pointTargetNormY = (e.clientY / h - 0.5) * 2;
-
-        // Walk partway toward the clicked horizontal zone
-        const maxWalk = window.innerWidth < 768 ? 0.45 : 1.05;
-        targetX = Math.max(-maxWalk, Math.min(maxWalk, pointTargetNormX * 0.65));
-        pointTimer = 95; // frames to hold point gesture
-
-        if (statusEl) {
-          const clickedEl = e.target.closest('button, a, section');
-          const label = clickedEl && clickedEl.id ? clickedEl.id.toUpperCase() : 'CHECKING THIS OUT 👉';
-          statusEl.textContent = 'JAY • ' + label;
-        }
-      }, { passive: true });
-
-      window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-      });
-
-      let smoothYaw = 0;
-      let smoothPitch = 0;
-      let clockTick = 0;
-      const tempQuat = new THREE.Quaternion();
-      const headWorldPos = new THREE.Vector3();
-
-      function animateMiniJay() {
-        clockTick += 0.04;
-
-        // 1. Draw subtle interactive cloud-grid glow in Hero
-        if (gCtx && gridCanvas) {
-          const w = gridCanvas.width;
-          const h = gridCanvas.height;
-          gCtx.clearRect(0, 0, w, h);
-          const gx = w * (0.5 + pointerNormX * 0.25);
-          const gy = h * (0.45 + pointerNormY * 0.25);
-          const rad = gCtx.createRadialGradient(gx, gy, 20, gx, gy, Math.max(w, h) * 0.55);
-          rad.addColorStop(0, 'rgba(56, 189, 248, 0.16)');
-          rad.addColorStop(0.5, 'rgba(79, 70, 229, 0.07)');
-          rad.addColorStop(1, 'rgba(5, 5, 5, 0)');
-          gCtx.fillStyle = rad;
-          gCtx.fillRect(0, 0, w, h);
-        }
-
-        if (avatarRoot) {
-          // 2. Smooth 360° Gaze Interpolation (Up, Down, Left, Right)
-          const targetYaw = Math.max(-0.65, Math.min(0.65, pointerNormX * 0.55));
-          const targetPitch = Math.max(-0.45, Math.min(0.45, pointerNormY * 0.42));
-          smoothYaw += (targetYaw - smoothYaw) * 0.09;
-          smoothPitch += (targetPitch - smoothPitch) * 0.09;
-
-          // Rotate Spine, Neck, Head & Eyeballs toward pointer
-          if (bones.Spine2 && restQuats.Spine2) {
-            tempQuat.setFromEuler(new THREE.Euler(smoothPitch * 0.22, smoothYaw * 0.25, 0, 'YXZ'));
-            bones.Spine2.quaternion.copy(restQuats.Spine2).multiply(tempQuat);
-          }
-          if (bones.Neck && restQuats.Neck) {
-            tempQuat.setFromEuler(new THREE.Euler(smoothPitch * 0.35, smoothYaw * 0.35, 0, 'YXZ'));
-            bones.Neck.quaternion.copy(restQuats.Neck).multiply(tempQuat);
-          }
-          if (bones.Head && restQuats.Head) {
-            tempQuat.setFromEuler(new THREE.Euler(smoothPitch * 0.55, smoothYaw * 0.55, 0, 'YXZ'));
-            bones.Head.quaternion.copy(restQuats.Head).multiply(tempQuat);
-          }
-          ['LeftEye', 'RightEye'].forEach((eyeName) => {
-            if (bones[eyeName] && restQuats[eyeName]) {
-              tempQuat.setFromEuler(new THREE.Euler(smoothPitch * 0.4, smoothYaw * 0.45, 0, 'YXZ'));
-              bones[eyeName].quaternion.copy(restQuats[eyeName]).multiply(tempQuat);
-            }
-          });
-
-          // 3. Walking Locomotion When Moving to a Clicked Spot
-          const dx = targetX - currentX;
-          const isWalking = Math.abs(dx) > 0.015;
-          if (isWalking) {
-            currentX += dx * 0.06;
-            avatarRoot.position.x = currentX;
-            walkPhase += 0.22;
-
-            const legSwing = Math.sin(walkPhase) * 0.42;
-            if (bones.LeftUpLeg && restQuats.LeftUpLeg) {
-              tempQuat.setFromEuler(new THREE.Euler(legSwing, 0, 0));
-              bones.LeftUpLeg.quaternion.copy(restQuats.LeftUpLeg).multiply(tempQuat);
-            }
-            if (bones.RightUpLeg && restQuats.RightUpLeg) {
-              tempQuat.setFromEuler(new THREE.Euler(-legSwing, 0, 0));
-              bones.RightUpLeg.quaternion.copy(restQuats.RightUpLeg).multiply(tempQuat);
-            }
-            if (bones.LeftArm && restQuats.LeftArm) {
-              tempQuat.setFromEuler(new THREE.Euler(-legSwing * 0.45, 0, 0));
-              bones.LeftArm.quaternion.copy(restQuats.LeftArm).multiply(tempQuat);
-            }
-          } else {
-            // Subtle idle breathing bob
-            avatarRoot.position.y = (window.innerWidth < 768 ? -0.35 : -0.25) + Math.sin(clockTick * 0.6) * 0.012;
-          }
-
-          // 4. Right-Arm Pointing Gesture When User Selects Anything
-          if (pointTimer > 0) {
-            pointTimer--;
-            if (bones.RightArm && restQuats.RightArm) {
-              const armPitch = -1.05 - pointTargetNormY * 0.35;
-              const armYaw = pointTargetNormX * 0.45;
-              tempQuat.setFromEuler(new THREE.Euler(armPitch, armYaw, -0.35, 'YXZ'));
-              bones.RightArm.quaternion.slerp(restQuats.RightArm.clone().multiply(tempQuat), 0.18);
-            }
-            if (bones.RightForeArm && restQuats.RightForeArm) {
-              tempQuat.setFromEuler(new THREE.Euler(-0.35, 0, 0));
-              bones.RightForeArm.quaternion.slerp(restQuats.RightForeArm.clone().multiply(tempQuat), 0.18);
-            }
-            if (pointTimer === 1 && statusEl) {
-              statusEl.textContent = 'JAY • GUIDE';
-            }
-          } else if (bones.RightArm && restQuats.RightArm) {
-            bones.RightArm.quaternion.slerp(restQuats.RightArm, 0.1);
-            if (bones.RightForeArm && restQuats.RightForeArm) {
-              bones.RightForeArm.quaternion.slerp(restQuats.RightForeArm, 0.1);
-            }
-          }
-
-          // 5. Natural Eye Blinking via ARKit Morph Targets
-          const blinkCycle = clockTick % 9.5;
-          const blinkVal = (blinkCycle > 9.15 && blinkCycle < 9.45) ? Math.sin(((blinkCycle - 9.15) / 0.3) * Math.PI) : 0;
-          morphMeshes.forEach((m) => {
-            const d = m.morphTargetDictionary;
-            if (d.eyeBlinkLeft !== undefined) m.morphTargetInfluences[d.eyeBlinkLeft] = blinkVal;
-            if (d.eyeBlinkRight !== undefined) m.morphTargetInfluences[d.eyeBlinkRight] = blinkVal;
-          });
-
-          // 6. Keep Floating "JAY" Tag Anchored Above HeadTop_End Bone
-          if (nametag && (bones.HeadTop_End || bones.Head)) {
-            const targetBone = bones.HeadTop_End || bones.Head;
-            targetBone.getWorldPosition(headWorldPos);
-            headWorldPos.y += 0.08;
-            headWorldPos.project(camera);
-            const screenX = (headWorldPos.x * 0.5 + 0.5) * window.innerWidth;
-            const screenY = (-headWorldPos.y * 0.5 + 0.5) * window.innerHeight;
-            nametag.style.left = `${screenX.toFixed(1)}px`;
-            nametag.style.top = `${Math.max(68, screenY).toFixed(1)}px`;
-          }
-        }
-
-        renderer.render(scene, camera);
-        requestAnimationFrame(animateMiniJay);
-      }
-      requestAnimationFrame(animateMiniJay);
-
-      // GSAP Intro Animations
-      if (typeof gsap !== 'undefined' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
-        tl.from('[data-headline]', { yPercent: 55, opacity: 0, duration: 1.25, stagger: 0.12 }, 0.15);
-        tl.from('[data-fade]', { y: 20, opacity: 0, duration: 0.9, stagger: 0.07 }, 0.45);
-      }
-    })();
-
-    /* --------------------------------------------------------------------------
-       2. TWO-LAYER DIFFERENCE CUSTOM CURSOR (FINE POINTERS ONLY)
-       -------------------------------------------------------------------------- */
+    /* 2. TWO-LAYER DIFFERENCE CUSTOM CURSOR (FINE POINTERS ONLY) */
     (function initCustomCursor() {
       if (window.matchMedia('(pointer: coarse)').matches || typeof gsap === 'undefined') return;
       const dot = document.getElementById('cursor-dot');
@@ -1571,9 +1180,7 @@
       });
     })();
 
-    /* --------------------------------------------------------------------------
-       3. THEME SWATCHES, STRICT CV MODE & RELIABLE PRINT CV
-       -------------------------------------------------------------------------- */
+    /* 3. THEME SWATCHES, STRICT CV MODE & PRINT CV */
     function setColorTheme(theme) {
       document.documentElement.setAttribute('data-theme', theme);
       try { localStorage.setItem('jay_azaka_theme', theme); } catch (e) {}
@@ -1617,9 +1224,7 @@
       }, 150);
     }
 
-    /* --------------------------------------------------------------------------
-       4. FREE-FLOATING DRAGGABLE STICKY NOTES WALL (ALL 4 ORIGINAL NOTES)
-       -------------------------------------------------------------------------- */
+    /* 4. DRAGGABLE STICKY NOTES WALL */
     const defaultNotes = [
       {
         id: 1,
@@ -1830,9 +1435,7 @@
       if (window.innerWidth >= 768) renderStickyNotes();
     });
 
-    /* --------------------------------------------------------------------------
-       5. FORWARD-FACING SUPERBIKE & TURBO CAR CAREER ROADTRIP
-       -------------------------------------------------------------------------- */
+    /* 5. CAREER ROADTRIP */
     const stopsInfo = [
       { pct: 0, label: "Stop 1/4: BSc IT @ S.M. Shetty, Mumbai (CGPI: 7.52)" },
       { pct: 34, label: "Stop 2/4: MSc IT @ S.M. Shetty, Mumbai (CGPI: 6.54)" },
@@ -1986,9 +1589,7 @@
       document.getElementById('auto-drive-btn').textContent = '▶️ Auto-Drive';
     }
 
-    /* --------------------------------------------------------------------------
-       6. AWS SERVICE INSPECTOR, JENKINS/TERRAFORM RUNNER & ANDROID SIMULATOR
-       -------------------------------------------------------------------------- */
+    /* 6. AWS SERVICE INSPECTOR, CI/CD RUNNER & ANDROID SIMULATOR */
     const awsDetails = {
       ec2: {
         title: "Windows Server 2022 on AWS EC2",
@@ -2150,5 +1751,8 @@
     // Initialize sticky notes on load
     renderStickyNotes();
   </script>
+
+  <!-- Mini Jay 3D character (2in x 3in, draggable, ladder, click-to-walk) -->
+  <script src="mini-jay.js"></script>
 </body>
 </html>
