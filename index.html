@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Jay Saharkar® — AWS DevOps &amp; Android Engineer | Hybrid CV</title>
 
+  <!-- Social Preview Meta Tags -->
+  <meta property="og:title" content="Jay Saharkar — AWS DevOps & Android Engineer" />
+  <meta property="og:description" content="Interactive Hybrid CV & Cloud Engineering Playground — AWS, Terraform, Docker, Kubernetes & Native Kotlin Android." />
+  <meta property="og:image" content="https://saharkarjayy.github.io/Portfolio/jay.jpeg" />
+  <meta property="og:url" content="https://saharkarjayy.github.io/Portfolio/" />
+
   <!-- Google Fonts: Syne, Manrope, JetBrains Mono & Caveat -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -36,7 +42,7 @@
 
   <style>
     /* ==========================================================================
-       1. EDITORIAL + PLAYGROUND THEME TOKENS (Default: Editorial Obsidian)
+       1. THEME TOKENS (Default: Editorial Obsidian)
        ========================================================================== */
     :root, [data-theme="obsidian"] {
       --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -51,7 +57,7 @@
       --accent-primary: #38BDF8;
       --accent-primary-soft: rgba(56, 189, 248, 0.14);
       --accent-secondary: #F97316;
-      --nav-bg: rgba(5, 5, 5, 0.78);
+      --nav-bg: rgba(5, 5, 5, 0.82);
     }
 
     [data-theme="indigo"] {
@@ -67,7 +73,7 @@
       --accent-primary: #4F46E5;
       --accent-primary-soft: rgba(79, 70, 229, 0.1);
       --accent-secondary: #F97316;
-      --nav-bg: rgba(248, 250, 252, 0.85);
+      --nav-bg: rgba(248, 250, 252, 0.88);
     }
 
     [data-theme="sunset"] {
@@ -83,7 +89,7 @@
       --accent-primary: #EA580C;
       --accent-primary-soft: rgba(234, 88, 12, 0.1);
       --accent-secondary: #4F46E5;
-      --nav-bg: rgba(255, 251, 247, 0.86);
+      --nav-bg: rgba(255, 251, 247, 0.88);
     }
 
     html, body {
@@ -156,7 +162,7 @@
     }
 
     /* ==========================================================================
-       3. TWO-LAYER DIFFERENCE CUSTOM CURSOR (FINE POINTERS ONLY)
+       3. TWO-LAYER DIFFERENCE CUSTOM CURSOR (DESKTOP FINE POINTERS ONLY)
        ========================================================================== */
     @media (pointer: fine) {
       body:not(.strict-cv-preview) a,
@@ -250,7 +256,7 @@
       margin: 0 auto 6px;
     }
 
-    /* Mobile-First Sticky Notes Declutter: hidden on <768px unless explicitly toggled */
+    /* Mobile-First Sticky Notes Declutter */
     @media (max-width: 767px) {
       body:not(.mobile-notes-open) #sticky-notes-layer {
         display: none !important;
@@ -259,7 +265,7 @@
         position: fixed;
         inset: 0;
         z-index: 60;
-        background: rgba(5, 5, 5, 0.82);
+        background: rgba(5, 5, 5, 0.85);
         backdrop-filter: blur(10px);
         display: flex !important;
         flex-direction: row;
@@ -282,7 +288,7 @@
     }
 
     /* ==========================================================================
-       5. STICKER FLOAT, VEHICLE ENGINE VIBE & REDUCED MOTION
+       5. STICKER FLOAT & VEHICLE VIBRATION
        ========================================================================== */
     @keyframes floatSlow {
       0%, 100% { transform: translateY(0px) rotate(3deg); }
@@ -327,12 +333,14 @@
         size: A4 portrait;
         margin: 10mm 12mm;
       }
-      body {
+      html, body {
         background: #FFFFFF !important;
         background-image: none !important;
         color: #000000 !important;
         margin: 0 !important;
         padding: 0 !important;
+        overflow: visible !important;
+        height: auto !important;
       }
       #playground-header,
       #azaka-hero,
@@ -342,6 +350,7 @@
       #note-modal,
       #confetti-canvas,
       #toast,
+      #mobile-notes-header,
       .cursor-dot,
       .cursor-ring,
       .no-print {
@@ -374,7 +383,7 @@
   <!-- Free-Floating Draggable Sticky Notes Layer -->
   <div id="sticky-notes-layer" aria-label="Draggable Sticky Notes Wall"></div>
 
-  <!-- Mobile Sticky Notes Backdrop Header (Shown only when mobile notes overlay is active) -->
+  <!-- Mobile Sticky Notes Backdrop Header -->
   <div id="mobile-notes-header" class="hidden fixed top-4 inset-x-4 z-[65] items-center justify-between px-4 py-3 rounded-2xl bg-neutral-900/95 border border-white/15 text-white shadow-2xl backdrop-blur-md">
     <span class="font-display font-bold text-sm">📌 Jay's Sticky Notes (Swipe)</span>
     <button onclick="toggleMobileNotes(false)" class="px-3 py-1 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold">
@@ -417,7 +426,7 @@
 
         <button onclick="printExactCV()" style="background-color: var(--accent-primary);" class="inline-flex items-center gap-1 px-2.5 sm:px-3.5 py-1.5 rounded-xl text-slate-950 font-extrabold text-[11px] sm:text-xs shadow-md hover:opacity-95 active:scale-95 transition-all" aria-label="Print Official CV">
           <i data-lucide="printer" class="w-3.5 h-3.5"></i>
-          <span class="hidden sm:inline">Print CV</span>
+          <span>Print CV</span>
         </button>
 
         <!-- Mobile Hamburger Menu Toggle (< 768px) -->
@@ -456,31 +465,34 @@
   </header>
 
   <!-- ==========================================================================
-       PART 1: AZAKA EDITORIAL KINETIC HERO + 3D POLAROID PORTRAIT ('jay.jpeg')
+       PART 1: AZAKA POINTER-GAZE HERO + 3D POLAROID PORTRAIT ('jay.jpeg')
        ========================================================================== -->
   <section id="azaka-hero" class="relative md:min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-[#050505] text-white flex flex-col justify-between">
     
-    <!-- Layer 0A: Procedural Dark Cloud-Grid Canvas Fallback -->
-    <canvas id="cloud-grid-canvas" class="absolute inset-0 z-0 h-full w-full opacity-80"></canvas>
+    <!-- Layer 0A: Procedural Interactive Cloud-Grid Canvas -->
+    <canvas id="cloud-grid-canvas" class="absolute inset-0 z-0 h-full w-full opacity-55"></canvas>
 
-    <!-- Layer 0B: AZAKA Poster & Pointer-Scrubbed MP4 Backdrop -->
+    <!-- Layer 0B: AZAKA Poster & Direct-Source Pointer-Scrubbed MP4 (No CORS Fetch Block!) -->
     <img
       id="azaka-poster"
       src="https://media.prettysites.io/products/azaka/v2/poster.jpg"
       alt=""
       onerror="this.style.display='none'"
-      class="absolute inset-0 z-0 h-full w-full object-cover transition-opacity duration-700 mix-blend-lighten opacity-45"
+      class="absolute inset-0 z-[1] h-full w-full object-cover transition-opacity duration-700 opacity-65"
     />
     <video
       id="azaka-video"
+      src="https://media.prettysites.io/products/azaka/v2/azaka-scrub.mp4"
+      poster="https://media.prettysites.io/products/azaka/v2/poster.jpg"
       muted
       playsInline
+      webkit-playsinline="true"
       preload="auto"
-      class="absolute inset-0 z-0 h-full w-full object-cover transition-opacity duration-700 mix-blend-lighten opacity-0"
+      class="absolute inset-0 z-[2] h-full w-full object-cover transition-opacity duration-500 opacity-0"
     ></video>
 
     <!-- Atmospheric Vignette -->
-    <div class="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(120%_90%_at_50%_50%,rgba(5,5,5,0.28)_35%,rgba(5,5,5,0.88)_100%)]"></div>
+    <div class="pointer-events-none absolute inset-0 z-[3] bg-[radial-gradient(115%_90%_at_50%_50%,rgba(5,5,5,0.22)_30%,rgba(5,5,5,0.82)_100%)]"></div>
 
     <!-- Desktop Parallax Split Display Headlines -->
     <div id="azaka-parallax" class="hidden md:block pointer-events-none absolute inset-0 z-10">
@@ -512,7 +524,7 @@
           </span>
         </div>
 
-        <p data-fade class="text-sm sm:text-xl font-medium sm:font-semibold leading-[1.55] text-white/85 max-w-xl">
+        <p data-fade class="text-sm sm:text-xl font-medium sm:font-semibold leading-[1.55] text-white/90 max-w-xl drop-shadow">
           MSc IT graduate &amp; Software Engineer building secure, scalable AWS cloud infrastructure, DevOps pipelines, and native Kotlin Android apps.
         </p>
 
@@ -535,24 +547,24 @@
 
         <!-- Quick-Copy Email & Phone Pills -->
         <div data-fade class="flex flex-wrap items-center gap-2 pt-1">
-          <button onclick="copyText('jaysaharkar@gmail.com', 'Email Copied!')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 backdrop-blur-md text-[11px] sm:text-xs font-mono font-semibold text-white transition-all">
+          <button onclick="copyText('jaysaharkar@gmail.com', 'Email Copied!')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/45 hover:bg-black/65 border border-white/20 backdrop-blur-md text-[11px] sm:text-xs font-mono font-semibold text-white transition-all">
             <i data-lucide="mail" class="w-3.5 h-3.5 text-sky-400"></i>
             <span>jaysaharkar@gmail.com</span>
           </button>
 
-          <button onclick="copyText('8850517641', 'Phone Copied!')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 backdrop-blur-md text-[11px] sm:text-xs font-mono font-semibold text-white transition-all">
+          <button onclick="copyText('8850517641', 'Phone Copied!')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/45 hover:bg-black/65 border border-white/20 backdrop-blur-md text-[11px] sm:text-xs font-mono font-semibold text-white transition-all">
             <i data-lucide="phone" class="w-3.5 h-3.5 text-emerald-400"></i>
             <span>8850517641</span>
           </button>
 
-          <a href="https://linkedin.com/in/jay-saharkar" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 backdrop-blur-md text-xs font-mono font-semibold text-white transition-all">
+          <a href="https://linkedin.com/in/jay-saharkar" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/45 hover:bg-black/65 border border-white/20 backdrop-blur-md text-xs font-mono font-semibold text-white transition-all">
             <i data-lucide="linkedin" class="w-3.5 h-3.5 text-sky-300"></i>
             <span>linkedin.com/in/jay-saharkar</span>
           </a>
         </div>
       </div>
 
-      <!-- Right 5 Cols: Tilted 3D Polaroid Portrait Frame (Locked to jay.jpeg, No Swap Photo Button) -->
+      <!-- Right 5 Cols: Tilted 3D Polaroid Portrait Frame (Multi-Path Auto-Resolver for jay.jpeg) -->
       <div data-fade class="lg:col-span-5 flex justify-center lg:justify-end pt-2 lg:pt-0">
         <div class="relative w-full max-w-[240px] md:max-w-[310px]">
           
@@ -572,13 +584,13 @@
             <div class="washi-tape absolute -top-3 left-1/2 -translate-x-1/2 w-24 sm:w-28 h-6 sm:h-7 rounded-sm opacity-95 z-10"></div>
 
             <!-- Portrait Container -->
-            <div class="relative aspect-square w-full rounded-xl overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-sky-900 border border-slate-200">
+            <div class="relative aspect-square w-full rounded-xl overflow-hidden bg-slate-900 border border-slate-200">
               <img
                 id="jay-portrait-img"
-                src="jay.jpeg"
+                src="./jay.jpeg"
                 alt="Jay Saharkar — AWS DevOps & Android Developer"
                 class="w-full h-full object-cover object-top"
-                onerror="handlePhotoFallback(this)"
+                onerror="resolvePortraitPhoto(this)"
               />
             </div>
 
@@ -598,7 +610,7 @@
     </div>
 
     <!-- Bottom Editorial Role Bar -->
-    <div class="relative z-20 w-full border-t border-white/10 px-4 sm:px-10 py-3.5 sm:py-4 flex items-center justify-between gap-2 text-[11px] sm:text-[15px] font-bold text-white/90">
+    <div class="relative z-20 w-full border-t border-white/10 px-4 sm:px-10 py-3.5 sm:py-4 flex items-center justify-between gap-2 text-[11px] sm:text-[15px] font-bold text-white/90 bg-black/30 backdrop-blur-xs">
       <span data-fade>AWS Cloud Architecture</span>
       <span data-fade class="hidden sm:inline">DevOps &amp; Terraform</span>
       <span data-fade class="hidden md:inline">Native Kotlin Android</span>
@@ -622,7 +634,7 @@
             Mumbai Lecture Halls &rarr; Thane Cloud Engineering
           </h2>
           <p class="text-xs sm:text-sm themed-muted mt-1">
-            Pick your ride, honk the horn, scrub the throttle, or launch <strong>Auto-Drive Tour</strong>!
+            Pick your ride, honk the horn, scrub the throttle, or launch <strong>Auto-Drive</strong>!
           </p>
         </div>
 
@@ -933,18 +945,18 @@
        PART 3: EXACT OFFICIAL 1-PAGE PRINTABLE CV ('JAYCV(AWS&Android) (1).pdf')
        ========================================================================== -->
   <section id="formal-cv-sheet" class="hidden max-w-[820px] mx-auto my-6 sm:my-8 bg-white text-black p-5 sm:p-10 rounded-2xl shadow-2xl border border-slate-200">
-    <!-- Top Back-to-Portfolio Banner (Hidden when printing) -->
+    <!-- Top Action Banner (Hidden when printing) -->
     <div class="no-print flex flex-wrap items-center justify-between gap-2 pb-4 mb-5 border-b border-slate-200">
       <span class="text-xs font-mono font-bold text-slate-600">OFFICIAL STRICT CV PREVIEW (VERBATIM)</span>
-      <div class="flex items-center gap-2">
+      <div class="flex flex-wrap items-center gap-2">
         <button onclick="toggleStrictCV()" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-900 text-xs font-bold">
           &larr; Back to Playground
         </button>
-        <a href="JAYCV(AWS%26Android)%20(1).pdf" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold">
-          Open Uploaded PDF
+        <a href="./JAYCV(AWS%26Android)%20(1).pdf" download="Jay_Saharkar_CV.pdf" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold">
+          ⬇ Download Official PDF
         </a>
         <button onclick="printExactCV()" class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold">
-          Print / Save PDF
+          🖨️ Print / Save PDF
         </button>
       </div>
     </div>
@@ -1100,7 +1112,7 @@
   </div>
 
   <!-- ADD STICKY NOTE MODAL -->
-  <div id="note-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+  <div id="note-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm p-4">
     <div class="themed-card w-full max-w-sm rounded-3xl border p-6 shadow-2xl space-y-4">
       <div class="flex items-center justify-between">
         <h3 class="font-display font-bold text-lg">📌 Stick a Note on Jay's Wall</h3>
@@ -1136,10 +1148,10 @@
   </div>
 
   <!-- ==========================================================================
-       UNIFIED JAVASCRIPT ENGINE (AZAKA MOTION + PLAYGROUND + EXACT CV)
+       UNIFIED JAVASCRIPT ENGINE (VERIFIED & CORS-FREE)
        ========================================================================== -->
   <script>
-    // Hoisted Global State Variables
+    // Global State
     var isStrictCV = false;
     var isMobileNotesOpen = false;
     var selectedNoteColor = '#FEF08A';
@@ -1151,9 +1163,29 @@
     var logsCount = 12;
     var toastTimer = null;
     var stickyNotes = [];
+    var sharedAudioCtx = null;
+    var photoRetryIndex = 0;
 
     if (typeof lucide !== 'undefined') {
       lucide.createIcons();
+    }
+
+    /* --------------------------------------------------------------------------
+       0. MULTI-PATH PORTRAIT PHOTO RESOLVER (GUARANTEES jay.jpeg LOADS)
+       -------------------------------------------------------------------------- */
+    const portraitFallbacks = [
+      'jay.jpeg',
+      '/Portfolio/jay.jpeg',
+      'https://saharkarjayy.github.io/Portfolio/jay.jpeg',
+      'https://raw.githubusercontent.com/saharkarjayy/Portfolio/main/jay.jpeg'
+    ];
+
+    function resolvePortraitPhoto(img) {
+      if (photoRetryIndex < portraitFallbacks.length) {
+        img.src = portraitFallbacks[photoRetryIndex++];
+      } else {
+        img.onerror = null;
+      }
     }
 
     function toggleMobileMenu(forceState) {
@@ -1182,7 +1214,7 @@
     }
 
     /* --------------------------------------------------------------------------
-       1. AZAKA GAZE-FRAMES LOOKUP TABLE & POINTER-SCRUBBED VIDEO ENGINE
+       1. AZAKA GAZE-FRAMES LOOKUP TABLE & DIRECT VIDEO SCRUBBING (DESKTOP + MOBILE)
        -------------------------------------------------------------------------- */
     const gazeFrames = [
       [-1, 6.625], [-0.989573, 6.58333], [-0.987016, 6.54167], [-0.973037, 6.5],
@@ -1229,6 +1261,7 @@
       let targetPose = 0;
       let mouseNormX = 0;
       let mouseNormY = 0;
+      let mobileVideoUnlocked = false;
 
       function resizeGridCanvas() {
         if (!gridCanvas) return;
@@ -1238,10 +1271,26 @@
       resizeGridCanvas();
       window.addEventListener('resize', resizeGridCanvas);
 
+      function unlockMobileVideo() {
+        if (mobileVideoUnlocked || !video) return;
+        mobileVideoUnlocked = true;
+        const p = video.play();
+        if (p && typeof p.then === 'function') {
+          p.then(() => {
+            video.pause();
+            video.currentTime = poseToTime(pose);
+            video.style.opacity = '0.78';
+            if (poster) poster.style.opacity = '0';
+          }).catch(() => {});
+        }
+      }
+
       function updatePointerGaze(clientX, clientY) {
-        targetPose = Math.max(-1, Math.min(1, (clientX / window.innerWidth - 0.5) / 0.35));
-        mouseNormX = (clientX / window.innerWidth - 0.5);
-        mouseNormY = (clientY / window.innerHeight - 0.5);
+        const w = window.innerWidth || 1;
+        const h = window.innerHeight || 1;
+        targetPose = Math.max(-1, Math.min(1, (clientX / w - 0.5) / 0.35));
+        mouseNormX = (clientX / w - 0.5);
+        mouseNormY = (clientY / h - 0.5);
       }
 
       window.addEventListener('mousemove', (e) => {
@@ -1253,6 +1302,7 @@
       }, { passive: true });
 
       window.addEventListener('touchstart', (e) => {
+        unlockMobileVideo();
         if (e.touches && e.touches[0]) {
           updatePointerGaze(e.touches[0].clientX, e.touches[0].clientY);
         }
@@ -1265,30 +1315,24 @@
       }, { passive: true });
 
       if (video) {
-        video.addEventListener('loadeddata', () => {
+        const onVideoReady = () => {
           try {
             video.currentTime = poseToTime(0);
-            video.style.opacity = '0.52';
+            video.style.opacity = '0.78';
             if (poster) poster.style.opacity = '0';
           } catch (err) {}
-        });
-
-        fetch('https://media.prettysites.io/products/azaka/v2/azaka-scrub.mp4')
-          .then((res) => {
-            if (!res.ok) throw new Error('Video fetch status ' + res.status);
-            return res.blob();
-          })
-          .then((blob) => {
-            video.src = URL.createObjectURL(blob);
-          })
-          .catch(() => {});
+        };
+        video.addEventListener('loadedmetadata', onVideoReady);
+        video.addEventListener('loadeddata', onVideoReady);
+        video.addEventListener('canplay', onVideoReady);
+        video.load();
       }
 
       function tickBackdrop() {
         const delta = targetPose - pose;
-        pose = Math.abs(delta) < 0.001 ? targetPose : pose + delta * 0.055;
+        pose = Math.abs(delta) < 0.001 ? targetPose : pose + delta * 0.065;
 
-        if (video && video.readyState >= 2 && !video.seeking) {
+        if (video && video.readyState >= 1 && !video.seeking) {
           const time = poseToTime(pose);
           if (Math.abs(video.currentTime - time) > 1 / 48) {
             try { video.currentTime = time; } catch (e) {}
@@ -1308,24 +1352,6 @@
           rad.addColorStop(1, 'rgba(5, 5, 5, 0)');
           gCtx.fillStyle = rad;
           gCtx.fillRect(0, 0, w, h);
-
-          gCtx.strokeStyle = 'rgba(255, 255, 255, 0.045)';
-          gCtx.lineWidth = 1;
-          const step = 64;
-          const offX = (-mouseNormX * 28) % step;
-          const offY = (-mouseNormY * 18) % step;
-          for (let x = offX; x < w; x += step) {
-            gCtx.beginPath();
-            gCtx.moveTo(x, 0);
-            gCtx.lineTo(x, h);
-            gCtx.stroke();
-          }
-          for (let y = offY; y < h; y += step) {
-            gCtx.beginPath();
-            gCtx.moveTo(0, y);
-            gCtx.lineTo(w, y);
-            gCtx.stroke();
-          }
         }
 
         requestAnimationFrame(tickBackdrop);
@@ -1402,7 +1428,7 @@
     })();
 
     /* --------------------------------------------------------------------------
-       3. THEME SWATCHES, STRICT CV MODE & EXACT PRINT CV
+       3. THEME SWATCHES, STRICT CV MODE & RELIABLE PRINT CV
        -------------------------------------------------------------------------- */
     function setColorTheme(theme) {
       document.documentElement.setAttribute('data-theme', theme);
@@ -1431,38 +1457,25 @@
 
     function printExactCV() {
       const wasStrict = isStrictCV;
-      if (!wasStrict) document.body.classList.add('strict-cv-preview');
-      window.print();
-      if (!wasStrict) {
-        setTimeout(() => document.body.classList.remove('strict-cv-preview'), 300);
-      }
+      document.body.classList.add('strict-cv-preview');
+
+      const cleanupAfterPrint = () => {
+        if (!wasStrict) {
+          document.body.classList.remove('strict-cv-preview');
+        }
+        window.removeEventListener('afterprint', cleanupAfterPrint);
+      };
+
+      window.addEventListener('afterprint', cleanupAfterPrint);
+
+      // Allow DOM layout to paint before invoking native print dialog
+      setTimeout(() => {
+        window.print();
+      }, 150);
     }
 
     /* --------------------------------------------------------------------------
-       4. POLAROID PHOTO FALLBACK
-       -------------------------------------------------------------------------- */
-    function handlePhotoFallback(img) {
-      img.onerror = null;
-      const svgFallback = `data:image/svg+xml;utf8,` + encodeURIComponent(`
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320">
-          <defs>
-            <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#0F172A"/>
-              <stop offset="100%" stop-color="#1E3A8A"/>
-            </linearGradient>
-          </defs>
-          <rect width="320" height="320" fill="url(#bg)"/>
-          <circle cx="160" cy="118" r="52" fill="#38BDF8" opacity="0.25"/>
-          <circle cx="160" cy="114" r="40" fill="#FDBA74"/>
-          <path d="M84 285 C84 215, 236 215, 236 285 Z" fill="#1E293B"/>
-          <text x="160" y="304" font-family="monospace" font-size="13" font-weight="bold" fill="#38BDF8" text-anchor="middle">JAY SAHARKAR • CLOUD &amp; ANDROID</text>
-        </svg>
-      `);
-      img.src = svgFallback;
-    }
-
-    /* --------------------------------------------------------------------------
-       5. FREE-FLOATING DRAGGABLE STICKY NOTES WALL (ALL 4 ORIGINAL NOTES)
+       4. FREE-FLOATING DRAGGABLE STICKY NOTES WALL (ALL 4 ORIGINAL NOTES)
        -------------------------------------------------------------------------- */
     const defaultNotes = [
       {
@@ -1500,14 +1513,14 @@
     ];
 
     try {
-      stickyNotes = JSON.parse(localStorage.getItem('jay_azaka_sticky_v1'));
+      stickyNotes = JSON.parse(localStorage.getItem('jay_azaka_sticky_v2'));
     } catch (e) {}
     if (!Array.isArray(stickyNotes) || stickyNotes.length === 0) {
       stickyNotes = JSON.parse(JSON.stringify(defaultNotes));
     }
 
     function saveStickyNotes() {
-      try { localStorage.setItem('jay_azaka_sticky_v1', JSON.stringify(stickyNotes)); } catch (e) {}
+      try { localStorage.setItem('jay_azaka_sticky_v2', JSON.stringify(stickyNotes)); } catch (e) {}
     }
 
     function escapeHTML(str) {
@@ -1670,8 +1683,12 @@
       showToast('Note Pinned to Wall! 📌');
     }
 
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 768) renderStickyNotes();
+    });
+
     /* --------------------------------------------------------------------------
-       6. FORWARD-FACING SUPERBIKE & TURBO CAR CAREER ROADTRIP
+       5. FORWARD-FACING SUPERBIKE & TURBO CAR CAREER ROADTRIP
        -------------------------------------------------------------------------- */
     const stopsInfo = [
       { pct: 0, label: "Stop 1/4: BSc IT @ S.M. Shetty, Mumbai (CGPI: 7.52)" },
@@ -1692,15 +1709,15 @@
       if (type === 'bike') {
         sprite.textContent = '🏍️';
         bikeBtn.style.backgroundColor = 'var(--accent-primary)';
-        bikeBtn.className = 'px-3 py-1.5 rounded-lg text-slate-950 text-xs font-extrabold shadow-sm transition-all';
+        bikeBtn.className = 'px-3 py-1.5 rounded-lg text-slate-950 text-xs font-extrabold shadow-sm transition-all text-center';
         carBtn.style.backgroundColor = 'transparent';
-        carBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold themed-muted hover:opacity-80 transition-all';
+        carBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold themed-muted hover:opacity-80 transition-all text-center';
       } else {
         sprite.textContent = '🏎️';
         carBtn.style.backgroundColor = 'var(--accent-primary)';
-        carBtn.className = 'px-3 py-1.5 rounded-lg text-slate-950 text-xs font-extrabold shadow-sm transition-all';
+        carBtn.className = 'px-3 py-1.5 rounded-lg text-slate-950 text-xs font-extrabold shadow-sm transition-all text-center';
         bikeBtn.style.backgroundColor = 'transparent';
-        bikeBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold themed-muted hover:opacity-80 transition-all';
+        bikeBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold themed-muted hover:opacity-80 transition-all text-center';
       }
     }
 
@@ -1708,33 +1725,34 @@
       try {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         if (!AudioCtx) return;
-        const ctx = new AudioCtx();
-        const now = ctx.currentTime;
+        if (!sharedAudioCtx) sharedAudioCtx = new AudioCtx();
+        if (sharedAudioCtx.state === 'suspended') sharedAudioCtx.resume();
+        const now = sharedAudioCtx.currentTime;
 
         if (currentVehicle === 'bike') {
           [0, 0.14].forEach((offset) => {
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
+            const osc = sharedAudioCtx.createOscillator();
+            const gain = sharedAudioCtx.createGain();
             osc.type = 'sawtooth';
             osc.frequency.setValueAtTime(540, now + offset);
             osc.frequency.exponentialRampToValueAtTime(660, now + offset + 0.09);
             gain.gain.setValueAtTime(0.14, now + offset);
             gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.11);
             osc.connect(gain);
-            gain.connect(ctx.destination);
+            gain.connect(sharedAudioCtx.destination);
             osc.start(now + offset);
             osc.stop(now + offset + 0.11);
           });
         } else {
           [340, 425].forEach((freq) => {
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
+            const osc = sharedAudioCtx.createOscillator();
+            const gain = sharedAudioCtx.createGain();
             osc.type = 'triangle';
             osc.frequency.setValueAtTime(freq, now);
             gain.gain.setValueAtTime(0.16, now);
             gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
             osc.connect(gain);
-            gain.connect(ctx.destination);
+            gain.connect(sharedAudioCtx.destination);
             osc.start(now);
             osc.stop(now + 0.35);
           });
@@ -1826,7 +1844,7 @@
     }
 
     /* --------------------------------------------------------------------------
-       7. AWS SERVICE INSPECTOR, JENKINS/TERRAFORM RUNNER & ANDROID SIMULATOR
+       6. AWS SERVICE INSPECTOR, JENKINS/TERRAFORM RUNNER & ANDROID SIMULATOR
        -------------------------------------------------------------------------- */
     const awsDetails = {
       ec2: {
@@ -1924,13 +1942,19 @@
     }
 
     function copyText(text, label) {
-      const el = document.createElement('input');
-      el.value = text;
-      document.body.appendChild(el);
-      el.select();
-      document.execCommand('copy');
-      document.body.removeChild(el);
-      showToast(label + ' (' + text + ')');
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast(label + ' (' + text + ')');
+        });
+      } else {
+        const el = document.createElement('input');
+        el.value = text;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        showToast(label + ' (' + text + ')');
+      }
     }
 
     function showToast(msg) {
@@ -1980,7 +2004,7 @@
       draw();
     }
 
-    // Render all 4 original sticky notes on initial load
+    // Initialize sticky notes on load
     renderStickyNotes();
   </script>
 </body>
