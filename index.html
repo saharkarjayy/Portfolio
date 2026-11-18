@@ -938,10 +938,66 @@
   </main>
 
   <!-- ==========================================================================
-       PART 3: EXACT OFFICIAL 1-PAGE PRINTABLE CV ('JayCV(AWS& ANDROID)(13-11-26).pdf')
+       PART 3: EXACT OFFICIAL 1-PAGE PRINTABLE CV ('JAYCV(AWS&Android).pdf')
        (Hidden in Portfolio Mode; Shown in Strict CV Mode & @media print)
        ========================================================================== -->
   <section id="formal-cv-sheet" class="hidden max-w-[820px] mx-auto my-6 sm:my-8 bg-white text-black p-5 sm:p-10 rounded-2xl shadow-2xl border border-slate-200">
+    <!-- Top Back-to-Portfolio Banner (Hidden when printing) -->
+    <div class="no-print flex items-center justify-between gap-2 pb-4 mb-5 border-b border-slate-200">
+      <span class="text-xs font-mono font-bold text-slate-600">OFFICIAL STRICT CV PREVIEW (VERBATIM)</span>
+      <div class="flex items-center gap-2">
+        <button onclick="toggleStrictCV()" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-900 text-xs font-bold">
+          &larr; Back to Playground
+        </button>
+        <button onclick="printExactCV()" class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold">
+          Print / Save PDF
+        </button>
+      </div>
+    </div>
+
+    <div class="space-y-3 text-[12px] leading-[1.42] text-black font-sans">
+      <!-- Header -->
+      <div class="border-b-2 border-black pb-2">
+        <div class="flex flex-wrap items-baseline justify-between gap-2">
+          <div>
+            <h1 class="text-2xl font-extrabold tracking-tight text-black">Jay Saharkar</h1>
+            <div class="text-sm font-bold text-slate-900">AWS DevOps | Android Developer</div>
+          </div>
+          <div class="text-right text-[11.5px] font-medium text-slate-900 space-y-0.5">
+            <div>8850517641 &bull; jaysaharkar@gmail.com</div>
+            <div>
+              Thane, MH, India &bull;
+              <a href="#azaka-hero" onclick="if(isStrictCV) toggleStrictCV();" class="underline font-semibold">Website</a> &bull;
+              <a href="https://linkedin.com/in/jay-saharkar" target="_blank" rel="noopener noreferrer" class="underline font-semibold">LinkedIn</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Professional Summary -->
+      <div>
+        <h2 class="text-xs font-extrabold uppercase tracking-wider text-black border-b border-slate-400 pb-0.5 mb-1">
+          PROFESSIONAL SUMMARY
+        </h2>
+        <p class="text-slate-900">
+          MSc Information Technology graduate and Software Engineer with hands-on experience in AWS cloud infrastructure, application development and backend integration. Skilled in AWS services, Terraform, Docker, Kubernetes and Jenkins, with practical exposure to infrastructure provisioning, cloud networking and application deployment. Interested in building secure, scalable and highly available cloud solutions and pursuing a career in AWS Cloud Engineering and DevOps
+        </p>
+      </div>
+
+      <!-- Experience -->
+      <div>
+        <h2 class="text-xs font-extrabold uppercase tracking-wider text-black border-b border-slate-400 pb-0.5 mb-1.5">
+          EXPERIENCE
+        </h2>
+        <div class="flex flex-wrap items-baseline justify-between gap-2">
+          <div>
+            <span class="font-bold text-black">Software Engineer</span> &mdash;
+            <span class="font-semibold text-slate-900">Bartech Data Systems Pvt Ltd</span>
+          </div>
+          <span class="text-[11.5px] font-semibold text-slate-900">Aug '26- Present | Thane, Maharashtra, India</span>
+        </div>
+        <p class="text-slate-900 mt-1">
+          Develop and maintain enterprise mobile and cloud-based applications, with responsibilities spanning AWS infrastructure management, Android development, backend API integration, and database management. Work on configuring cloud environments, deploying business applications, and maintaining reliable application infrastructure.
         </p>
 
         <div class="mt-2">
@@ -1168,31 +1224,31 @@
       return nearestTime + 1 / 240;
     }
 
-    (function initAzakaBackdropAndMotion() {
-      const video = document.getElementById('azaka-video');
-      const poster = document.getElementById('azaka-poster');
-      const gridCanvas = document.getElementById('cloud-grid-canvas');
-      const gCtx = gridCanvas ? gridCanvas.getContext('2d') : null;
-
-      let pose = 0;
-      let targetPose = 0;
-      let mouseNormX = 0;
-      let mouseNormY = 0;
-
-      // Resize procedural cloud-grid fallback canvas
-      function resizeGridCanvas() {
-        if (!gridCanvas) return;
-        gridCanvas.width = gridCanvas.offsetWidth || window.innerWidth;
-        gridCanvas.height = gridCanvas.offsetHeight || window.innerHeight;
+      function updatePointerGaze(clientX, clientY) {
+        targetPose = Math.max(-1, Math.min(1, (clientX / window.innerWidth - 0.5) / 0.35));
+        mouseNormX = (clientX / window.innerWidth - 0.5);
+        mouseNormY = (clientY / window.innerHeight - 0.5);
       }
-      resizeGridCanvas();
-      window.addEventListener('resize', resizeGridCanvas);
 
       window.addEventListener('mousemove', (e) => {
-        targetPose = Math.max(-1, Math.min(1, (e.clientX / window.innerWidth - 0.5) / 0.35));
-        mouseNormX = (e.clientX / window.innerWidth - 0.5);
-        mouseNormY = (e.clientY / window.innerHeight - 0.5);
-      });
+        updatePointerGaze(e.clientX, e.clientY);
+      }, { passive: true });
+
+      window.addEventListener('pointermove', (e) => {
+        updatePointerGaze(e.clientX, e.clientY);
+      }, { passive: true });
+
+      window.addEventListener('touchstart', (e) => {
+        if (e.touches && e.touches[0]) {
+          updatePointerGaze(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchmove', (e) => {
+        if (e.touches && e.touches[0]) {
+          updatePointerGaze(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, { passive: true });
 
       // Attempt loading AZAKA scrubbed MP4 (gracefully falls back to poster + procedural cloud-grid)
       if (video) {
@@ -1281,10 +1337,14 @@
         if (wrapper) {
           const pX = gsap.quickTo(wrapper, 'x', { duration: 0.8, ease: 'power3.out' });
           const pY = gsap.quickTo(wrapper, 'y', { duration: 0.8, ease: 'power3.out' });
-          window.addEventListener('mousemove', (e) => {
-            pX((e.clientX / window.innerWidth - 0.5) * -16);
-            pY((e.clientY / window.innerHeight - 0.5) * -10);
-          });
+          const updateParallax = (clientX, clientY) => {
+            pX((clientX / window.innerWidth - 0.5) * -16);
+            pY((clientY / window.innerHeight - 0.5) * -10);
+          };
+          window.addEventListener('mousemove', (e) => updateParallax(e.clientX, e.clientY), { passive: true });
+          window.addEventListener('touchmove', (e) => {
+            if (e.touches && e.touches[0]) updateParallax(e.touches[0].clientX, e.touches[0].clientY);
+          }, { passive: true });
         }
       }
     })();
