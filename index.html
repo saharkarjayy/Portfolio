@@ -383,7 +383,7 @@
   </div>
 
   <!-- ==========================================================================
-       TOP EDITORIAL HEADER (ULTRA-CLEAN ON MOBILE + FULL DESKTOP CONTROLS)
+       TOP EDITORIAL HEADER
        ========================================================================== -->
   <header id="playground-header" style="background-color: var(--nav-bg); border-color: var(--border-card);" class="sticky top-0 z-40 border-b backdrop-blur-xl transition-colors">
     <div class="max-w-7xl mx-auto px-4 sm:px-8 h-14 sm:h-16 flex items-center justify-between gap-2">
@@ -401,9 +401,9 @@
         <button onclick="focusStickyNotes()" class="link-underline">Sticky Wall</button>
       </nav>
 
-      <!-- Right Controls: Clean Mobile Action Strip + Full Desktop Palette -->
+      <!-- Right Controls -->
       <div class="flex items-center gap-1.5 sm:gap-2.5">
-        <!-- Desktop-Only Theme Swatches (Moved inside Mobile Menu Drawer on < 768px) -->
+        <!-- Desktop-Only Theme Swatches -->
         <div class="hidden md:flex themed-card items-center gap-1.5 px-2.5 py-1.5 rounded-full border shadow-sm" title="Switch Theme">
           <button onclick="setColorTheme('obsidian')" id="swatch-obsidian" aria-label="Editorial Obsidian Theme" class="w-4 h-4 rounded-full bg-neutral-950 border border-sky-400 ring-2 ring-offset-1 ring-sky-400 transition-transform hover:scale-110"></button>
           <button onclick="setColorTheme('indigo')" id="swatch-indigo" aria-label="Electric Indigo Light Theme" class="w-4 h-4 rounded-full bg-indigo-600 transition-transform hover:scale-110"></button>
@@ -427,7 +427,7 @@
       </div>
     </div>
 
-    <!-- Collapsible Mobile Drawer (Navigation + Theme Switcher + Notes Trigger) -->
+    <!-- Collapsible Mobile Drawer -->
     <div id="mobile-nav-drawer" style="background-color: var(--bg-card); border-color: var(--border-card);" class="hidden md:hidden border-t px-4 py-4 space-y-4 shadow-2xl">
       <div class="grid grid-cols-2 gap-2 text-xs font-bold">
         <a href="#roadtrip" onclick="toggleMobileMenu(false)" class="themed-subcard px-3 py-2.5 rounded-xl border flex items-center gap-2">
@@ -456,11 +456,11 @@
   </header>
 
   <!-- ==========================================================================
-       PART 1: AZAKA EDITORIAL KINETIC HERO + 3D POLAROID PORTRAIT
+       PART 1: AZAKA EDITORIAL KINETIC HERO + 3D POLAROID PORTRAIT ('jay.jpeg')
        ========================================================================== -->
   <section id="azaka-hero" class="relative md:min-h-[calc(100vh-4rem)] w-full overflow-hidden bg-[#050505] text-white flex flex-col justify-between">
     
-    <!-- Layer 0A: Procedural Dark Cloud-Grid Canvas Fallback (Guaranteed Offline/CORS-Safe) -->
+    <!-- Layer 0A: Procedural Dark Cloud-Grid Canvas Fallback -->
     <canvas id="cloud-grid-canvas" class="absolute inset-0 z-0 h-full w-full opacity-80"></canvas>
 
     <!-- Layer 0B: AZAKA Poster & Pointer-Scrubbed MP4 Backdrop -->
@@ -482,7 +482,7 @@
     <!-- Atmospheric Vignette -->
     <div class="pointer-events-none absolute inset-0 z-[1] bg-[radial-gradient(120%_90%_at_50%_50%,rgba(5,5,5,0.28)_35%,rgba(5,5,5,0.88)_100%)]"></div>
 
-    <!-- Desktop Parallax Split Display Headlines (Hidden on < 768px to prevent mobile overlap) -->
+    <!-- Desktop Parallax Split Display Headlines -->
     <div id="azaka-parallax" class="hidden md:block pointer-events-none absolute inset-0 z-10">
       <h1 class="azaka-headline absolute top-[7%] left-[3vw] text-white/95 select-none">
         <span data-headline class="block">Cloud &amp; AWS</span>
@@ -492,12 +492,12 @@
       </h2>
     </div>
 
-    <!-- Foreground Split Content Grid (Clean Mobile Flow + Desktop Editorial Split) -->
+    <!-- Foreground Split Content Grid -->
     <div class="relative z-20 max-w-7xl mx-auto w-full px-4 sm:px-8 my-auto py-8 sm:py-16 md:py-20 grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-10 items-center">
       
-      <!-- Left 7 Cols: Stacked Mobile Headline, Bio, CTA & Compact Contact Pills -->
+      <!-- Left 7 Cols -->
       <div class="lg:col-span-7 space-y-4 sm:space-y-6 md:pt-20">
-        <!-- Mobile-Only Clean Stacked Syne Headline (Zero Overlap) -->
+        <!-- Mobile-Only Clean Stacked Syne Headline -->
         <div class="md:hidden space-y-1">
           <h1 data-headline class="azaka-headline text-white">Cloud &amp; AWS</h1>
           <h2 data-headline class="azaka-headline text-sky-400">Engineering</h2>
@@ -516,7 +516,7 @@
           MSc IT graduate &amp; Software Engineer building secure, scalable AWS cloud infrastructure, DevOps pipelines, and native Kotlin Android apps.
         </p>
 
-        <!-- Compact Single-Row Quick-Action Bar on Mobile -->
+        <!-- Compact Quick-Action Bar -->
         <div data-fade class="flex flex-wrap items-center gap-3 sm:gap-5 pt-1">
           <a href="#roadtrip" class="link-underline text-sm sm:text-lg font-bold text-white inline-flex items-center gap-1.5">
             <span>Explore Journey</span>
@@ -533,7 +533,7 @@
           </button>
         </div>
 
-        <!-- Quick-Copy Email & Phone Pills (Compact on Mobile) -->
+        <!-- Quick-Copy Email & Phone Pills -->
         <div data-fade class="flex flex-wrap items-center gap-2 pt-1">
           <button onclick="copyText('jaysaharkar@gmail.com', 'Email Copied!')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 backdrop-blur-md text-[11px] sm:text-xs font-mono font-semibold text-white transition-all">
             <i data-lucide="mail" class="w-3.5 h-3.5 text-sky-400"></i>
@@ -552,7 +552,7 @@
         </div>
       </div>
 
-      <!-- Right 5 Cols: Tilted 3D Polaroid Portrait Frame (max-w-[240px] on Mobile, max-w-[310px] on Desktop) -->
+      <!-- Right 5 Cols: Tilted 3D Polaroid Portrait Frame (Locked to jay.jpeg, No Swap Photo Button) -->
       <div data-fade class="lg:col-span-5 flex justify-center lg:justify-end pt-2 lg:pt-0">
         <div class="relative w-full max-w-[240px] md:max-w-[310px]">
           
@@ -572,21 +572,14 @@
             <div class="washi-tape absolute -top-3 left-1/2 -translate-x-1/2 w-24 sm:w-28 h-6 sm:h-7 rounded-sm opacity-95 z-10"></div>
 
             <!-- Portrait Container -->
-            <div class="relative aspect-square w-full rounded-xl overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-sky-900 border border-slate-200 group">
+            <div class="relative aspect-square w-full rounded-xl overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-sky-900 border border-slate-200">
               <img
                 id="jay-portrait-img"
-                src="WhatsApp Image 2026-11-13 at 17.18.50.jpeg"
+                src="jay.jpeg"
                 alt="Jay Saharkar — AWS DevOps & Android Developer"
                 class="w-full h-full object-cover object-top"
                 onerror="handlePhotoFallback(this)"
               />
-
-              <!-- Instant Swap Photo File Picker -->
-              <label for="photo-upload-input" class="cursor-pointer absolute bottom-2 right-2 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-lg bg-slate-950/85 hover:bg-slate-950 text-white font-mono text-[10px] sm:text-[11px] font-bold backdrop-blur-md flex items-center gap-1 shadow-lg transition-transform hover:scale-105">
-                <i data-lucide="camera" class="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400"></i>
-                <span>Swap Photo</span>
-              </label>
-              <input id="photo-upload-input" type="file" accept="image/*" class="hidden" onchange="previewCustomPhoto(event)" />
             </div>
 
             <!-- Polaroid Handwritten Caption -->
@@ -604,7 +597,7 @@
       </div>
     </div>
 
-    <!-- Bottom Editorial Role Bar (AZAKA Footer Strip) -->
+    <!-- Bottom Editorial Role Bar -->
     <div class="relative z-20 w-full border-t border-white/10 px-4 sm:px-10 py-3.5 sm:py-4 flex items-center justify-between gap-2 text-[11px] sm:text-[15px] font-bold text-white/90">
       <span data-fade>AWS Cloud Architecture</span>
       <span data-fade class="hidden sm:inline">DevOps &amp; Terraform</span>
@@ -633,7 +626,6 @@
           </p>
         </div>
 
-        <!-- Clean 2-Row Touch-Friendly Control Strip on Mobile -->
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
           <div class="themed-subcard p-1 rounded-xl border grid grid-cols-2 sm:inline-flex items-center gap-1">
             <button id="btn-vehicle-bike" onclick="setVehicle('bike')" style="background-color: var(--accent-primary);" class="px-3 py-1.5 rounded-lg text-slate-950 text-xs font-extrabold shadow-sm transition-all text-center">
@@ -715,7 +707,7 @@
         </div>
       </div>
 
-      <!-- 4 Milestone Story Cards (Horizontal Swipe Snap on Mobile, 4-Col Grid on Desktop) -->
+      <!-- 4 Milestone Story Cards -->
       <div class="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mt-5 overflow-x-auto pb-2 sm:pb-0 snap-x snap-mandatory">
         <div onclick="driveToStop(0)" id="stop-card-0" class="milestone-card shrink-0 w-[230px] sm:w-auto snap-center cursor-pointer rounded-2xl p-4 border-2 border-sky-400 bg-sky-400/10 transition-all">
           <div class="flex items-center justify-between text-[11px] font-mono font-bold themed-primary-text">
@@ -938,17 +930,19 @@
   </main>
 
   <!-- ==========================================================================
-       PART 3: EXACT OFFICIAL 1-PAGE PRINTABLE CV ('JAYCV(AWS&Android).pdf')
-       (Hidden in Portfolio Mode; Shown in Strict CV Mode & @media print)
+       PART 3: EXACT OFFICIAL 1-PAGE PRINTABLE CV ('JAYCV(AWS&Android) (1).pdf')
        ========================================================================== -->
   <section id="formal-cv-sheet" class="hidden max-w-[820px] mx-auto my-6 sm:my-8 bg-white text-black p-5 sm:p-10 rounded-2xl shadow-2xl border border-slate-200">
     <!-- Top Back-to-Portfolio Banner (Hidden when printing) -->
-    <div class="no-print flex items-center justify-between gap-2 pb-4 mb-5 border-b border-slate-200">
+    <div class="no-print flex flex-wrap items-center justify-between gap-2 pb-4 mb-5 border-b border-slate-200">
       <span class="text-xs font-mono font-bold text-slate-600">OFFICIAL STRICT CV PREVIEW (VERBATIM)</span>
       <div class="flex items-center gap-2">
         <button onclick="toggleStrictCV()" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-900 text-xs font-bold">
           &larr; Back to Playground
         </button>
+        <a href="JAYCV(AWS%26Android)%20(1).pdf" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold">
+          Open Uploaded PDF
+        </a>
         <button onclick="printExactCV()" class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold">
           Print / Save PDF
         </button>
@@ -967,7 +961,7 @@
             <div>8850517641 &bull; jaysaharkar@gmail.com</div>
             <div>
               Thane, MH, India &bull;
-              <a href="#azaka-hero" onclick="if(isStrictCV) toggleStrictCV();" class="underline font-semibold">Website</a> &bull;
+              <a href="https://saharkarjayy.github.io/Portfolio/" class="underline font-semibold">Website</a> &bull;
               <a href="https://linkedin.com/in/jay-saharkar" target="_blank" rel="noopener noreferrer" class="underline font-semibold">LinkedIn</a>
             </div>
           </div>
@@ -1156,6 +1150,7 @@
     var pipelineRunning = false;
     var logsCount = 12;
     var toastTimer = null;
+    var stickyNotes = [];
 
     if (typeof lucide !== 'undefined') {
       lucide.createIcons();
@@ -1179,7 +1174,7 @@
     }
 
     function updateNoteCounters() {
-      const count = stickyNotes ? stickyNotes.length : 0;
+      const count = Array.isArray(stickyNotes) ? stickyNotes.length : 0;
       ['hero-mobile-note-count', 'dock-mobile-note-count', 'mobile-menu-note-count'].forEach((id) => {
         const el = document.getElementById(id);
         if (el) el.textContent = count;
@@ -1224,6 +1219,25 @@
       return nearestTime + 1 / 240;
     }
 
+    (function initAzakaBackdrop() {
+      const video = document.getElementById('azaka-video');
+      const poster = document.getElementById('azaka-poster');
+      const gridCanvas = document.getElementById('cloud-grid-canvas');
+      const gCtx = gridCanvas ? gridCanvas.getContext('2d') : null;
+
+      let pose = 0;
+      let targetPose = 0;
+      let mouseNormX = 0;
+      let mouseNormY = 0;
+
+      function resizeGridCanvas() {
+        if (!gridCanvas) return;
+        gridCanvas.width = gridCanvas.offsetWidth || window.innerWidth;
+        gridCanvas.height = gridCanvas.offsetHeight || window.innerHeight;
+      }
+      resizeGridCanvas();
+      window.addEventListener('resize', resizeGridCanvas);
+
       function updatePointerGaze(clientX, clientY) {
         targetPose = Math.max(-1, Math.min(1, (clientX / window.innerWidth - 0.5) / 0.35));
         mouseNormX = (clientX / window.innerWidth - 0.5);
@@ -1250,7 +1264,6 @@
         }
       }, { passive: true });
 
-      // Attempt loading AZAKA scrubbed MP4 (gracefully falls back to poster + procedural cloud-grid)
       if (video) {
         video.addEventListener('loadeddata', () => {
           try {
@@ -1268,13 +1281,9 @@
           .then((blob) => {
             video.src = URL.createObjectURL(blob);
           })
-          .catch(() => {
-            // Poster & procedural dark cloud-grid remain active if offline/CORS-blocked
-          });
+          .catch(() => {});
       }
 
-      // Animation loop for gaze scrubbing + subtle procedural cloud-grid nodes
-      let gridTick = 0;
       function tickBackdrop() {
         const delta = targetPose - pose;
         pose = Math.abs(delta) < 0.001 ? targetPose : pose + delta * 0.055;
@@ -1286,14 +1295,11 @@
           }
         }
 
-        // Render subtle interactive AWS cloud-grid mesh
         if (gCtx && gridCanvas) {
-          gridTick += 0.012;
           const w = gridCanvas.width;
           const h = gridCanvas.height;
           gCtx.clearRect(0, 0, w, h);
 
-          // Radial pointer glow
           const gx = w * (0.5 + mouseNormX * 0.45);
           const gy = h * (0.45 + mouseNormY * 0.35);
           const rad = gCtx.createRadialGradient(gx, gy, 20, gx, gy, Math.max(w, h) * 0.55);
@@ -1303,7 +1309,6 @@
           gCtx.fillStyle = rad;
           gCtx.fillRect(0, 0, w, h);
 
-          // Perspective grid lines reacting to pointer
           gCtx.strokeStyle = 'rgba(255, 255, 255, 0.045)';
           gCtx.lineWidth = 1;
           const step = 64;
@@ -1327,7 +1332,6 @@
       }
       requestAnimationFrame(tickBackdrop);
 
-      // GSAP Intro Timeline & Headline Parallax
       if (typeof gsap !== 'undefined' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
         tl.from('[data-headline]', { yPercent: 55, opacity: 0, duration: 1.25, stagger: 0.12 }, 0.15);
@@ -1435,7 +1439,7 @@
     }
 
     /* --------------------------------------------------------------------------
-       4. POLAROID PHOTO FALLBACK & INSTANT SWAP FILE PICKER
+       4. POLAROID PHOTO FALLBACK
        -------------------------------------------------------------------------- */
     function handlePhotoFallback(img) {
       img.onerror = null;
@@ -1455,18 +1459,6 @@
         </svg>
       `);
       img.src = svgFallback;
-    }
-
-    function previewCustomPhoto(event) {
-      const file = event.target.files && event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = document.getElementById('jay-portrait-img');
-        if (img) img.src = e.target.result;
-        showToast('Portrait Photo Updated! 📸');
-      };
-      reader.readAsDataURL(file);
     }
 
     /* --------------------------------------------------------------------------
@@ -1507,7 +1499,6 @@
       }
     ];
 
-    let stickyNotes = null;
     try {
       stickyNotes = JSON.parse(localStorage.getItem('jay_azaka_sticky_v1'));
     } catch (e) {}
@@ -1548,7 +1539,6 @@
           <p class="font-hand text-[19px] leading-[1.18] font-bold text-slate-900">${escapeHTML(note.text)}</p>
         `;
 
-        // Mouse & Touch Drag Handlers
         let startX = 0, startY = 0, origX = 0, origY = 0, dragging = false;
 
         const onStart = (clientX, clientY) => {
@@ -1696,7 +1686,6 @@
       const bikeBtn = document.getElementById('btn-vehicle-bike');
       const carBtn = document.getElementById('btn-vehicle-car');
 
-      // Permanently forward-facing (scaleX(-1) faces right along 0% -> 100% path)
       sprite.style.display = 'inline-block';
       sprite.style.transform = 'scaleX(-1)';
 
@@ -1816,7 +1805,7 @@
       const slider = document.getElementById('road-slider');
       if (parseFloat(slider.value) >= 100) slider.value = 0;
 
-      btn.textContent = '⏸ Pause Tour';
+      btn.textContent = '⏸ Pause';
       autoDriveInterval = setInterval(() => {
         let next = parseFloat(slider.value) + 1;
         if (next > 100) {
@@ -1833,7 +1822,7 @@
         clearInterval(autoDriveInterval);
         autoDriveInterval = null;
       }
-      document.getElementById('auto-drive-btn').textContent = '▶️ Auto-Drive Tour';
+      document.getElementById('auto-drive-btn').textContent = '▶️ Auto-Drive';
     }
 
     /* --------------------------------------------------------------------------
@@ -1880,10 +1869,10 @@
       document.getElementById('aws-insp-desc').textContent = info.desc;
 
       document.querySelectorAll('.aws-pill').forEach((btn) => {
-        btn.className = 'aws-pill themed-subcard px-3 py-1.5 rounded-xl font-mono text-xs font-semibold border hover:border-sky-400';
+        btn.className = 'aws-pill themed-subcard px-3 py-1.5 rounded-xl font-mono text-[11px] sm:text-xs font-semibold border hover:border-sky-400';
       });
       if (el) {
-        el.className = 'aws-pill px-3 py-1.5 rounded-xl font-mono text-xs font-extrabold bg-sky-400 text-slate-950 shadow-sm';
+        el.className = 'aws-pill px-3 py-1.5 rounded-xl font-mono text-[11px] sm:text-xs font-extrabold bg-sky-400 text-slate-950 shadow-sm';
       }
     }
 
