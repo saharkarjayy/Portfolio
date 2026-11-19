@@ -1072,7 +1072,7 @@
 
   <!-- ==========================================================================
        MAIN JAVASCRIPT (playground, sticky notes, roadtrip, CV mode)
-       Mini Jay's 3D character now lives in mini-jay.js (loaded at the very end)
+       Mini Jay's 3D character script is at the very end of this file
        ========================================================================== -->
   <script>
     var isStrictCV = false;
@@ -1752,7 +1752,685 @@
     renderStickyNotes();
   </script>
 
-  <!-- Mini Jay 3D character (2in x 3in, draggable, ladder, click-to-walk) -->
-  <script src="mini-jay.js"></script>
+  <!-- MINI JAY 3D CHARACTER: 2in x 3in, draggable, ladder on scroll, click-to-walk, wave -->
+  <script>
+/* ============================================================================
+   mini-jay.js — Mini Jay v2
+   • 2in × 3in on-screen character (CSS inches; slightly smaller on phones)
+   • Grab him with mouse/finger and drop him aside (he falls to the floor)
+   • Scroll the page → a ladder appears and he climbs up / down with the scroll
+   • Click/tap anywhere → he walks there (climbs the ladder if the spot is high),
+     then points at it. Tap HIM → he waves.
+   Needs: three.min.js r128 + GLTFLoader r128 (already in your page), jay.glb
+   ========================================================================== */
+(function () {
+  'use strict';
+  if (typeof THREE === 'undefined' || !THREE.GLTFLoader) return;
+  const JX = window.JAYX = window.JAYX || {};   // hooks used by jay-extras.js
+  JX.face = {};
+
+  /* ── TUNABLES ───────────────────────────────────────────────────────────── */
+  const SIZE_DESKTOP = ['2in', '3in'];        // width, height
+  const SIZE_MOBILE  = ['2in', '3in']; // phones (under 768px wide)
+  const WALK_SPEED = 4.4, CLIMB_SPEED = 3.4;  // px per frame @60fps
+  const SCROLL_PERCH_HOLD = 2200;             // ms after last scroll before he climbs back down
+  const CLICK_PERCH_HOLD  = 9000;             // ms he stays up high after a click-to-height
+  const LINES = ['Hey! I\u2019m Jay 👋', 'Drag me aside! 🖐️', 'Scroll — I\u2019ll take the ladder 🪜', 'Click anywhere, I\u2019ll walk there 🚶', 'AWS + Kotlin = ❤️'];
+
+  /* ── 0. KEEP HERO GLOW + GSAP INTRO (these lived in the old IIFE) ──────── */
+  const grid = document.getElementById('cloud-grid-canvas');
+  const gctx = grid ? grid.getContext('2d') : null;
+  const mouse = { x: innerWidth / 2, y: innerHeight / 2 };
+  function sizeGrid() { if (grid) { grid.width = grid.offsetWidth || innerWidth; grid.height = grid.offsetHeight || innerHeight; } }
+  sizeGrid(); addEventListener('resize', sizeGrid);
+  if (window.gsap && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+    tl.from('[data-headline]', { yPercent: 55, opacity: 0, duration: 1.25, stagger: 0.12 }, 0.15);
+    tl.from('[data-fade]', { y: 20, opacity: 0, duration: 0.9, stagger: 0.07 }, 0.45);
+  }
+
+  /* ── 1. DOM + CSS ───────────────────────────────────────────────────────── */
+  ['mini-jay-stage', 'mini-jay-nametag'].forEach(id => { const e = document.getElementById(id); if (e) e.remove(); });
+  const style = document.createElement('style');
+  style.textContent = `
+  :root{--jw:${SIZE_DESKTOP[0]};--jh:${SIZE_DESKTOP[1]};--jx:58px}
+  @media (max-width:767px){:root{--jw:${SIZE_MOBILE[0]};--jh:${SIZE_MOBILE[1]}}}
+  #mini-jay-stage{position:fixed;left:0;top:0;width:var(--jw);height:calc(var(--jh) + var(--jx));z-index:35;pointer-events:none;will-change:transform;opacity:0;transition:opacity .4s}
+  #mini-jay-stage.ready{opacity:1}
+  #mini-jay-canvas{width:100%;height:100%;display:block;pointer-events:none}
+  #jay-hit{position:absolute;left:0;right:0;bottom:0;top:var(--jx);pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;
+    clip-path:ellipse(36% 48% at 50% 52%);-webkit-tap-highlight-color:transparent}
+  #jay-hit.grabbing{cursor:grabbing}
+  #mini-jay-nametag{position:absolute;left:50%;top:calc(var(--jx) - 4px);transform:translate(-50%,-100%);white-space:nowrap;pointer-events:none;
+    padding:4px 10px;border-radius:999px;background:rgba(56,189,248,.95);color:#020617;border:1px solid #fff;
+    font:800 10px 'JetBrains Mono',monospace;box-shadow:0 6px 16px rgba(0,0,0,.3)}
+  #jay-ladder{position:fixed;top:0;bottom:0;left:0;width:calc(var(--jw)*.5);margin-left:calc(var(--jw)*-.25);z-index:34;pointer-events:none;
+    opacity:0;transition:opacity .35s;border-left:7px solid #b45309;border-right:7px solid #b45309;border-radius:4px;
+    box-shadow:0 0 18px rgba(0,0,0,.35);--rung:0px}
+  #jay-ladder.on{opacity:1}
+  #jay-ladder::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(to bottom,transparent 0,transparent 34px,#f59e0b 34px,#f59e0b 40px);background-position:0 var(--rung)}
+  body.strict-cv-preview #mini-jay-stage,body.strict-cv-preview #jay-ladder{display:none!important}
+  @media print{#mini-jay-stage,#jay-ladder{display:none!important}}`;
+  document.head.appendChild(style);
+
+  const stage = document.createElement('div');
+  stage.id = 'mini-jay-stage';
+  stage.innerHTML = '<canvas id="mini-jay-canvas"></canvas><div id="mini-jay-nametag"><span id="mini-jay-status">JAY • DRAG ME</span></div><div id="jay-hit" title="Drag me aside!"></div>';
+  const ladder = document.createElement('div');
+  ladder.id = 'jay-ladder';
+  document.body.append(ladder, stage);
+  const hit = stage.querySelector('#jay-hit');
+  const statusEl = stage.querySelector('#mini-jay-status');
+
+  /* ── 2. THREE.JS (orthographic → exact pixel framing of the 2×3 in box) ── */
+  const renderer = new THREE.WebGLRenderer({ canvas: stage.querySelector('canvas'), alpha: true, antialias: true });
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  const scene = new THREE.Scene();
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x1e293b, 1.35));
+  const key = new THREE.DirectionalLight(0x38bdf8, 1.1); key.position.set(2.5, 3.5, 4); scene.add(key);
+  const rim = new THREE.DirectionalLight(0xf97316, 0.65); rim.position.set(-2.5, 2, -2); scene.add(rim);
+  const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 20);
+  camera.position.z = 6;
+  const pivot = new THREE.Group(); scene.add(pivot);
+
+  let BW = 192, BH = 288, AH = 1.82, PAD = 8, EX = 58;
+  function fit() {
+    EX = parseFloat(getComputedStyle(stage).getPropertyValue('--jx')) || 58;
+    BW = stage.offsetWidth || 192; BH = (stage.offsetHeight || 346) - EX;
+    renderer.setSize(BW, BH + EX, false);
+    const k = AH * 1.08 / BH, fh = (BH + EX) * k, fw = BW * k;
+    camera.left = -fw / 2; camera.right = fw / 2; camera.top = AH * 1.05 + EX * k; camera.bottom = camera.top - fh;
+    camera.updateProjectionMatrix();
+    PAD = BH * (0.03 / 1.08);
+  }
+  fit();
+
+  /* ── 3. STATE ───────────────────────────────────────────────────────────── */
+  const floorY = () => innerHeight - 8;                                   // feet y when standing
+  const minY = () => Math.min(64 + BH + 30, floorY() - 70);               // highest feet y (head stays under header)
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const S = { x: innerWidth - 150, y: floorY(), vx: 0, vy: 0, tx: null, ty: null, pt: { x: 0, y: 0 }, pending: false,
+    mode: 'idle', dir: 1, yaw: 0, walk: 0, climb: 0, waveT: 0, pointT: 0, scrollT: 0, ds: 0, lastClimb: 0, returnAt: 0, lastDrag: 0 };
+  let lastFloor = floorY(), sayT = 0, lineIdx = 0;
+
+  function say(s, ms) {
+    statusEl.textContent = s; clearTimeout(sayT);
+    sayT = setTimeout(() => { statusEl.textContent = 'JAY • DRAG ME'; }, ms || 1800);
+  }
+
+  /* ── 4. LOAD jay.glb + RIG HELPERS ─────────────────────────────────────── */
+  const NAMES = ['Spine', 'Spine2', 'Neck', 'Head', 'LeftEye', 'RightEye', 'LeftArm', 'LeftForeArm', 'RightArm', 'RightForeArm', 'LeftUpLeg', 'RightUpLeg', 'LeftLeg', 'RightLeg'];
+  const B = {}, restL = {}, restP = {}, restPi = {}, morphs = [];
+  let avatar = null;
+
+  const urls = ['./jay.glb', 'jay.glb', '/Portfolio/jay.glb', 'https://saharkarjayy.github.io/Portfolio/jay.glb', 'https://raw.githubusercontent.com/saharkarjayy/Portfolio/main/jay.glb'];
+  const loader = new THREE.GLTFLoader();
+  (function load(i) { if (i < urls.length) loader.load(urls[i], onLoad, undefined, () => load(i + 1)); })(0);
+
+  function onLoad(g) {
+    avatar = g.scene;
+    const box = new THREE.Box3().setFromObject(avatar);
+    AH = box.max.y - box.min.y;
+    avatar.position.y = -box.min.y;               // feet exactly on y = 0
+    pivot.add(avatar);
+    avatar.traverse(n => {
+      if (n.isMesh) { n.frustumCulled = false; if (n.morphTargetDictionary && n.morphTargetInfluences) morphs.push(n); }
+      if (n.isBone && NAMES.includes(n.name)) B[n.name] = n;
+    });
+    avatar.updateMatrixWorld(true);
+    NAMES.forEach(k => {
+      if (!B[k]) return;
+      restL[k] = B[k].quaternion.clone();
+      restP[k] = B[k].parent.getWorldQuaternion(new THREE.Quaternion());
+      restPi[k] = restP[k].clone().invert();
+    });
+    fit();
+    stage.classList.add('ready'); if (JX.onReady) JX.onReady();
+    say('JAY • HEY! 👋', 2500); S.waveT = 110;
+  }
+
+  // Rotate bone by an Euler given in AVATAR space (x = his left/right axis, y = up, z = forward),
+  // layered on top of the T-pose rest rotation. T-pose arms along ±X, legs along −Y.
+  const _R = new THREE.Quaternion(), _T = new THREE.Quaternion(), _E = new THREE.Euler();
+  function applyPose(k, v, a) {
+    const b = B[k]; if (!b || !restL[k]) return;
+    _R.setFromEuler(_E.set(v[0], v[1], v[2], v[3] || 'XYZ'));
+    _T.copy(restPi[k]).multiply(_R).multiply(restP[k]).multiply(restL[k]);
+    b.quaternion.slerp(_T, a);
+  }
+
+  /* ── 5. POINTER: GRAB & THROW ──────────────────────────────────────────── */
+  let grab = null;
+  addEventListener('pointermove', e => { mouse.x = e.clientX; mouse.y = e.clientY; }, { passive: true });
+
+  hit.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    hit.setPointerCapture(e.pointerId); hit.classList.add('grabbing');
+    grab = { ox: e.clientX - S.x, oy: e.clientY - S.y, sx: e.clientX, sy: e.clientY, lx: e.clientX, ly: e.clientY, lt: performance.now(), vx: 0, vy: 0, moved: false };
+    S.tx = S.ty = null; S.pending = false; S.returnAt = 0; S.pointT = 0; S.waveT = 0;
+  });
+  hit.addEventListener('pointermove', e => {
+    if (!grab) return;
+    const now = performance.now(), dt = Math.max(1, now - grab.lt);
+    grab.vx = 0.75 * grab.vx + 0.25 * (e.clientX - grab.lx) / dt * 16;
+    grab.vy = 0.75 * grab.vy + 0.25 * (e.clientY - grab.ly) / dt * 16;
+    grab.lx = e.clientX; grab.ly = e.clientY; grab.lt = now;
+    if (!grab.moved && Math.hypot(e.clientX - grab.sx, e.clientY - grab.sy) > 5) { grab.moved = true; S.mode = 'drag'; say('Whoa! Put me down 😅', 1600); }
+    if (grab.moved) {
+      S.x = clamp(e.clientX - grab.ox, BW * 0.3, innerWidth - BW * 0.3);
+      S.y = clamp(e.clientY - grab.oy, BH + 4, floorY());
+      S.vx = grab.vx;
+    }
+  });
+  function release() {
+    if (!grab) return;
+    const g = grab; grab = null; hit.classList.remove('grabbing'); S.lastDrag = performance.now();
+    if (!g.moved) { S.mode = 'idle'; S.waveT = 140; say(LINES[lineIdx++ % LINES.length], 2200); return; } // tap = wave
+    S.vx = clamp(g.vx, -28, 28); S.vy = clamp(g.vy, -28, 28); S.mode = 'fall';
+  }
+  hit.addEventListener('pointerup', release);
+  hit.addEventListener('pointercancel', release);
+
+  /* ── 6. CLICK / TAP ANYWHERE → WALK THERE ──────────────────────────────── */
+  addEventListener('click', e => {
+    if (performance.now() - S.lastDrag < 300 || S.mode === 'drag' || S.mode === 'fall' || !avatar || JX.block) return;
+    if (e.target.closest('#mini-jay-stage,.sticky-note,#note-modal,#mobile-notes-header,#sticky-notes-layer,#jay-ui,#jay-game')) return;
+    if (document.body.classList.contains('strict-cv-preview') || document.body.classList.contains('mobile-notes-open')) return;
+    const el = e.target.closest('a,button,input,textarea,select,label,[onclick],[role="button"]');
+    let tx = e.clientX;
+    if (el) tx += (S.x <= e.clientX ? -1 : 1) * BW * 0.62;              // stand BESIDE buttons/links, don't hide them
+    S.tx = clamp(tx, BW * 0.3, innerWidth - BW * 0.3);
+    const fl = floorY(), want = e.clientY + BH * 0.45;                   // body centred on the click height
+    S.ty = want > fl - BH * 0.25 ? fl : clamp(want, minY(), fl);        // high click → he'll use the ladder
+    S.pt = { x: e.clientX, y: e.clientY }; S.pending = true; S.returnAt = 0; S.waveT = 0;
+    const label = el ? (el.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 16) : '';
+    say('JAY • → ' + (label || 'HERE').toUpperCase(), 2200);
+  });
+
+  /* ── 7. SCROLL → LADDER ────────────────────────────────────────────────── */
+  let lastSY = scrollY;
+  addEventListener('scroll', () => {
+    const ds = scrollY - lastSY; lastSY = scrollY;
+    ladder.style.setProperty('--rung', (-scrollY) + 'px');              // rungs are glued to the page
+    if (S.mode === 'drag' || S.mode === 'fall' || !avatar) return;
+    S.ds += ds; S.scrollT = performance.now();
+    if (S.tx == null && S.ty == null && S.y >= floorY() - 4) {          // on the floor → go grab the ladder
+      const fl = floorY(), mn = minY();
+      S.ty = mn + (fl - mn) * 0.45; S.pointT = 0; S.waveT = 0;
+      say('JAY • 🪜 CLIMBING', 2400);
+    }
+    if (S.y < floorY() - 4 || S.ty != null) S.returnAt = Math.max(S.returnAt, S.scrollT + SCROLL_PERCH_HOLD);
+  }, { passive: true });
+
+  addEventListener('resize', () => {
+    const nf = floorY(); if (S.y >= lastFloor - 2) S.y = nf; lastFloor = nf;
+    S.y = Math.min(S.y, nf); S.x = clamp(S.x, BW * 0.3, innerWidth - BW * 0.3); fit();
+  });
+
+  /* ── 8. MAIN LOOP ──────────────────────────────────────────────────────── */
+  let last = performance.now();
+  let ladderWas = false;
+
+  function loop(now) {
+    requestAnimationFrame(loop);
+    const dt = Math.min(2.5, (now - last) / 16.667); last = now;
+    const t = now / 1000;
+
+    // hero glow (was in the old script)
+    if (gctx && grid && grid.width) {
+      const w = grid.width, h = grid.height, gx = w * (0.5 + ((mouse.x / innerWidth) - 0.5) * 0.5), gy = h * (0.45 + ((mouse.y / innerHeight) - 0.5) * 0.5);
+      gctx.clearRect(0, 0, w, h);
+      const r = gctx.createRadialGradient(gx, gy, 20, gx, gy, Math.max(w, h) * 0.55);
+      r.addColorStop(0, 'rgba(56,189,248,.16)'); r.addColorStop(0.5, 'rgba(79,70,229,.07)'); r.addColorStop(1, 'rgba(5,5,5,0)');
+      gctx.fillStyle = r; gctx.fillRect(0, 0, w, h);
+    }
+    if (!avatar || document.body.classList.contains('strict-cv-preview')) return;
+
+    const fl = floorY();
+    const dsum = S.ds; S.ds = 0;
+    let walking = false, dyMove = 0;
+
+    /* --- movement --------------------------------------------------------- */
+    if (S.mode === 'fall') {
+      S.vy += 0.9 * dt; S.x += S.vx * dt; S.y += S.vy * dt; S.vx *= 0.985;
+      if (S.x < BW * 0.3 || S.x > innerWidth - BW * 0.3) { S.x = clamp(S.x, BW * 0.3, innerWidth - BW * 0.3); S.vx *= -0.5; }
+      if (S.y < BH + 4) { S.y = BH + 4; S.vy = Math.abs(S.vy) * 0.3; }
+      if (S.y >= fl) {
+        S.y = fl;
+        if (S.vy > 6) { S.vy *= -0.28; S.vx *= 0.6; }
+        else { S.vy = S.vx = 0; S.mode = 'idle'; S.waveT = 70; say('JAY • LANDED 😎', 1800); }
+      }
+    } else if (S.mode !== 'drag') {
+      if (S.returnAt && now > S.returnAt && S.tx == null && S.ty == null) { S.ty = fl; S.returnAt = 0; }
+      const needX = S.tx != null && Math.abs(S.tx - S.x) > 3;
+      const goalY = needX ? fl : (S.ty != null ? S.ty : S.y);            // must be on the floor to walk
+      const dy = goalY - S.y;
+      if (Math.abs(dy) > 1.5) { dyMove = Math.sign(dy) * Math.min(Math.abs(dy), CLIMB_SPEED * dt); S.y += dyMove; }
+      else if (needX) {
+        const dx = S.tx - S.x; S.dir = Math.sign(dx); walking = true;
+        const sm = JX.speedMul || 1; S.x += S.dir * Math.min(Math.abs(dx), WALK_SPEED * sm * dt); S.walk += 0.22 * sm * dt;
+      } else {
+        S.y = goalY; S.tx = S.ty = null;
+        if (S.pending) { S.pending = false; S.pointT = 170; if (S.y < fl - 4) S.returnAt = now + CLICK_PERCH_HOLD; }
+      }
+    }
+    S.waveT = Math.max(0, S.waveT - dt); S.pointT = Math.max(0, S.pointT - dt);
+
+    /* --- pose selection --------------------------------------------------- */
+    const onLadder = S.y < fl - 4 && S.mode !== 'drag' && S.mode !== 'fall';
+    const relUp = -dyMove - (onLadder ? dsum : 0);                        // climbing speed relative to the rungs
+    if (Math.abs(relUp) > 0.25 && (onLadder || dyMove)) { S.lastClimb = now; S.climb += clamp(relUp, -14, 14) * 0.07; }
+    const climbActive = now - S.lastClimb < 650;
+    const held = S.mode === 'drag' || S.mode === 'fall';
+    const pose = held ? 'drag' : walking ? 'walk' : (onLadder || dyMove) ? (climbActive ? 'climb' : 'hang') : 'idle';
+
+    const ladderOn = pose === 'climb' || pose === 'hang';
+    if (ladderOn && !ladderWas) ladder.style.left = S.x + 'px';
+    if (ladderOn !== ladderWas) ladder.classList.toggle('on', ladderOn);
+    ladderWas = ladderOn;
+    ladder.style.setProperty('--rung', (-scrollY) + 'px');
+
+    /* --- body yaw --------------------------------------------------------- */
+    const vx = S.pt.x - S.x, vy = -(S.pt.y - (S.y - BH * 0.62));          // vector to click point (screen-up positive)
+    let yawT = 0;
+    if (pose === 'walk') yawT = S.dir * 1.25;
+    else if (pose === 'climb') yawT = Math.PI;
+    else if (pose === 'idle' || pose === 'hang') yawT = S.fx ? 0 : S.pointT > 0 ? clamp(vx / 600, -0.5, 0.5) : clamp((mouse.x - S.x) / 900, -0.4, 0.4);
+    const d = (((yawT - S.yaw + Math.PI) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI) - Math.PI;
+    S.yaw += d * Math.min(1, 0.14 * dt);
+    pivot.rotation.y = S.yaw;
+    const tiltT = held ? clamp(-S.vx * 0.02, -0.4, 0.4) : 0;
+    pivot.rotation.z += (tiltT - pivot.rotation.z) * 0.15;
+    pivot.position.y = pose === 'walk' ? Math.abs(Math.sin(S.walk)) * 0.025 : S.waveT > 0 ? Math.abs(Math.sin(t * 7)) * 0.05 : 0;
+
+    /* --- bone targets (avatar space) ------------------------------------- */
+    const P = {}; NAMES.forEach(n => { P[n] = [0, 0, 0]; });
+    P.LeftArm = [0, 0, -1.3]; P.RightArm = [0, 0, 1.3];                 // relaxed arms (T-pose lowered)
+    const gazeYaw = clamp((mouse.x - S.x) / 450, -1, 1) * 0.6, gazePitch = clamp((mouse.y - (S.y - BH * 0.85)) / 450, -1, 1) * 0.42;
+    const gaze = () => {
+      P.Head = [gazePitch * 0.55, gazeYaw * 0.55, 0]; P.Neck = [gazePitch * 0.3, gazeYaw * 0.3, 0];
+      P.Spine2 = [gazePitch * 0.08, gazeYaw * 0.12, 0]; P.LeftEye = P.RightEye = [gazePitch * 0.4, gazeYaw * 0.45, 0];
+    };
+    const sideL = S.pt.x >= S.x;                                         // point with the arm on the target's side
+    const pointArm = () => {
+      if (sideL) P.LeftArm = [0, 0, clamp(Math.atan2(vy, vx), -0.7, 1.5)];
+      else P.RightArm = [0, 0, clamp(Math.atan2(-vy, -vx), -1.5, 0.7)];
+    };
+
+    // Proper wave: upper arm out to the side, elbow bent so the forearm points UP,
+    // palm toward the viewer, forearm swinging left-right from the elbow.
+    const waveArm = () => {
+      P.RightArm = [-Math.PI / 2, 0, -0.55, 'ZYX'];                 // roll arm 90° (palm forward) + raise it a little
+      P.RightForeArm = [0, 1.02 + 0.42 * Math.sin(t * 12), 0];       // elbow bend + side-to-side wag
+      P.Head = [0, 0, 0.1];
+    };
+
+    if (pose === 'walk') {
+      const s = Math.sin(S.walk), c = Math.cos(S.walk);
+      P.LeftUpLeg = [s * 0.6, 0, 0]; P.RightUpLeg = [-s * 0.6, 0, 0];
+      P.LeftLeg = [0.8 * Math.max(0, -c), 0, 0]; P.RightLeg = [0.8 * Math.max(0, c), 0, 0];
+      P.LeftArm = [-s * 0.5, 0, -1.3]; P.RightArm = [s * 0.5, 0, 1.3];
+      P.Spine = [0.05, 0, 0];
+    } else if (pose === 'climb') {
+      const a = Math.sin(S.climb), b = Math.sin(S.climb + Math.PI), la = (1 + a) / 2, lb = (1 + b) / 2;
+      P.LeftArm = [-2.55 - 0.45 * a, 0, -0.3]; P.RightArm = [-2.55 - 0.45 * b, 0, 0.3];   // hands up on the rungs
+      P.LeftUpLeg = [-0.15 - 0.8 * la, 0, 0]; P.LeftLeg = [0.2 + 0.9 * la, 0, 0];
+      P.RightUpLeg = [-0.15 - 0.8 * lb, 0, 0]; P.RightLeg = [0.2 + 0.9 * lb, 0, 0];
+      P.Spine = [0.08, 0, 0]; P.Head = [-0.15, 0, 0];
+      pivot.position.y = Math.abs(Math.sin(S.climb * 0.5)) * 0.012;
+    } else if (pose === 'hang') {                                         // hanging on the ladder, facing you
+      const sw = Math.sin(t * 1.6) * 0.05;
+      P.LeftArm = [0, 0, 1.15]; P.RightArm = [0, 0, -1.15];
+      P.LeftUpLeg = [-0.25 + sw, 0, 0.05]; P.LeftLeg = [0.45, 0, 0]; P.RightUpLeg = [-0.5 - sw, 0, -0.05]; P.RightLeg = [0.7, 0, 0];
+      if (S.waveT > 0) waveArm();
+      else if (S.pointT > 0) { if (sideL) P.LeftArm = [0, 0, clamp(Math.atan2(vy, vx), -0.7, 1.5)]; else P.RightArm = [0, 0, clamp(Math.atan2(-vy, -vx), -1.5, 0.7)]; }
+      gaze();
+    } else if (pose === 'drag') {                                         // being carried / thrown
+      const w = t * 6;
+      P.LeftArm = [0, 0, 0.9 + 0.35 * Math.sin(w)]; P.RightArm = [0, 0, -0.9 - 0.35 * Math.sin(w + 1.3)];
+      P.LeftUpLeg = [0.35 * Math.sin(t * 5), 0, 0.08]; P.RightUpLeg = [-0.35 * Math.sin(t * 5), 0, -0.08];
+      P.LeftLeg = [0.3 + 0.3 * Math.max(0, Math.sin(t * 5 + 1)), 0, 0]; P.RightLeg = [0.3 + 0.3 * Math.max(0, Math.sin(t * 5 + 4)), 0, 0];
+      P.Head = [-0.25, 0, 0]; P.Spine = [0.04, 0, 0];
+    } else {                                                              // idle on the floor
+      P.Spine = [0.02 * Math.sin(t * 1.6), 0, 0];
+      gaze();
+      if (S.waveT > 0) waveArm();
+      else if (S.pointT > 0) pointArm();
+    }
+    if (JX.pose) JX.pose(P, { pose, t, now, dt, held, onLadder });
+    const a = Math.min(1, 0.25 * dt);
+    NAMES.forEach(k => applyPose(k, P[k], a));
+
+    /* --- face: smile / jaw / blink --------------------------------------- */
+    const F = JX.face || {}; const smile = F.smile != null ? F.smile : ((S.waveT > 0 || held) ? 0.75 : 0.32), jaw = F.jaw != null ? F.jaw : (held ? 0.35 : 0);
+    const bc = t % 4.5, blink = bc > 4.3 ? Math.sin((bc - 4.3) / 0.2 * Math.PI) : 0;
+    morphs.forEach(m => {
+      const dct = m.morphTargetDictionary, inf = m.morphTargetInfluences;
+      const set = (n, v, k) => { if (dct[n] !== undefined) inf[dct[n]] += (v - inf[dct[n]]) * (k || 0.2); };
+      set('mouthSmileLeft', smile); set('mouthSmileRight', smile); set('jawOpen', jaw);
+      const bl = F.blink != null ? F.blink : blink; set('eyeBlinkLeft', bl, 0.8); set('eyeBlinkRight', bl, 0.8);
+    });
+
+    /* --- place the 2×3 in box so his feet are at (S.x, S.y) --------------- */
+    stage.style.transform = `translate3d(${(S.x - BW / 2).toFixed(1)}px,${(S.y - BH + PAD - EX).toFixed(1)}px,0)`;
+    renderer.render(scene, camera);
+    if (JX.after) JX.after(renderer, { pose, t, now });
+  }
+  Object.defineProperties(JX, { BW: { get: () => BW }, BH: { get: () => BH }, avatar: { get: () => avatar } });
+  Object.assign(JX, { S, say, B, scene, pivot, stage, renderer, floorY, minY });
+  requestAnimationFrame(loop);
+})();
+
+  </script>
+
+  <!-- MINI JAY EXTRAS: tour, reactions, emotes, idle life, outfits, rider, sound, Ask Jay, game, hire-me -->
+  <script>
+/* ============================================================================
+   jay-extras.js — 10 extra Mini Jay features (needs mini-jay.js first)
+   1 Tour  2 Page reactions  3 Emotes  4 Idle life  5 Outfits  6 Roadtrip rider
+   7 Sound  8 Ask Jay  9 Bug-dodge game  10 Hire-me mode
+   ========================================================================== */
+(function () {
+  'use strict';
+  const JX = window.JAYX; if (!JX || !JX.S) return;
+  const S = JX.S, PI = Math.PI;
+  const $ = s => document.querySelector(s);
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  let tourOn = false, game = null, lastAct = performance.now(), yawned = false;
+  let hurtUntil = 0, hopUntil = 0;
+
+  /* ── CSS + DOM ─────────────────────────────────────────────────────────── */
+  const st = document.createElement('style');
+  st.textContent = `
+  #jay-bubble{position:absolute;left:50%;top:calc(var(--jx) - 32px);transform:translate(calc(-50% + var(--bx,0px)),-100%) scale(.9);width:max-content;max-width:240px;
+    background:#fff;color:#0f172a;font:700 12px/1.35 Manrope,sans-serif;padding:8px 12px;border-radius:14px;box-shadow:0 8px 22px rgba(0,0,0,.35);
+    pointer-events:none;opacity:0;transition:opacity .2s,transform .2s;z-index:3}
+  #jay-bubble.on{opacity:1;transform:translate(calc(-50% + var(--bx,0px)),-100%) scale(1)}
+  #jay-sign{position:absolute;left:50%;top:calc(var(--jx) - 70px);transform:translateX(-50%) rotate(-3deg);padding:6px 14px;border:3px solid #fff;border-radius:10px;
+    background:#f97316;color:#fff;font:800 15px 'JetBrains Mono',monospace;white-space:nowrap;box-shadow:0 8px 20px rgba(0,0,0,.4);opacity:0;transition:opacity .2s;pointer-events:none}
+  #jay-sign.on{opacity:1}
+  #jay-ui{position:fixed;left:14px;bottom:76px;z-index:41;display:flex;flex-direction:column;align-items:flex-start;gap:6px;font:700 12px Manrope,sans-serif}
+  #jay-ui button{cursor:pointer;color:#fff;background:rgba(14,16,21,.94);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:6px 11px;font:inherit;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+  #jay-ui button:hover{border-color:#38bdf8}
+  #jay-btns,#jay-sub{display:none;flex-wrap:wrap;gap:6px;max-width:min(92vw,370px)}
+  #jay-ui.open #jay-btns,#jay-sub.on{display:flex}
+  #jay-game{position:fixed;inset:0;z-index:33;touch-action:none;background:rgba(2,6,23,.35);cursor:crosshair}
+  .jg-hud{position:fixed;top:72px;left:0;right:0;display:flex;justify-content:center;align-items:center;gap:18px;font:800 18px 'JetBrains Mono',monospace;color:#fff;text-shadow:0 2px 6px #000}
+  .jg-hud button{cursor:pointer;font:700 12px Manrope,sans-serif;color:#fff;background:rgba(0,0,0,.6);border:1px solid #fff5;border-radius:999px;padding:5px 12px}
+  .jg-tip{position:fixed;top:112px;left:0;right:0;text-align:center;color:#fde68a;font:700 12px Manrope,sans-serif;text-shadow:0 2px 6px #000}
+  .jg-i{position:fixed;left:0;top:0;font-size:30px;z-index:33;pointer-events:none;will-change:transform}
+  #jay-rider{position:absolute;left:50%;bottom:58%;height:46px;width:auto;display:none;pointer-events:none;transform:translateX(-50%);animation:jayRide .5s ease-in-out infinite alternate}
+  @keyframes jayRide{to{transform:translateX(-50%) rotate(7deg)}}
+  body.strict-cv-preview #jay-ui,body.strict-cv-preview #jay-game,body.strict-cv-preview .jg-i{display:none!important}
+  @media print{#jay-ui,#jay-game,.jg-i{display:none!important}}`;
+  document.head.appendChild(st);
+
+  const bub = document.createElement('div'); bub.id = 'jay-bubble';
+  const sign = document.createElement('div'); sign.id = 'jay-sign'; sign.textContent = 'HIRE ME! 💼';
+  JX.stage.append(bub, sign);
+
+  let bT = 0;
+  function talk(text, ms) {
+    bub.textContent = text; bub.style.setProperty('--bx', '0px'); bub.classList.add('on');
+    requestAnimationFrame(() => {
+      const r = bub.getBoundingClientRect(); let dx = 0;
+      if (r.left < 8) dx = 8 - r.left; else if (r.right > innerWidth - 8) dx = innerWidth - 8 - r.right;
+      bub.style.setProperty('--bx', dx + 'px');
+    });
+    clearTimeout(bT); bT = setTimeout(() => bub.classList.remove('on'), ms || Math.max(2200, text.length * 55));
+  }
+  JX.talk = talk;
+
+  /* ── 7. SOUND (generated by code, muted until you tap 🔇) ─────────────── */
+  let actx = null, muted = true;
+  function tone(f, d, type, v, f2, delay) {
+    if (muted || !actx) return;
+    const o = actx.createOscillator(), g = actx.createGain(), t0 = actx.currentTime + (delay || 0);
+    o.type = type || 'sine'; o.frequency.setValueAtTime(f, t0); if (f2) o.frequency.exponentialRampToValueAtTime(f2, t0 + d);
+    g.gain.setValueAtTime(v || 0.06, t0); g.gain.exponentialRampToValueAtTime(0.001, t0 + d);
+    o.connect(g); g.connect(actx.destination); o.start(t0); o.stop(t0 + d + 0.02);
+  }
+  const sfx = {
+    step: () => tone(140, 0.06, 'triangle', 0.07, 70), land: () => tone(180, 0.2, 'sine', 0.12, 50),
+    clink: () => { tone(1100, 0.05, 'square', 0.03); tone(1500, 0.04, 'square', 0.02, 0, 0.03); },
+    ding: () => tone(880, 0.15, 'sine', 0.08), pop: () => tone(600, 0.08, 'sine', 0.06, 900), bug: () => tone(220, 0.25, 'sawtooth', 0.06, 90),
+    cheer: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, 0.18, 'triangle', 0.07, 0, i * 0.09))
+  };
+
+  /* ── 3. EMOTES (poses; arms rest at z = ∓1.3, 'ZYX' = roll arm then raise it) ── */
+  const up = (P, a) => { P.LeftArm = [0, 0, a]; P.RightArm = [0, 0, -a]; };
+  const hop = (P, y) => { JX.pivot.position.y = y * 0.22; P.LeftUpLeg = [-0.6 * y, 0, 0]; P.RightUpLeg = [-0.6 * y, 0, 0]; P.LeftLeg = [0.9 * y, 0, 0]; P.RightLeg = [0.9 * y, 0, 0]; };
+  const bentArms = (P, th, phi) => {   // both forearms point up (flex / ears)
+    P.LeftArm = [-PI / 2, 0, phi, 'ZYX']; P.LeftForeArm = [0, -th, 0]; P.RightArm = [-PI / 2, 0, -phi, 'ZYX']; P.RightForeArm = [0, th, 0];
+  };
+  const EM = {
+    dance: (P, e) => { const s = Math.sin(e * 6); JX.pivot.position.y = Math.abs(s) * 0.04; JX.pivot.rotation.y = Math.sin(e * 3) * 0.5;
+      P.LeftArm = [0, 0, 0.5 + 0.8 * s]; P.RightArm = [0, 0, -0.5 + 0.8 * s]; P.Spine = [0, s * 0.2, Math.sin(e * 3) * 0.1];
+      P.LeftUpLeg = [s * 0.3, 0, 0.05]; P.RightUpLeg = [-s * 0.3, 0, -0.05]; P.LeftLeg = [Math.max(0, -s) * 0.5, 0, 0]; P.RightLeg = [Math.max(0, s) * 0.5, 0, 0]; P.Head = [0, 0, s * 0.12]; },
+    jump: (P, e) => { const y = Math.sin(clamp(e / 0.8, 0, 1) * PI); up(P, -1.3 + 2.6 * y); hop(P, y); },
+    cheer: (P, e) => { up(P, 1.35); hop(P, Math.abs(Math.sin(e * 5))); },
+    highfive: (P, e) => { up(P, 1.45); hop(P, Math.abs(Math.sin(e * 6))); },
+    flex: (P, e) => { bentArms(P, 1.47 + 0.1 * Math.sin(e * 10), 0.1); P.Head = [-0.05, 0, 0]; },
+    thumbs: (P, e) => { P.RightArm = [-1.2, 0, 0.4]; P.Head = [0.08 * Math.sin(e * 8), 0, 0]; },
+    salute: (P) => { P.RightArm = [-PI / 2, 0, -0.3, 'ZYX']; P.RightForeArm = [0, 0.85, 0]; },
+    phone: (P) => { P.RightArm = [-1.35, 0, 0.5]; P.Head = [0.25, 0, 0]; },
+    ears: (P, e) => { bentArms(P, 1.6, 0.3); P.Head = [0, 0, 0.1 * Math.sin(e * 20)]; },
+    hurt: (P, e) => { JX.pivot.rotation.z = Math.sin(e * 30) * 0.1; P.LeftArm = [0, 0, 0.7]; P.RightArm = [0, 0, -0.7]; P.Head = [-0.2, 0, 0]; JX.face.smile = 0; JX.face.jaw = 0.5; },
+    hire: (P, e) => { up(P, 1.25); JX.pivot.position.y = Math.abs(Math.sin(e * 4)) * 0.03; },
+    yawn: (P, e) => { const k = Math.sin(clamp(e / 3, 0, 1) * PI); up(P, 0.2 + 1.1 * k); P.Head = [-0.35 * k, 0, 0]; JX.face.jaw = 0.9 * k; JX.face.smile = 0; JX.face.blink = 0.8 * k; },
+    sit: (P, e) => { JX.pivot.position.y = -0.84; P.LeftUpLeg = [-1.5, 0, 0.12]; P.RightUpLeg = [-1.5, 0, -0.12]; P.LeftLeg = [0.15, 0, 0]; P.RightLeg = [0.15, 0, 0];
+      P.Spine = [0.12, 0, 0]; P.LeftArm = [-0.6, 0, -1.0]; P.RightArm = [-0.6, 0, 1.0];
+      if (e > 6) { P.Head = [0.55 + 0.05 * Math.sin(e * 1.3), 0, 0]; JX.face.blink = 1; JX.face.smile = 0.1; if (Math.floor(e / 3) !== Math.floor((e - 0.017) / 3)) talk('Zzz… 💤', 2200); } }
+  };
+  const DUR = { dance: 5, jump: 0.9, flex: 3, thumbs: 2, salute: 2.5, phone: 2.2, ears: 1.4, highfive: 1.5, cheer: 2.2, hire: 5, hurt: 0.6, yawn: 3, sit: 1e9 };
+  const MSG = { dance: '💃 Cloud party!', jump: 'Wheee! 🦘', flex: '💪 Strong infrastructure!', thumbs: '👍 Looks good!', salute: '🫡 Aye aye!' };
+  function emote(n, dur) {
+    if (!JX.avatar || S.mode === 'drag' || S.mode === 'fall') return;
+    S.fx = { n, t0: performance.now() / 1000, dur: dur || DUR[n] };
+    if (n === 'sit') talk('☕ Chai break…', 3500);
+  }
+  function userEmote(n) { if (S.mode === 'idle' && S.tx == null && S.y >= JX.floorY() - 4 && !game) { emote(n); if (MSG[n]) talk(MSG[n], 1800); sfx.pop(); } }
+  addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey || /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+    const m = { d: 'dance', j: 'jump', f: 'flex', t: 'thumbs', s: 'salute' }[e.key.toLowerCase()]; if (m) userEmote(m);
+  });
+
+  /* ── 5. OUTFITS (simple 3D props glued to his head) ───────────────────── */
+  let group = null, props = {}, outfit = 'none', outfitAuto = true, restQi = null, riderSet = false, readyAt = 0;
+  const OUTFITS = ['none', 'cap', 'hardhat', 'headphones', 'shades'];
+  const themeOutfit = () => ({ obsidian: 'headphones', indigo: 'hardhat', sunset: 'cap' }[document.documentElement.getAttribute('data-theme')] || 'headphones');
+  function setOutfit(n) { outfit = n; Object.keys(props).forEach(k => { props[k].visible = k === n; }); riderSet = false; }
+  const v1 = new THREE.Vector3(), q1 = new THREE.Quaternion();
+
+  JX.onReady = () => {
+    const B = JX.B, wp = n => B[n].getWorldPosition(new THREE.Vector3());
+    const E = wp('LeftEye').add(wp('RightEye')).multiplyScalar(0.5), H0 = wp('Head');   // E = point between his eyes
+    restQi = B.Head.getWorldQuaternion(new THREE.Quaternion()).invert();
+    group = new THREE.Group(); JX.scene.add(group);
+    const mat = (c, m) => new THREE.MeshStandardMaterial({ color: c, roughness: 0.5, metalness: m || 0 });
+    const put = (g, mesh, x, y, z) => { mesh.position.set(E.x + x - H0.x, E.y + y - H0.y, E.z + z - H0.z); g.add(mesh); return mesh; };
+    const mk = (name, fn) => { const g = new THREE.Group(); fn(g); g.visible = false; group.add(g); props[name] = g; };
+    const dome = (r, c) => new THREE.Mesh(new THREE.SphereGeometry(r, 24, 12, 0, PI * 2, 0, PI / 2), mat(c));
+    // ↓ tweak these numbers (metres, relative to the point between his eyes) if a prop sits too high/low/forward
+    mk('cap', g => { put(g, dome(0.108, 0xf97316), 0, 0.025, -0.085); put(g, new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.006, 0.075), mat(0xc2410c)), 0, 0.035, 0.06).rotation.x = 0.12; });
+    mk('hardhat', g => { put(g, dome(0.118, 0xfacc15), 0, 0.03, -0.085); put(g, new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.008, 24), mat(0xeab308)), 0, 0.03, -0.085); put(g, new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.012, 0.2), mat(0xeab308)), 0, 0.15, -0.085); });
+    mk('headphones', g => { put(g, new THREE.Mesh(new THREE.TorusGeometry(0.115, 0.007, 8, 24, PI), mat(0x1e293b, 0.4)), 0, -0.02, -0.085);
+      [-1, 1].forEach(s => { put(g, new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.032, 0.025, 16), mat(0x38bdf8, 0.3)), s * 0.115, -0.02, -0.085).rotation.z = PI / 2; }); });
+    mk('shades', g => { [-1, 1].forEach(s => put(g, new THREE.Mesh(new THREE.CylinderGeometry(0.027, 0.027, 0.004, 16), mat(0x0b0b0b, 0.6)), s * 0.032, 0, 0.03).rotation.x = PI / 2);
+      put(g, new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.004, 0.004), mat(0x0b0b0b)), 0, 0.004, 0.03); });
+    setOutfit(themeOutfit()); readyAt = performance.now();
+    const h = new Date().getHours();
+    talk(`Good ${h < 12 ? 'morning' : h < 17 ? 'afternoon' : 'evening'}! I'm Jay 👋 Tap ✨ for a tour, emotes & a game`, 5000);
+  };
+
+  /* ── 6. ROADTRIP RIDER (a snapshot of the real 3D Jay rides the bike/car) ─ */
+  const actor = $('#vehicle-actor'), rider = document.createElement('img'); rider.id = 'jay-rider'; rider.alt = '';
+  if (actor) actor.prepend(rider);
+  JX.after = (renderer, c) => {
+    if (!riderSet && readyAt && performance.now() - readyAt > 1800 && c.pose === 'idle' && !S.fx) {
+      try { rider.src = renderer.domElement.toDataURL('image/png'); rider.style.display = 'block'; riderSet = true; } catch (e) { riderSet = true; }
+    }
+  };
+
+  /* ── MAIN PER-FRAME HOOK: sounds, idle life, emotes, props ────────────── */
+  let lastStep = -1, lastClimb = -1, prevMode = 'idle';
+  JX.pose = (P, c) => {
+    const { pose, t, now } = c; JX.face = {};
+    if (pose === 'walk') { const n = Math.floor(S.walk / PI); if (n !== lastStep) { lastStep = n; sfx.step(); } }
+    if (pose === 'climb') { const n = Math.floor(S.climb / PI); if (n !== lastClimb) { lastClimb = n; sfx.clink(); } }
+    if (prevMode === 'fall' && S.mode !== 'fall') sfx.land();
+    prevMode = S.mode;
+
+    const idle = now - lastAct;                                   // 4. idle life
+    if (pose === 'idle' && !game && !tourOn && !S.fx && S.tx == null) {
+      if (idle > 20000 && !yawned) { yawned = true; emote('yawn'); }
+      else if (idle > 32000) emote('sit');
+    }
+    if (S.fx) {                                                    // 3. emotes
+      const e = t - S.fx.t0;
+      if (pose !== 'idle' || e > S.fx.dur) S.fx = null; else EM[S.fx.n](P, e);
+    }
+    if (now < hurtUntil && (pose === 'walk' || pose === 'idle')) EM.hurt(P, (hurtUntil - now) / 1000);
+    if (now < hopUntil && pose !== 'drag') JX.pivot.position.y += Math.sin((1 - (hopUntil - now) / 250) * PI) * 0.06;
+    sign.classList.toggle('on', !!(S.fx && S.fx.n === 'hire'));
+
+    if (group && outfit !== 'none') {                              // 5. props follow the head
+      JX.B.Head.getWorldPosition(v1); group.position.copy(v1);
+      JX.B.Head.getWorldQuaternion(q1); group.quaternion.copy(q1).multiply(restQi);
+    }
+  };
+  function wake() {
+    lastAct = performance.now(); yawned = false;
+    if (S.fx && S.fx.n === 'sit') { S.fx = null; talk('Oh! Hi 👋', 1800); S.waveT = 100; }
+  }
+  ['pointerdown', 'keydown', 'wheel', 'touchstart', 'scroll'].forEach(ev => addEventListener(ev, wake, { passive: true }));
+  let mvT = 0; addEventListener('pointermove', () => { const n = performance.now(); if (n - mvT > 300) { mvT = n; wake(); } }, { passive: true });
+
+  /* ── 1. GUIDED TOUR ────────────────────────────────────────────────────── */
+  const STEPS = [
+    ['#azaka-hero', "Hi, I'm Jay! MSc IT graduate turned AWS DevOps + Android engineer."],
+    ['#roadtrip', 'My journey: BSc → MSc → AWS certs → Software Engineer at Bartech. Try Auto-Drive!'],
+    ['#aws-lab', 'AWS at Bartech: EC2, VPC, IIS. Plus Terraform, Docker, Kubernetes & Jenkins CI/CD.'],
+    ['#android-lab', 'Native Kotlin Android apps with Node.js APIs and MS SQL Server behind them.'],
+    ['#azaka-hero', 'Thanks for visiting! Tap "Strict CV" for my 1-page CV 📄']
+  ];
+  async function tour() {
+    if (tourOn) { tourOn = false; talk('Tour stopped 👍', 1500); return; }
+    if (game) return; tourOn = true; S.fx = null; talk("Let's go! Follow me 🧭", 1800); await sleep(1500);
+    for (const [sel, txt] of STEPS) {
+      if (!tourOn) break; const el = $(sel); if (!el) continue;
+      scrollTo({ top: Math.max(0, el.getBoundingClientRect().top + scrollY - 70), behavior: 'smooth' });
+      await sleep(900);
+      for (let i = 0; i < 60 && tourOn && S.y < JX.floorY() - 4; i++) await sleep(150);   // wait until he's off the ladder
+      if (!tourOn) break;
+      const r = el.getBoundingClientRect(); S.pt = { x: r.left + r.width / 2, y: r.top + Math.min(r.height / 2, 200) }; S.pointT = 240;
+      talk(txt, 5200); sfx.ding(); await sleep(5400);
+    }
+    if (tourOn) { tourOn = false; emote('thumbs'); sfx.cheer(); }
+  }
+
+  /* ── 8. ASK JAY (preset answers from your CV) ─────────────────────────── */
+  const ANS = {
+    skills: 'AWS (EC2, VPC, S3, Lambda, RDS…), Terraform, Docker, Kubernetes, Jenkins, Kotlin & Node.js.',
+    experience: 'Software Engineer at Bartech Data Systems, Thane: AWS EC2/VPC/IIS, Kotlin Android, Node.js APIs & MS SQL.',
+    education: 'MSc IT (CGPI 6.54) and BSc IT (CGPI 7.52) at S.M. Shetty, Mumbai.',
+    certs: 'AWS Academy Cloud Foundations & Architecting, plus Grade A AWS and DevOps training (Insys).',
+    project: 'Terraform IaC (EC2, S3, DynamoDB) + Docker + Helm on Kubernetes + Jenkins CI/CD from GitHub.',
+    contact: '📧 jaysaharkar@gmail.com · 📞 8850517641 · linkedin.com/in/jay-saharkar'
+  };
+
+  /* ── 9. GAME: dodge bugs, catch deployments ───────────────────────────── */
+  function startGame() {
+    if (game || S.mode === 'drag' || S.mode === 'fall') return;
+    tourOn = false; S.fx = null; S.tx = null; S.pending = false; S.pointT = 0; S.returnAt = 0; S.ty = S.y < JX.floorY() - 4 ? JX.floorY() : null;
+    JX.block = true; JX.speedMul = 2.4; document.body.style.overflow = 'hidden';
+    const ov = document.createElement('div'); ov.id = 'jay-game';
+    ov.innerHTML = '<div class="jg-hud"><span id="jg-score">0</span><span id="jg-lives">❤️❤️❤️</span><button id="jg-quit">✕ Quit</button></div><div class="jg-tip">Drag / tap or use ← → to move · catch 🚀 ✅ · dodge 🐛</div>';
+    document.body.appendChild(ov);
+    const g = game = { score: 0, lives: 3, items: [], spawn: 30, last: performance.now(), keys: {}, ov, raf: 0 };
+    const steer = e => { S.tx = clamp(e.clientX, JX.BW * 0.3, innerWidth - JX.BW * 0.3); };
+    ov.addEventListener('pointermove', steer); ov.addEventListener('pointerdown', steer);
+    ov.addEventListener('wheel', e => e.preventDefault(), { passive: false });
+    g.kd = e => { if (e.key === 'ArrowLeft' || e.key.toLowerCase() === 'a') g.keys.l = 1; if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') g.keys.r = 1; if (e.key === 'Escape') endGame(true); };
+    g.ku = e => { if (e.key === 'ArrowLeft' || e.key.toLowerCase() === 'a') g.keys.l = 0; if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') g.keys.r = 0; };
+    addEventListener('keydown', g.kd); addEventListener('keyup', g.ku);
+    ov.querySelector('#jg-quit').onclick = () => endGame(true);
+    talk('Catch deployments, dodge bugs! 🐛', 2500);
+    g.raf = requestAnimationFrame(gameLoop);
+  }
+  function gameLoop(now) {
+    const g = game; if (!g) return;
+    const dt = Math.min(2.5, (now - g.last) / 16.667); g.last = now;
+    if (g.keys.l || g.keys.r) S.tx = clamp(S.x + (g.keys.r ? 200 : -200), JX.BW * 0.3, innerWidth - JX.BW * 0.3);
+    g.spawn -= dt;
+    if (g.spawn <= 0) {
+      g.spawn = Math.max(16, 52 - g.score * 0.15);
+      const bug = Math.random() < 0.4, el = document.createElement('div'); el.className = 'jg-i';
+      el.textContent = bug ? '🐛' : (Math.random() < 0.5 ? '🚀' : '✅'); document.body.appendChild(el);
+      g.items.push({ el, bug, x: 30 + Math.random() * (innerWidth - 60), y: -30, v: (2.2 + Math.random() * 1.6) * (1 + g.score / 400) });
+    }
+    const bx = JX.BW * 0.3, top = S.y - JX.BH * 0.92, bot = S.y - JX.BH * 0.08;
+    g.items = g.items.filter(it => {
+      it.y += it.v * dt; it.el.style.transform = `translate(${it.x - 15}px,${it.y}px)`;
+      let gone = it.y > innerHeight + 20;
+      if (it.y > top && it.y < bot && Math.abs(it.x - S.x) < bx) {
+        gone = true;
+        if (it.bug) { g.lives--; hurtUntil = now + 700; sfx.bug(); talk('Bug! 🐛', 900); $('#jg-lives').textContent = '❤️'.repeat(Math.max(0, g.lives)) || '💀'; }
+        else { g.score += 10; hopUntil = now + 250; sfx.pop(); $('#jg-score').textContent = g.score; }
+      }
+      if (gone) it.el.remove(); return !gone;
+    });
+    if (g.lives <= 0) return endGame(false);
+    g.raf = requestAnimationFrame(gameLoop);
+  }
+  function endGame(quit) {
+    const g = game; if (!g) return; game = null; cancelAnimationFrame(g.raf);
+    g.items.forEach(i => i.el.remove()); g.ov.remove(); removeEventListener('keydown', g.kd); removeEventListener('keyup', g.ku);
+    JX.block = false; JX.speedMul = 1; document.body.style.overflow = ''; S.tx = null;
+    if (quit) { talk('Game closed 👋', 1500); return; }
+    let best = 0; try { best = +localStorage.getItem('jay_game_best') || 0; if (g.score > best) { best = g.score; localStorage.setItem('jay_game_best', best); } } catch (e) {}
+    talk(`Game over! Score ${g.score} · Best ${best} 🏆`, 4500); emote(g.score >= best && g.score > 0 ? 'cheer' : 'hurt'); sfx.cheer();
+  }
+
+  /* ── 2 + 10. REACT TO THE PAGE & HIRE-ME MODE (wrap your existing buttons) ─ */
+  const wrap = (name, fn) => { const o = window[name]; if (typeof o !== 'function') return; window[name] = function () { const r = o.apply(this, arguments); fn.apply(this, arguments); return r; }; };
+  wrap('runCicdPipeline', () => { if (window.pipelineRunning) setTimeout(() => { emote('cheer'); talk('Pipeline passed ✅ Deployed to Kubernetes!', 3500); sfx.cheer(); }, 3300); });
+  wrap('simulateAndroidCheckin', () => { emote('phone'); talk('📍 Checked in! Synced to MS SQL', 2500); sfx.ding(); });
+  wrap('honkHorn', () => { emote('ears'); talk('Too loud! 🙉', 1500); });
+  wrap('triggerConfetti', () => { emote('highfive'); sfx.cheer(); });
+  wrap('copyText', () => { emote('hire'); talk('Thanks! Let\u2019s talk 🤝', 3000); sfx.cheer(); });
+  wrap('setColorTheme', () => { if (outfitAuto && group) setOutfit(themeOutfit()); });
+  let lastBanner = '';
+  wrap('onSliderDrive', () => {
+    const b = $('#road-milestone-banner'), txt = b && b.textContent;
+    if (txt && txt !== lastBanner) { if (lastBanner) { talk(txt.split(':')[0] + ' 🎉', 1800); if (!S.fx && S.mode === 'idle') S.waveT = 100; } lastBanner = txt; }
+  });
+
+  /* ── CONTROL PANEL (✨ button, bottom-left above the sticky-note dock) ─── */
+  const ui = document.createElement('div'); ui.id = 'jay-ui';
+  ui.innerHTML = '<div id="jay-sub"></div><div id="jay-btns"><button data-a="tour">🧭 Tour</button><button data-a="emotes">🎭 Emotes</button><button data-a="ask">💬 Ask Jay</button><button data-a="game">🎮 Game</button><button data-a="outfit">🎩 Outfit</button><button data-a="sound">🔇 Sound</button></div><button data-a="menu">✨ Jay</button>';
+  document.body.appendChild(ui);
+  const sub = $('#jay-sub');
+  const showSub = html => { const same = sub.dataset.h === html && sub.classList.contains('on'); sub.dataset.h = html; sub.innerHTML = html; sub.classList.toggle('on', !same); };
+  ui.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return; const a = b.dataset.a, v = b.dataset.v;
+    if (a === 'menu') { ui.classList.toggle('open'); sub.classList.remove('on'); }
+    else if (a === 'tour') { sub.classList.remove('on'); tour(); }
+    else if (a === 'game') { sub.classList.remove('on'); startGame(); }
+    else if (a === 'emotes') showSub([['dance', '💃 Dance'], ['jump', '🦘 Jump'], ['flex', '💪 Flex'], ['thumbs', '👍 Thumbs'], ['salute', '🫡 Salute']].map(x => `<button data-a="emote" data-v="${x[0]}">${x[1]}</button>`).join(''));
+    else if (a === 'ask') showSub([['skills', 'Skills'], ['experience', 'Experience'], ['education', 'Education'], ['certs', 'Certs'], ['project', 'Project'], ['contact', 'Contact']].map(x => `<button data-a="ans" data-v="${x[0]}">${x[1]}</button>`).join(''));
+    else if (a === 'emote') userEmote(v);
+    else if (a === 'ans') { talk(ANS[v], 7000); sfx.pop(); }
+    else if (a === 'outfit') { outfitAuto = false; setOutfit(OUTFITS[(OUTFITS.indexOf(outfit) + 1) % OUTFITS.length]); talk('New look: ' + outfit + ' 😎', 1500); }
+    else if (a === 'sound') {
+      muted = !muted; if (!muted && !actx) { try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (er) { muted = true; } }
+      b.textContent = muted ? '🔇 Sound' : '🔊 Sound'; sfx.ding();
+    }
+  });
+})();
+
+  </script>
 </body>
 </html>
